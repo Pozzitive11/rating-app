@@ -4,6 +4,7 @@
 
 # Think about add search string to the URL
 
+```
 src/
 ├── app/ # 🎯 Application Layer
 │ ├── providers/
@@ -286,3 +287,4 @@ src/
 ├── BeerDetailsPage.tsx # Orchestrates: beer-details + navigation
 ├── RateBeerPage.tsx # Orchestrates: beer-search + beer-rating
 ├── Login
+```
