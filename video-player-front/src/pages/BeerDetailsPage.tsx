@@ -2,9 +2,9 @@ import { ArrowLeftIcon } from "lucide-react";
 import { Link, useLoaderData } from "@tanstack/react-router";
 import BeerItemBig from "@/components/BeerItemBig";
 import { mockBeers } from "@/mock-data";
-import RatingSection from "./components/RatingSection";
-import AboutSection from "./components/AboutSection";
-import ImagesSection from "./components/ImagesSection";
+import RatingSection from "@/features/beer-details/components/RatingSection";
+import AboutSection from "@/features/beer-details/components/AboutSection";
+import ImagesSection from "@/features/beer-details/components/ImagesSection";
 
 export default function BeerDetailsPage() {
   const { beerId } = useLoaderData({ from: "/$id" });

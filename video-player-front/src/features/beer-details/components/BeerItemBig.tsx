@@ -1,7 +1,11 @@
-import { type Beer } from "../lib/api";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { type Beer } from "@/lib/api";
+import { Card, CardContent } from "@/shared/ui/primitives/card";
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/shared/ui/primitives/avatar";
+import { Badge } from "@/shared/ui/primitives/badge";
 
 export default function BeerItemBig({ beer }: { beer: Beer }) {
   return (

@@ -1,23 +1,20 @@
-import { ArrowLeftIcon, Camera, SaveIcon, Check } from "lucide-react";
+import { ArrowLeftIcon, Camera, SaveIcon } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import SearchInput from "@/components/SearchInput";
 import BeerItemBig from "@/components/BeerItemBig";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import type { Beer } from "@/lib/api";
 import { searchBeers } from "@/lib/api";
 import { RangeRating } from "@/components/RangeRating";
 import { useForm } from "@tanstack/react-form";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { PresentationStyle } from "./components/PresentationStyle";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import FlavorProfiles from "./components/FlavorProfiles";
+import { Button } from "@/shared/ui/primitives/button";
 import BeerSmallItem from "@/components/BeerSmallItem";
+import { Label } from "@/shared/ui/primitives/label";
+import FlavorProfiles from "@/features/beer-rating/components/FlavorProfiles";
+import { Input } from "@/shared/ui/primitives/input";
+import { Textarea } from "@/shared/ui/primitives/textarea";
+import { PresentationStyle } from "@/features/beer-rating/components/PresentationStyle";
 
 export default function RateBeerPage() {
   const navigate = useNavigate();

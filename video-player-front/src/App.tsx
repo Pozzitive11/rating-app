@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Button } from "./components/ui/button";
+import { Button } from "@/shared/ui/primitives/button";
 import { Plus } from "lucide-react";
-import { MainTabs } from "./components/Tabs";
 import SearchInput from "./components/SearchInput";
 import { mockBeers } from "./mock-data";
 import BeerSmallItem from "./components/BeerSmallItem";
 import { Link } from "@tanstack/react-router";
+import { MainTabs } from "./shared/ui/Tabs";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");

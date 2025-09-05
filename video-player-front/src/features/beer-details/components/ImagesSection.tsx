@@ -1,5 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/ui/primitives/card";
+import { Button } from "@/shared/ui/primitives/button";
 import { MoveRight } from "lucide-react";
 
 export default function ImagesSection({ images }: { images: string[] }) {

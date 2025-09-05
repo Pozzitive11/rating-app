@@ -1,5 +1,5 @@
-import BadgeInput from "@/components/BadgeInput";
-import { flavorProfiles } from "@/pages/RateBeerPage/constants/flavor-profiles";
+import BadgeInput from "@/shared/ui/BadgeInput";
+import { flavorProfiles } from "@/features/beer-rating/constants/flavor-profiles";
 
 interface FlavorProfilesProps {
   value: string[];

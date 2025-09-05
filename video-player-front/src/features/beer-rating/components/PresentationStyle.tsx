@@ -1,5 +1,5 @@
-import BadgeInput from "@/components/BadgeInput";
-import { presentationStylesConfig } from "@/pages/RateBeerPage/constants/presentation-styles";
+import BadgeInput from "@/shared/ui/BadgeInput";
+import { presentationStylesConfig } from "@/features/beer-rating/constants/presentation-styles";
 
 interface PresentationStyleProps {
   value: string;

@@ -1,5 +1,5 @@
 import { cn, formatNumber } from "@/lib/utils";
-import { Rating, RatingButton } from "./ui/shadcn-io/rating";
+import { Rating, RatingButton } from "@/shared/ui/primitives/shadcn-io/rating";
 import { useMemo } from "react";
 
 interface StarRatingProps {

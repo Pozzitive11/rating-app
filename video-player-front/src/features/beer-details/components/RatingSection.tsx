@@ -1,7 +1,12 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import StarRating from "@/components/StarRating";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/ui/primitives/card";
+import { Button } from "@/shared/ui/primitives/button";
+import { Separator } from "@/shared/ui/primitives/separator";
+import StarRating from "@/shared/ui/StarRating";
 import { Link } from "@tanstack/react-router";
 
 export default function RatingSection({

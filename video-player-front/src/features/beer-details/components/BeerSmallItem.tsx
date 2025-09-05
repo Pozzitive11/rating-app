@@ -1,9 +1,13 @@
-import { type Beer } from "../lib/api";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import StarRating from "./StarRating";
+import { type Beer } from "@/lib/api";
+import { Card, CardContent } from "@/shared/ui/primitives/card";
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/shared/ui/primitives/avatar";
+import { Badge } from "@/shared/ui/primitives/badge";
 import { Link } from "@tanstack/react-router";
+import StarRating from "@/shared/ui/StarRating";
 
 export default function BeerSmallItem({ beer }: { beer: Beer }) {
   return (
