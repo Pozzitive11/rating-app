@@ -1,4 +1,4 @@
-import RateBeerPage from "@/pages/RateBeerPage/RateBeerPage";
+import { RateBeerPage } from "@/pages/RateBeerPage";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/rate-beer/$beerId")({

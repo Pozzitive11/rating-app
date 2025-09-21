@@ -7,13 +7,21 @@ import {
 import { Button } from "@/shared/ui/primitives/button";
 import { MoveRight } from "lucide-react";
 
-export default function ImagesSection({ images }: { images: string[] }) {
+export const ImagesSection = ({
+  images,
+}: {
+  images: string[];
+}) => {
   return (
     <Card className="gap-1">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           Зображення
-          <Button variant="ghost" size="sm" className="ml-auto">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="ml-auto cursor-pointer"
+          >
             Дивитися всі
             <MoveRight className="size-4" />
           </Button>
@@ -28,7 +36,7 @@ export default function ImagesSection({ images }: { images: string[] }) {
                 className="aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
               >
                 <img
-                  src={image || "/placeholder.svg"}
+                  src={image || "beer-img.jpeg"}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -42,4 +50,4 @@ export default function ImagesSection({ images }: { images: string[] }) {
       </CardContent>
     </Card>
   );
-}
+};

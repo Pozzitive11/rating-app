@@ -1,26 +1,31 @@
-import { ArrowLeftIcon, Camera, SaveIcon } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
+import {
+  ArrowLeftIcon,
+  Camera,
+  SaveIcon,
+} from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import SearchInput from "@/components/SearchInput";
-import BeerItemBig from "@/components/BeerItemBig";
+import { SearchInput } from "@/features/beer-search/components/SearchInput";
+import { BeerItem } from "@/features/beer-details/components/BeerItem";
 import { useState, useEffect } from "react";
-import type { Beer } from "@/lib/api";
-import { searchBeers } from "@/lib/api";
-import { RangeRating } from "@/components/RangeRating";
+import { RangeRating } from "@/features/beer-rating/components/RangeRating";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "@/shared/ui/primitives/button";
-import BeerSmallItem from "@/components/BeerSmallItem";
 import { Label } from "@/shared/ui/primitives/label";
-import FlavorProfiles from "@/features/beer-rating/components/FlavorProfiles";
+import { FlavorProfiles } from "@/features/beer-rating/components/FlavorProfiles";
 import { Input } from "@/shared/ui/primitives/input";
 import { Textarea } from "@/shared/ui/primitives/textarea";
 import { PresentationStyle } from "@/features/beer-rating/components/PresentationStyle";
-
-export default function RateBeerPage() {
+import { searchBeers, type Beer } from "@/api/beer/api";
+import { useRouter } from "@tanstack/react-router";
+export const RateBeerPage = () => {
   const navigate = useNavigate();
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-  const [selectedBeer, setSelectedBeer] = useState<Beer | null>(null);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] =
+    useState("");
+  const [selectedBeer, setSelectedBeer] =
+    useState<Beer | null>(null);
 
   // Debounce search term
   useEffect(() => {
@@ -77,20 +82,29 @@ export default function RateBeerPage() {
 
   return (
     <>
-      <div
-        className="text-2xl font-bold flex items-center gap-2 mb-4"
-        onClick={() => navigate({ to: "/" })}
+      <Link
+        className="text-2xl font-bold flex items-center gap-2 mb-4 cursor-pointer"
+        to="/"
+        onClick={e => {
+          e.preventDefault();
+          router.history.back();
+          return false;
+        }}
       >
         <ArrowLeftIcon className="w-4 h-4" />
         Оцінити Пиво
-      </div>
+      </Link>
       <div className="mb-4">
-        <SearchInput searchTerm={searchTerm} setSearchTerm={handleSearch} />
+        <SearchInput
+          searchTerm={searchTerm}
+          setSearchTerm={handleSearch}
+        />
       </div>
 
       {/* Loading state */}
       {(isSearching ||
-        (searchTerm.length > 0 && searchTerm !== debouncedSearchTerm)) && (
+        (searchTerm.length > 0 &&
+          searchTerm !== debouncedSearchTerm)) && (
         <div className="text-center text-muted-foreground bg-muted p-4 rounded-lg mb-4">
           Пошук пива...
         </div>
@@ -122,13 +136,18 @@ export default function RateBeerPage() {
           <div className="mb-4">
             <div className="mb-3">
               <h3 className="text-lg font-semibold">
-                Знайдено {searchResults.length} результат(ів):
+                Знайдено {searchResults.length}{" "}
+                результат(ів):
               </h3>
             </div>
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {searchResults.map((beer, index) => (
                 <li className="list-none" key={index}>
-                  <BeerSmallItem beer={beer} />
+                  <BeerItem
+                    beer={beer}
+                    variant="small"
+                    linkTo="/beer-details/$beerId"
+                  />
                 </li>
               ))}
             </div>
@@ -139,9 +158,11 @@ export default function RateBeerPage() {
       {selectedBeer && (
         <div className="mb-4">
           <div className="mb-3">
-            <h3 className="text-lg font-semibold">Обране пиво для оцінки:</h3>
+            <h3 className="text-lg font-semibold">
+              Обране пиво для оцінки:
+            </h3>
           </div>
-          <BeerItemBig beer={selectedBeer} />
+          <BeerItem beer={selectedBeer} variant="big" />
         </div>
       )}
 
@@ -159,7 +180,7 @@ export default function RateBeerPage() {
       {/* Rating form - only show when beer is selected */}
       {selectedBeer && (
         <form
-          onSubmit={(e) => {
+          onSubmit={e => {
             e.preventDefault();
             form.handleSubmit();
           }}
@@ -167,12 +188,14 @@ export default function RateBeerPage() {
         >
           <form.Field
             name="rating"
-            children={(field) => (
+            children={field => (
               <div>
                 <Label className="mb-2">Ваша оцінка</Label>
                 <RangeRating
                   rating={field.state.value}
-                  onRate={(rating) => field.handleChange(rating)}
+                  onRate={rating =>
+                    field.handleChange(rating)
+                  }
                 />
               </div>
             )}
@@ -180,37 +203,45 @@ export default function RateBeerPage() {
           <form.Field
             name="flavorProfiles"
             mode="array"
-            children={(field) => (
+            children={field => (
               <div>
-                <Label className="mb-2">Смакові Профілі</Label>
+                <Label className="mb-2">
+                  Смакові Профілі
+                </Label>
                 <FlavorProfiles
                   value={field.state.value}
-                  onChange={(value) => field.handleChange(value)}
+                  onChange={value =>
+                    field.handleChange(value)
+                  }
                 />
               </div>
             )}
           />
           <form.Field
             name="presentationStyle"
-            children={(field) => (
+            children={field => (
               <div>
                 <Label className="mb-2">Стиль Подачі</Label>
                 <PresentationStyle
                   value={field.state.value}
-                  onChange={(value) => field.handleChange(value)}
+                  onChange={value =>
+                    field.handleChange(value)
+                  }
                 />
               </div>
             )}
           />
           <form.Field
             name="location"
-            children={(field) => (
+            children={field => (
               <div>
                 <Label className="mb-2">Місце</Label>
                 <Input
                   type="text"
                   value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
+                  onChange={e =>
+                    field.handleChange(e.target.value)
+                  }
                   placeholder="Де ти пив це пиво?"
                 />
               </div>
@@ -218,12 +249,14 @@ export default function RateBeerPage() {
           />
           <form.Field
             name="comment"
-            children={(field) => (
+            children={field => (
               <div>
                 <Label className="mb-2">Коментар</Label>
                 <Textarea
                   value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
+                  onChange={e =>
+                    field.handleChange(e.target.value)
+                  }
                   placeholder="Що ти думаєш про це пиво?"
                 />
               </div>
@@ -232,7 +265,7 @@ export default function RateBeerPage() {
           <form.Field
             name="photos"
             mode="array"
-            children={(field) => (
+            children={field => (
               <div>
                 <Label className="mb-2">Фото</Label>
                 <div className="relative">
@@ -240,17 +273,21 @@ export default function RateBeerPage() {
                     type="file"
                     multiple
                     accept="image/*"
-                    onChange={(e) => {
+                    onChange={e => {
                       const files = e.target.files;
                       if (files) {
-                        field.handleChange(Array.from(files));
+                        field.handleChange(
+                          Array.from(files)
+                        );
                       }
                     }}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                   <div className="flex items-center justify-center gap-2 w-full h-10 px-4 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors">
                     <Camera className="w-5 h-5 text-black" />
-                    <span className="text-black font-medium">Додати Фото</span>
+                    <span className="text-black font-medium">
+                      Додати Фото
+                    </span>
                   </div>
                 </div>
               </div>
@@ -265,7 +302,11 @@ export default function RateBeerPage() {
             >
               Скасувати
             </Button>
-            <Button type="submit" variant="default" className="w-1/2">
+            <Button
+              type="submit"
+              variant="default"
+              className="w-1/2"
+            >
               <SaveIcon className="w-4 h-4" />
               Зберегти Оцінку
             </Button>
@@ -274,4 +315,4 @@ export default function RateBeerPage() {
       )}
     </>
   );
-}
+};

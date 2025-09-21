@@ -8,13 +8,13 @@ interface BadgeInputProps {
   icon?: React.ReactNode;
 }
 
-export default function BadgeInput({
+export const BadgeInput = ({
   label,
   isSelected,
   handleToggle,
   icon,
   inputType,
-}: BadgeInputProps) {
+}: BadgeInputProps) => {
   const selectedStyled = "bg-primary text-white border-primary";
   const unselectedStyled = "bg-background text-foreground";
   const toggleStyle = isSelected ? selectedStyled : unselectedStyled;
@@ -39,4 +39,4 @@ export default function BadgeInput({
       </div>
     </label>
   );
-}
+};

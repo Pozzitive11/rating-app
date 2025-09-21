@@ -9,81 +9,58 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RateBeerRouteImport } from './routes/rate-beer'
-import { Route as IdRouteImport } from './routes/$id'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RateBeerBeerIdRouteImport } from './routes/rate-beer/$beerId'
+import { Route as BeerDetailsBeerIdRouteImport } from './routes/beer-details/$beerId'
 
-const RateBeerRoute = RateBeerRouteImport.update({
-  id: '/rate-beer',
-  path: '/rate-beer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IdRoute = IdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RateBeerBeerIdRoute = RateBeerBeerIdRouteImport.update({
-  id: '/$beerId',
-  path: '/$beerId',
-  getParentRoute: () => RateBeerRoute,
+  id: '/rate-beer/$beerId',
+  path: '/rate-beer/$beerId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeerDetailsBeerIdRoute = BeerDetailsBeerIdRouteImport.update({
+  id: '/beer-details/$beerId',
+  path: '/beer-details/$beerId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$id': typeof IdRoute
-  '/rate-beer': typeof RateBeerRouteWithChildren
+  '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$id': typeof IdRoute
-  '/rate-beer': typeof RateBeerRouteWithChildren
+  '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$id': typeof IdRoute
-  '/rate-beer': typeof RateBeerRouteWithChildren
+  '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$id' | '/rate-beer' | '/rate-beer/$beerId'
+  fullPaths: '/' | '/beer-details/$beerId' | '/rate-beer/$beerId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$id' | '/rate-beer' | '/rate-beer/$beerId'
-  id: '__root__' | '/' | '/$id' | '/rate-beer' | '/rate-beer/$beerId'
+  to: '/' | '/beer-details/$beerId' | '/rate-beer/$beerId'
+  id: '__root__' | '/' | '/beer-details/$beerId' | '/rate-beer/$beerId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  IdRoute: typeof IdRoute
-  RateBeerRoute: typeof RateBeerRouteWithChildren
+  BeerDetailsBeerIdRoute: typeof BeerDetailsBeerIdRoute
+  RateBeerBeerIdRoute: typeof RateBeerBeerIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/rate-beer': {
-      id: '/rate-beer'
-      path: '/rate-beer'
-      fullPath: '/rate-beer'
-      preLoaderRoute: typeof RateBeerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$id': {
-      id: '/$id'
-      path: '/$id'
-      fullPath: '/$id'
-      preLoaderRoute: typeof IdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -93,30 +70,25 @@ declare module '@tanstack/react-router' {
     }
     '/rate-beer/$beerId': {
       id: '/rate-beer/$beerId'
-      path: '/$beerId'
+      path: '/rate-beer/$beerId'
       fullPath: '/rate-beer/$beerId'
       preLoaderRoute: typeof RateBeerBeerIdRouteImport
-      parentRoute: typeof RateBeerRoute
+      parentRoute: typeof rootRouteImport
+    }
+    '/beer-details/$beerId': {
+      id: '/beer-details/$beerId'
+      path: '/beer-details/$beerId'
+      fullPath: '/beer-details/$beerId'
+      preLoaderRoute: typeof BeerDetailsBeerIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface RateBeerRouteChildren {
-  RateBeerBeerIdRoute: typeof RateBeerBeerIdRoute
-}
-
-const RateBeerRouteChildren: RateBeerRouteChildren = {
-  RateBeerBeerIdRoute: RateBeerBeerIdRoute,
-}
-
-const RateBeerRouteWithChildren = RateBeerRoute._addFileChildren(
-  RateBeerRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  IdRoute: IdRoute,
-  RateBeerRoute: RateBeerRouteWithChildren,
+  BeerDetailsBeerIdRoute: BeerDetailsBeerIdRoute,
+  RateBeerBeerIdRoute: RateBeerBeerIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

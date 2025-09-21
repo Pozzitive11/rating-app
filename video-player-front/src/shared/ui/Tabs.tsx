@@ -1,26 +1,38 @@
-import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/primitives/tabs";
+import {
+  Tabs as ShadcnTabs,
+  TabsList,
+  TabsTrigger,
+} from "@/shared/ui/primitives/tabs";
 
-export const MainTabs = ({
-  ratedBeersNumber,
+export const Tabs = ({
   activeTab,
   setActiveTab,
+  tabs,
 }: {
-  ratedBeersNumber: number;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  tabs: {
+    label: string;
+    value: string;
+  }[];
 }) => {
   return (
-    <Tabs
-      defaultValue={activeTab}
+    <ShadcnTabs
+      value={activeTab}
       onValueChange={setActiveTab}
       className="w-full"
     >
       <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="search">Пошук</TabsTrigger>
-        <TabsTrigger value="ratings">
-          Мої оцінки ({ratedBeersNumber})
-        </TabsTrigger>
+        {tabs.map(tab => (
+          <TabsTrigger
+            key={tab.value}
+            value={tab.value}
+            className="cursor-pointer"
+          >
+            {tab.label}
+          </TabsTrigger>
+        ))}
       </TabsList>
-    </Tabs>
+    </ShadcnTabs>
   );
 };

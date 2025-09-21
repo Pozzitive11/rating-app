@@ -1,6 +1,6 @@
-import { cn, formatNumber } from "@/lib/utils";
-import { Rating, RatingButton } from "@/shared/ui/primitives/shadcn-io/rating";
+import { cn, formatNumber } from "@/shared/utils";
 import { useMemo } from "react";
+import { RatingButton, Rating } from "./primitives";
 
 interface StarRatingProps {
   rating: number;
@@ -15,13 +15,13 @@ const starSize = {
   MEDIUM: 30,
 } as const;
 
-export default function StarRating({
+export const StarRating = ({
   rating,
   numberOfRatings,
   shortFormat = true,
   showRatingValue = true,
   className,
-}: StarRatingProps) {
+}: StarRatingProps) => {
   // Memoize star buttons to avoid recreating on every render
   const starButtons = useMemo(
     () =>
@@ -83,4 +83,4 @@ export default function StarRating({
       )}
     </div>
   );
-}
+};

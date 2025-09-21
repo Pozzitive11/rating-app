@@ -8,7 +8,7 @@ export interface Beer {
   abv: number;
   ibu: number;
   rating: number;
-  userRating?: number; // Personal/user rating
+  userRating?: number;
   numberOfRatings: number;
   mainImage: string;
   images: string[];

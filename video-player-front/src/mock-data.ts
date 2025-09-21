@@ -1,4 +1,4 @@
-import type { Beer } from "./lib/api";
+import type { Beer } from "./api/beer/api";
 
 export const mockBeers: Beer[] = [
   {

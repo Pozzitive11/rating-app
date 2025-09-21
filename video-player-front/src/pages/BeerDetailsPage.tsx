@@ -1,22 +1,22 @@
-import { ArrowLeftIcon } from "lucide-react";
-import { Link, useLoaderData } from "@tanstack/react-router";
-import BeerItemBig from "@/components/BeerItemBig";
+import { useLoaderData } from "@tanstack/react-router";
+import { BeerItem } from "@/features/beer-details/components/BeerItem";
 import { mockBeers } from "@/mock-data";
-import RatingSection from "@/features/beer-details/components/RatingSection";
-import AboutSection from "@/features/beer-details/components/AboutSection";
-import ImagesSection from "@/features/beer-details/components/ImagesSection";
+import { RatingSection } from "@/features/beer-details/components/RatingSection";
+import { AboutSection } from "@/features/beer-details/components/AboutSection";
+import { ImagesSection } from "@/features/beer-details/components/ImagesSection";
+import { BackNavigation } from "@/shared/ui";
 
-export default function BeerDetailsPage() {
-  const { beerId } = useLoaderData({ from: "/$id" });
-  const beer = mockBeers.find((beer) => beer.id === beerId);
+export const BeerDetailsPage = () => {
+  const { beerId } = useLoaderData({
+    from: "/beer-details/$beerId",
+  });
+  const beer = mockBeers.find(beer => beer.id === beerId);
+
   return (
     <>
-      <Link to="/" className="text-2xl font-bold flex items-center gap-2 mb-4">
-        <ArrowLeftIcon className="w-4 h-4" />
-        Деталі Пива
-      </Link>
+      <BackNavigation text="Деталі Пива" />
       <div className="mb-4">
-        <BeerItemBig beer={beer!} />
+        <BeerItem beer={beer!} variant="big" />
       </div>
       <div className="mb-4">
         <RatingSection
@@ -33,4 +33,4 @@ export default function BeerDetailsPage() {
       </div>
     </>
   );
-}
+};

@@ -1,4 +1,4 @@
-import BadgeInput from "@/shared/ui/BadgeInput";
+import { BadgeInput } from "@/shared/ui";
 import { presentationStylesConfig } from "@/features/beer-rating/constants/presentation-styles";
 
 interface PresentationStyleProps {
@@ -6,7 +6,7 @@ interface PresentationStyleProps {
   onChange: (value: string) => void;
 }
 
-export function PresentationStyle({ value, onChange }: PresentationStyleProps) {
+export const PresentationStyle = ({ value, onChange }: PresentationStyleProps) => {
   return (
     <div className="flex flex-wrap gap-2">
       {presentationStylesConfig.map(({ id, label, icon }) => {
@@ -24,4 +24,4 @@ export function PresentationStyle({ value, onChange }: PresentationStyleProps) {
       })}
     </div>
   );
-}
+};

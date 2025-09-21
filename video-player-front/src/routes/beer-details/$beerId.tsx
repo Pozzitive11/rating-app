@@ -1,12 +1,14 @@
+import { BeerDetailsPage } from "@/pages/BeerDetailsPage";
 import { createFileRoute } from "@tanstack/react-router";
-import BeerDetailsPage from "../pages/BeerDetailsPage/BeerDetailsPage";
 
-export const Route = createFileRoute("/$id")({
+export const Route = createFileRoute(
+  "/beer-details/$beerId"
+)({
   component: BeerDetailsPage,
   loader: async ({ params }) => {
     // TODO: get beer from api
     return {
-      beerId: params.id,
+      beerId: params.beerId,
     };
   },
   // pendingComponent: () => <div>Loading...</div>,

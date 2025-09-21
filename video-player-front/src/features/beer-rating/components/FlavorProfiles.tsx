@@ -1,4 +1,4 @@
-import BadgeInput from "@/shared/ui/BadgeInput";
+import { BadgeInput } from "@/shared/ui";
 import { flavorProfiles } from "@/features/beer-rating/constants/flavor-profiles";
 
 interface FlavorProfilesProps {
@@ -6,10 +6,7 @@ interface FlavorProfilesProps {
   onChange: (value: string[]) => void;
 }
 
-export default function FlavorProfiles({
-  value,
-  onChange,
-}: FlavorProfilesProps) {
+export const FlavorProfiles = ({ value, onChange }: FlavorProfilesProps) => {
   return (
     <div className="flex flex-wrap gap-2">
       {flavorProfiles.map(({ id, label }) => {
@@ -32,4 +29,4 @@ export default function FlavorProfiles({
       })}
     </div>
   );
-}
+};

@@ -6,10 +6,10 @@ import {
 } from "@/shared/ui/primitives/card";
 import { Button } from "@/shared/ui/primitives/button";
 import { Separator } from "@/shared/ui/primitives/separator";
-import StarRating from "@/shared/ui/StarRating";
 import { Link } from "@tanstack/react-router";
+import { StarRating } from "@/shared/ui";
 
-export default function RatingSection({
+export const RatingSection = ({
   beerId,
   rating,
   numberOfRatings,
@@ -17,7 +17,7 @@ export default function RatingSection({
   beerId: string;
   rating: number;
   numberOfRatings: number;
-}) {
+}) => {
   return (
     <Card>
       <CardHeader>
@@ -25,13 +25,20 @@ export default function RatingSection({
       </CardHeader>
       <CardContent>
         <div className="text-center space-y-2 mb-4">
-          <Link to="/rate-beer/$beerId" params={{ beerId: beerId }}>
-            <Button>Додати Оцінку</Button>
+          <Link
+            to="/rate-beer/$beerId"
+            params={{ beerId: beerId }}
+          >
+            <Button className="cursor-pointer">
+              Додати Оцінку
+            </Button>
           </Link>
         </div>
         <Separator className="my-4" />
         <div className="text-center space-y-2">
-          <p className="text-lg font-medium">Оцінка Спільноти</p>
+          <p className="text-lg font-medium">
+            Оцінка Спільноти
+          </p>
           <div className="flex items-center justify-center flex-col">
             <StarRating
               rating={rating}
@@ -43,4 +50,4 @@ export default function RatingSection({
       </CardContent>
     </Card>
   );
-}
+};
