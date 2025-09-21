@@ -2,7 +2,12 @@
 
 import { useControllableState } from "@radix-ui/react-use-controllable-state";
 import { type LucideProps } from "lucide-react";
-import type { KeyboardEvent, MouseEvent, ReactElement, ReactNode } from "react";
+import type {
+  KeyboardEvent,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+} from "react";
 import {
   Children,
   cloneElement,
@@ -21,20 +26,27 @@ type RatingContextValue = {
   hoverValue: number | null;
   focusedStar: number | null;
   handleValueChange: (
-    event: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement>,
+    event:
+      | MouseEvent<HTMLButtonElement>
+      | KeyboardEvent<HTMLButtonElement>,
     value: number
   ) => void;
-  handleKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => void;
+  handleKeyDown: (
+    event: KeyboardEvent<HTMLButtonElement>
+  ) => void;
   setHoverValue: (value: number | null) => void;
   setFocusedStar: (value: number | null) => void;
 };
 
-const RatingContext = createContext<RatingContextValue | null>(null);
+const RatingContext =
+  createContext<RatingContextValue | null>(null);
 
 const useRating = () => {
   const context = useContext(RatingContext);
   if (!context) {
-    throw new Error("useRating must be used within a Rating component");
+    throw new Error(
+      "useRating must be used within a Rating component"
+    );
   }
   return context;
 };
@@ -61,10 +73,14 @@ export const RatingButton = ({
   } = useRating();
 
   const index = providedIndex ?? 0;
-  const currentValue = hoverValue ?? focusedStar ?? value ?? 0;
+  const currentValue =
+    hoverValue ?? focusedStar ?? value ?? 0;
 
   // Calculate fill percentage for partial stars
-  const fillPercentage = Math.max(0, Math.min(1, currentValue - index));
+  const fillPercentage = Math.max(
+    0,
+    Math.min(1, currentValue - index)
+  );
   const isActive = fillPercentage > 0;
 
   let tabIndex = -1;
@@ -120,7 +136,13 @@ export const RatingButton = ({
         className="overflow-visible"
       >
         <defs>
-          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <linearGradient
+            id={gradientId}
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="0%"
+          >
             <stop
               offset={`${fillPercentage * 100}%`}
               stopColor="currentColor"
@@ -136,12 +158,18 @@ export const RatingButton = ({
 
         <path
           d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-          fill={isActive ? `url(#${gradientId})` : "currentColor"}
+          fill={
+            isActive
+              ? `url(#${gradientId})`
+              : "currentColor"
+          }
           stroke="currentColor"
           strokeWidth="0.5"
           className={cn(
             "transition-colors duration-200",
-            isActive ? "text-yellow-500" : "text-muted-foreground"
+            isActive
+              ? "text-yellow-500"
+              : "text-muted-foreground"
           )}
         />
       </svg>
@@ -153,7 +181,9 @@ export type RatingProps = {
   defaultValue?: number;
   value?: number;
   onChange?: (
-    event: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement>,
+    event:
+      | MouseEvent<HTMLButtonElement>
+      | KeyboardEvent<HTMLButtonElement>,
     value: number
   ) => void;
   onValueChange?: (value: number) => void;
@@ -174,8 +204,12 @@ export const Rating = ({
   children,
   ...props
 }: RatingProps) => {
-  const [hoverValue, setHoverValue] = useState<number | null>(null);
-  const [focusedStar, setFocusedStar] = useState<number | null>(null);
+  const [hoverValue, setHoverValue] = useState<
+    number | null
+  >(null);
+  const [focusedStar, setFocusedStar] = useState<
+    number | null
+  >(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [value, onValueChange] = useControllableState({
     defaultProp: defaultValue,
@@ -185,7 +219,9 @@ export const Rating = ({
 
   const handleValueChange = useCallback(
     (
-      event: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement>,
+      event:
+        | MouseEvent<HTMLButtonElement>
+        | KeyboardEvent<HTMLButtonElement>,
       newValue: number
     ) => {
       if (!readOnly) {
@@ -203,7 +239,8 @@ export const Rating = ({
       }
 
       const total = Children.count(children);
-      let newValue = focusedStar !== null ? focusedStar : (value ?? 0);
+      let newValue =
+        focusedStar !== null ? focusedStar : (value ?? 0);
 
       switch (event.key) {
         case "ArrowRight":
@@ -228,12 +265,19 @@ export const Rating = ({
       setFocusedStar(newValue);
       handleValueChange(event, newValue);
     },
-    [focusedStar, value, children, readOnly, handleValueChange]
+    [
+      focusedStar,
+      value,
+      children,
+      readOnly,
+      handleValueChange,
+    ]
   );
 
   useEffect(() => {
     if (focusedStar !== null && containerRef.current) {
-      const buttons = containerRef.current.querySelectorAll("button");
+      const buttons =
+        containerRef.current.querySelectorAll("button");
       buttons[focusedStar - 1]?.focus();
     }
   }, [focusedStar]);
@@ -253,7 +297,10 @@ export const Rating = ({
     <RatingContext.Provider value={contextValue}>
       <div
         aria-label="Rating"
-        className={cn("inline-flex items-center gap-0.5", className)}
+        className={cn(
+          "inline-flex items-center gap-0.5",
+          className
+        )}
         onMouseLeave={() => setHoverValue(null)}
         ref={containerRef}
         role="radiogroup"
@@ -264,10 +311,13 @@ export const Rating = ({
             return null;
           }
 
-          return cloneElement(child as ReactElement<RatingButtonProps>, {
-            index,
-            size,
-          });
+          return cloneElement(
+            child as ReactElement<RatingButtonProps>,
+            {
+              index,
+              size,
+            }
+          );
         })}
       </div>
     </RatingContext.Provider>

@@ -1,5 +1,5 @@
 import { useLoaderData } from "@tanstack/react-router";
-import { BeerItem } from "@/features/beer-details/components/BeerItem";
+import { BeerItem } from "@/shared/ui/BeerItem";
 import { mockBeers } from "@/mock-data";
 import { RatingSection } from "@/features/beer-details/components/RatingSection";
 import { AboutSection } from "@/features/beer-details/components/AboutSection";

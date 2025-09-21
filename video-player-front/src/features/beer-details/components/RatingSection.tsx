@@ -8,6 +8,7 @@ import { Button } from "@/shared/ui/primitives/button";
 import { Separator } from "@/shared/ui/primitives/separator";
 import { Link } from "@tanstack/react-router";
 import { StarRating } from "@/shared/ui";
+import { Plus } from "lucide-react";
 
 export const RatingSection = ({
   beerId,
@@ -30,6 +31,7 @@ export const RatingSection = ({
             params={{ beerId: beerId }}
           >
             <Button className="cursor-pointer">
+              <Plus className="w-4 h-4 mr-2" />
               Додати Оцінку
             </Button>
           </Link>

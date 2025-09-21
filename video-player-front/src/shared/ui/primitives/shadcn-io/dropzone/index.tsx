@@ -3,7 +3,11 @@
 import { UploadIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { createContext, useContext } from "react";
-import type { DropEvent, DropzoneOptions, FileRejection } from "react-dropzone";
+import type {
+  DropEvent,
+  DropzoneOptions,
+  FileRejection,
+} from "react-dropzone";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/shared/ui/primitives/button";
 import { cn } from "@/shared/utils";
@@ -29,11 +33,14 @@ const renderBytes = (bytes: number) => {
   return `${size.toFixed(2)}${units[unitIndex]}`;
 };
 
-const DropzoneContext = createContext<DropzoneContextType | undefined>(
-  undefined
-);
+const DropzoneContext = createContext<
+  DropzoneContextType | undefined
+>(undefined);
 
-export type DropzoneProps = Omit<DropzoneOptions, "onDrop"> & {
+export type DropzoneProps = Omit<
+  DropzoneOptions,
+  "onDrop"
+> & {
   src?: File[];
   className?: string;
   onDrop?: (
@@ -57,24 +64,27 @@ export const Dropzone = ({
   children,
   ...props
 }: DropzoneProps) => {
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept,
-    maxFiles,
-    maxSize,
-    minSize,
-    onError,
-    disabled,
-    onDrop: (acceptedFiles, fileRejections, event) => {
-      if (fileRejections.length > 0) {
-        const message = fileRejections.at(0)?.errors.at(0)?.message;
-        onError?.(new Error(message));
-        return;
-      }
+  const { getRootProps, getInputProps, isDragActive } =
+    useDropzone({
+      accept,
+      maxFiles,
+      maxSize,
+      minSize,
+      onError,
+      disabled,
+      onDrop: (acceptedFiles, fileRejections, event) => {
+        if (fileRejections.length > 0) {
+          const message = fileRejections
+            .at(0)
+            ?.errors.at(0)?.message;
+          onError?.(new Error(message));
+          return;
+        }
 
-      onDrop?.(acceptedFiles, fileRejections, event);
-    },
-    ...props,
-  });
+        onDrop?.(acceptedFiles, fileRejections, event);
+      },
+      ...props,
+    });
 
   return (
     <DropzoneContext.Provider
@@ -103,7 +113,9 @@ const useDropzoneContext = () => {
   const context = useContext(DropzoneContext);
 
   if (!context) {
-    throw new Error("useDropzoneContext must be used within a Dropzone");
+    throw new Error(
+      "useDropzoneContext must be used within a Dropzone"
+    );
   }
 
   return context;
@@ -131,16 +143,25 @@ export const DropzoneContent = ({
   }
 
   return (
-    <div className={cn("flex flex-col items-center justify-center", className)}>
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center",
+        className
+      )}
+    >
       <div className="flex size-8 items-center justify-center rounded-md bg-muted text-muted-foreground">
         <UploadIcon size={16} />
       </div>
       <p className="my-2 w-full truncate font-medium text-sm">
         {src.length > maxLabelItems
           ? `${new Intl.ListFormat("en").format(
-              src.slice(0, maxLabelItems).map((file) => file.name)
+              src
+                .slice(0, maxLabelItems)
+                .map(file => file.name)
             )} and ${src.length - maxLabelItems} more`
-          : new Intl.ListFormat("en").format(src.map((file) => file.name))}
+          : new Intl.ListFormat("en").format(
+              src.map(file => file.name)
+            )}
       </p>
       <p className="w-full text-wrap text-muted-foreground text-xs">
         Drag and drop or click to replace
@@ -158,7 +179,8 @@ export const DropzoneEmptyState = ({
   children,
   className,
 }: DropzoneEmptyStateProps) => {
-  const { src, accept, maxSize, minSize, maxFiles } = useDropzoneContext();
+  const { src, accept, maxSize, minSize, maxFiles } =
+    useDropzoneContext();
 
   if (src) {
     return null;
@@ -172,7 +194,9 @@ export const DropzoneEmptyState = ({
 
   if (accept) {
     caption += "Accepts ";
-    caption += new Intl.ListFormat("en").format(Object.keys(accept));
+    caption += new Intl.ListFormat("en").format(
+      Object.keys(accept)
+    );
   }
 
   if (minSize && maxSize) {
@@ -184,7 +208,12 @@ export const DropzoneEmptyState = ({
   }
 
   return (
-    <div className={cn("flex flex-col items-center justify-center", className)}>
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center",
+        className
+      )}
+    >
       <div className="flex size-8 items-center justify-center rounded-md bg-muted text-muted-foreground">
         <UploadIcon size={16} />
       </div>
@@ -195,7 +224,9 @@ export const DropzoneEmptyState = ({
         Drag and drop or click to upload
       </p>
       {caption && (
-        <p className="text-wrap text-muted-foreground text-xs">{caption}.</p>
+        <p className="text-wrap text-muted-foreground text-xs">
+          {caption}.
+        </p>
       )}
     </div>
   );
