@@ -137,7 +137,6 @@ export const RateBeerPage = () => {
 
       {selectedBeer && (
         <RateForm
-          beer={selectedBeer}
           onSubmit={value => {
             console.log(value);
           }}

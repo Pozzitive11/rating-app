@@ -8,14 +8,20 @@ import { PresentationStyle } from "@/features/beer-rating/components/Presentatio
 import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "@/shared/ui";
-import type { Beer } from "@/api/beer/api";
+
+type RateFormValues = {
+  rating: number;
+  flavorProfiles: string[];
+  presentationStyle: string;
+  location: string;
+  comment: string;
+  photos: File[];
+};
 
 export const RateForm = ({
-  beer,
   onSubmit,
 }: {
-  beer: Beer;
-  onSubmit: (value: any) => void;
+  onSubmit: (value: RateFormValues) => void;
 }) => {
   const navigate = useNavigate();
 
@@ -28,7 +34,7 @@ export const RateForm = ({
       comment: "",
       photos: [] as File[],
     },
-    onSubmit: ({ value }) => {
+    onSubmit: ({ value }: { value: RateFormValues }) => {
       onSubmit(value);
     },
   });

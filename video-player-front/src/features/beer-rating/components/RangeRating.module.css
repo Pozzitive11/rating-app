@@ -1,0 +1,36 @@
+.rangeSlider {
+  background: linear-gradient(
+    to right,
+    #fbbf24 0%,
+    #fbbf24 var(--progress-percentage, 0%),
+    #e5e7eb var(--progress-percentage, 0%),
+    #e5e7eb 100%
+  );
+}
+
+.rangeSlider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #fbbf24;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.rangeSlider::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #fbbf24;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.rangeSlider::-moz-range-track {
+  height: 4px;
+  background: transparent;
+}

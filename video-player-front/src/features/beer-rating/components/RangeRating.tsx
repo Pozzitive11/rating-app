@@ -1,19 +1,42 @@
+import styles from "./RangeRating.module.css";
+
+const RATING_CONFIG = {
+  ranges: [
+    { min: 4.5, text: "🌟 Відмінно" },
+    { min: 3.5, text: "👍 Дуже добре" },
+    { min: 2.5, text: "👌 Добре" },
+    { min: 1.5, text: "😐 Задовільно" },
+    { min: 0, text: "👎 Погано" },
+  ],
+  max: 5,
+  step: 0.25,
+  notRatedText: "Не оцінено",
+} as const;
+
 export const RangeRating = ({
   rating,
   onRate,
 }: {
   rating: number;
-  onRate?: (rating: number) => void;
-  interactive?: boolean;
-  allowHalf?: boolean;
+  onRate: (rating: number) => void;
 }) => {
-  const step = 0.25;
-  const max = 5;
+  const { max, step, ranges, notRatedText } = RATING_CONFIG;
   const percentage = (rating / max) * 100;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const getRatingText = (rating: number): string => {
+    const matchingRange = ranges.find(
+      range => rating >= range.min
+    );
+    return (
+      matchingRange?.text || ranges[ranges.length - 1].text
+    );
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = Number.parseFloat(e.target.value);
-    onRate?.(value);
+    onRate(value);
   };
 
   return (
@@ -26,43 +49,11 @@ export const RangeRating = ({
           step={step}
           value={rating}
           onChange={handleChange}
-          className={`w-full h-1 bg-gray-200 rounded-full appearance-none cursor-pointer range-slider`}
+          className={`w-full h-1 bg-gray-200 rounded-full appearance-none cursor-pointer ${styles.rangeSlider}`}
           style={{
             background: `linear-gradient(to right, #fbbf24 0%, #fbbf24 ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`,
           }}
         />
-
-        <style>
-          {`
-            .range-slider::-webkit-slider-thumb {
-              appearance: none;
-              -webkit-appearance: none;
-              height: 20px;
-              width: 20px;
-              border-radius: 50%;
-              background: #fbbf24;
-              cursor: pointer;
-              border: 2px solid #ffffff;
-              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            }
-            
-            .range-slider::-moz-range-thumb {
-              height: 20px;
-              width: 20px;
-              border-radius: 50%;
-              background: #fbbf24;
-              cursor: pointer;
-              border: 2px solid #ffffff;
-              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-              border: none;
-            }
-            
-            .range-slider::-moz-range-track {
-              height: 4px;
-              background: transparent;
-            }
-`}
-        </style>
         <div className="flex justify-between text-xs text-muted-foreground mt-3">
           <span>0</span>
           <span>1</span>
@@ -74,19 +65,13 @@ export const RangeRating = ({
       </div>
       <div className="text-center">
         <span className="text-lg font-semibold">
-          {rating > 0 ? `${rating.toFixed(2)}/5` : "Не оцінено"}
+          {rating > 0
+            ? `${parseFloat(rating.toFixed(2))}/${max}`
+            : notRatedText}
         </span>
         {rating > 0 && (
           <div className="text-sm text-muted-foreground">
-            {rating >= 4.5
-              ? "🌟 Відмінно"
-              : rating >= 3.5
-                ? "👍 Дуже добре"
-                : rating >= 2.5
-                  ? "👌 Добре"
-                  : rating >= 1.5
-                    ? "😐 Задовільно"
-                    : "👎 Погано"}
+            {getRatingText(rating)}
           </div>
         )}
       </div>
