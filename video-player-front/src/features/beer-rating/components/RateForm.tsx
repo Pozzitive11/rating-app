@@ -9,14 +9,14 @@ import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "@/shared/ui";
 
-type RateFormValues = {
+export interface RateFormValues {
   rating: number;
-  flavorProfiles: string[];
-  presentationStyle: string;
+  flavorProfiles: number[];
+  presentationStyle: number | null;
   location: string;
   comment: string;
   photos: File[];
-};
+}
 
 export const RateForm = ({
   onSubmit,
@@ -28,8 +28,8 @@ export const RateForm = ({
   const form = useForm({
     defaultValues: {
       rating: 0,
-      flavorProfiles: [] as string[],
-      presentationStyle: "",
+      flavorProfiles: [] as number[],
+      presentationStyle: null as number | null,
       location: "",
       comment: "",
       photos: [] as File[],

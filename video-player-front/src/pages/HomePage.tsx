@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/shared/ui/primitives/button";
 import { Plus } from "lucide-react";
-import { mockBeers } from "@/mock-data";
 import { Link } from "@tanstack/react-router";
 import { Tabs } from "@/shared/ui/Tabs";
 import { BeerItem } from "@/shared/ui/BeerItem";
@@ -62,14 +61,14 @@ export const HomePage = () => {
           </div>
 
           <div className="flex gap-2 flex-col">
-            {mockBeers.map(beer => (
+            {/* {mockBeers.map(beer => (
               <BeerItem
                 key={beer.id}
                 beer={beer}
                 variant="small"
                 linkTo="/beer-details/$beerId"
               />
-            ))}
+            ))} */}
           </div>
         </>
       )}

@@ -1,25 +1,39 @@
 import { BadgeInput } from "@/shared/ui";
-import { flavorProfiles } from "@/features/beer-rating/constants/flavor-profiles";
+import { getFlavorProfiles } from "@/api/beer/api";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/shared/ui/primitives/skeleton";
 
 interface FlavorProfilesProps {
-  value: string[];
-  onChange: (value: string[]) => void;
+  value: number[];
+  onChange: (value: number[]) => void;
 }
 
-export const FlavorProfiles = ({ value, onChange }: FlavorProfilesProps) => {
+export const FlavorProfiles = ({
+  value,
+  onChange,
+}: FlavorProfilesProps) => {
+  const { data: flavorProfiles, isLoading } = useQuery({
+    queryKey: ["flavor-profiles"],
+    queryFn: getFlavorProfiles,
+  });
+
+  if (isLoading) {
+    return <Skeleton className="w-full h-10" />;
+  }
+
   return (
     <div className="flex flex-wrap gap-2">
-      {flavorProfiles.map(({ id, label }) => {
+      {flavorProfiles?.map(({ id, name }) => {
         const isSelected = value.includes(id);
         return (
           <BadgeInput
             key={id}
-            label={label}
+            label={name}
             isSelected={isSelected}
             handleToggle={() => {
               const currentValues = value || [];
               const newValues = isSelected
-                ? currentValues.filter((v) => v !== id)
+                ? currentValues.filter(v => v !== id)
                 : [...currentValues, id];
               onChange(newValues);
             }}

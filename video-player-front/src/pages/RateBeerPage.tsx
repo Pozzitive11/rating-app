@@ -1,15 +1,27 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+} from "@tanstack/react-query";
 import { SearchInput } from "@/features/beer-search/components/SearchInput";
 import { BeerItem } from "@/shared/ui/BeerItem";
 import { useState, useEffect } from "react";
 import { Button } from "@/shared/ui/primitives/button";
-import { searchBeers, type Beer } from "@/api/beer/api";
-import { RateForm } from "@/features/beer-rating/components/RateForm";
+import {
+  searchBeers,
+  type Beer,
+  uploadBeer,
+} from "@/api/beer/api";
+import {
+  RateForm,
+  type RateFormValues,
+} from "@/features/beer-rating/components/RateForm";
 import { BackNavigation } from "@/shared/ui";
 import { useDebounce } from "@/shared/useDebounce";
 import { isEmpty } from "@/shared/utils";
+import { useNavigate } from "@tanstack/react-router";
 
 export const RateBeerPage = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBeer, setSelectedBeer] =
     useState<Beer | null>(null);
@@ -35,12 +47,28 @@ export const RateBeerPage = () => {
     retry: 1,
   });
 
+  const {
+    mutateAsync: uploadBeerAsync,
+    isPending: isUploading,
+    isError: isUploadError,
+    error: uploadError,
+  } = useMutation({
+    mutationFn: uploadBeer,
+    onSuccess: () => {
+      // Navigate to home page after successful submission
+      setTimeout(() => {
+        navigate({ to: "/" });
+      }, 1500);
+    },
+  });
+
   const handleSearch = (search: string) => {
     setSearchTerm(search);
     setSelectedBeer(null);
   };
 
   const handleBeerSelect = (beer: Beer) => {
+    console.log(beer);
     setSelectedBeer(beer);
   };
 
@@ -68,6 +96,24 @@ export const RateBeerPage = () => {
     !hasSearchResults &&
     isSearchComplete &&
     !searchError;
+
+  const onSubmit = async (value: RateFormValues) => {
+    if (!selectedBeer) return;
+
+    try {
+      // Note: Photos (File objects) are not sent yet - need to implement file upload
+      const { photos, ...reviewData } = value;
+
+      const beer = {
+        ...selectedBeer,
+        ...reviewData,
+        photos: null, // TODO: Implement photo upload to Supabase Storage
+      };
+      await uploadBeerAsync(beer as Beer);
+    } catch (error) {
+      console.error("Failed to upload beer review:", error);
+    }
+  };
 
   return (
     <>
@@ -135,13 +181,20 @@ export const RateBeerPage = () => {
         </div>
       )}
 
-      {selectedBeer && (
-        <RateForm
-          onSubmit={value => {
-            console.log(value);
-          }}
-        />
+      {isUploadError && (
+        <div className="text-center text-red-600 bg-red-50 p-4 rounded-lg mb-4">
+          Помилка збереження:{" "}
+          {uploadError?.message || "Щось пішло не так"}
+        </div>
       )}
+
+      {isUploading && (
+        <div className="text-center text-blue-600 bg-blue-50 p-4 rounded-lg mb-4">
+          Збереження оцінки...
+        </div>
+      )}
+
+      {selectedBeer && <RateForm onSubmit={onSubmit} />}
     </>
   );
 };

@@ -1,3 +1,8 @@
+import type {
+  FlavorProfile,
+  PresentationStyle,
+} from "../types";
+
 const API_BASE_URL = "http://localhost:5000/api";
 
 export interface Beer {
@@ -23,8 +28,12 @@ export interface ApiResponse<T> {
 }
 
 // Get all beers
-export const getBeers = async (name?: string): Promise<Beer[]> => {
-  const response = await fetch(`${API_BASE_URL}/beers?name=${name}`);
+export const getBeers = async (
+  name?: string
+): Promise<Beer[]> => {
+  const response = await fetch(
+    `${API_BASE_URL}/beers?name=${name}`
+  );
   if (!response.ok) {
     throw new Error("Failed to fetch beers");
   }
@@ -33,8 +42,12 @@ export const getBeers = async (name?: string): Promise<Beer[]> => {
 };
 
 // Get specific beer
-export const getBeerByName = async (name: string): Promise<Beer[]> => {
-  const response = await fetch(`${API_BASE_URL}/beers/name/${name}`);
+export const getBeerByName = async (
+  name: string
+): Promise<Beer[]> => {
+  const response = await fetch(
+    `${API_BASE_URL}/beers/name/${name}`
+  );
   if (!response.ok) {
     throw new Error("Failed to fetch beer");
   }
@@ -43,26 +56,35 @@ export const getBeerByName = async (name: string): Promise<Beer[]> => {
 };
 
 // Upload beer
-export const uploadBeer = async (file: File): Promise<Beer> => {
-  const formData = new FormData();
-  formData.append("beer", file);
-
-  const response = await fetch(`${API_BASE_URL}/beers`, {
-    method: "POST",
-    body: formData,
-  });
+export const uploadBeer = async (
+  beer: Beer
+): Promise<Beer> => {
+  const response = await fetch(
+    `${API_BASE_URL}/supabase/beer`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(beer),
+    }
+  );
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to upload beer");
+    throw new Error(
+      errorData.error || "Failed to upload beer"
+    );
   }
 
   const data = await response.json();
-  return data.beer;
+  return data.review;
 };
 
 // Search beers by query
-export const searchBeers = async (query: string): Promise<Beer[]> => {
+export const searchBeers = async (
+  query: string
+): Promise<Beer[]> => {
   if (!query || query.trim().length === 0) {
     return [];
   }
@@ -77,13 +99,29 @@ export const searchBeers = async (query: string): Promise<Beer[]> => {
   return data || [];
 };
 
-// Delete beer
-export const deleteBeer = async (id: string): Promise<void> => {
-  const response = await fetch(`${API_BASE_URL}/beers/${id}`, {
-    method: "DELETE",
-  });
-
+// Get all flavor profiles
+export const getFlavorProfiles = async (): Promise<
+  FlavorProfile[]
+> => {
+  const response = await fetch(
+    `${API_BASE_URL}/supabase/flavor-profiles`
+  );
   if (!response.ok) {
-    throw new Error("Failed to delete beer");
+    throw new Error("Failed to fetch flavor profiles");
   }
+  const data = await response.json();
+  return data;
+};
+// Get all flavor profiles
+export const getPresentationStyles = async (): Promise<
+  PresentationStyle[]
+> => {
+  const response = await fetch(
+    `${API_BASE_URL}/supabase/presentation-styles`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch presentation styles");
+  }
+  const data = await response.json();
+  return data;
 };

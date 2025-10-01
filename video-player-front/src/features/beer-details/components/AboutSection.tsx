@@ -5,7 +5,11 @@ import {
   CardTitle,
 } from "@/shared/ui/primitives/card";
 
-export const AboutSection = ({ description }: { description: string }) => {
+export const AboutSection = ({
+  description,
+}: {
+  description: string;
+}) => {
   return (
     <Card className="gap-1">
       <CardHeader>
