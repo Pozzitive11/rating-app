@@ -1,6 +1,5 @@
 import { useLoaderData } from "@tanstack/react-router";
 import { BeerItem } from "@/shared/ui/BeerItem";
-import { mockBeers } from "@/mock-data";
 import { RatingSection } from "@/features/beer-details/components/RatingSection";
 import { AboutSection } from "@/features/beer-details/components/AboutSection";
 import { ImagesSection } from "@/features/beer-details/components/ImagesSection";
@@ -10,7 +9,6 @@ export const BeerDetailsPage = () => {
   const { beerId } = useLoaderData({
     from: "/beer-details/$beerId",
   });
-  const beer = mockBeers.find(beer => beer.id === beerId);
 
   return (
     <>

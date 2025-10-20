@@ -35,7 +35,8 @@ export const getBeers = async (
     `${API_BASE_URL}/beers?name=${name}`
   );
   if (!response.ok) {
-    throw new Error("Failed to fetch beers");
+    const errorData = await response.json();
+    throw new Error(errorData.message);
   }
   const data = await response.json();
   return data.beers || [];
@@ -49,7 +50,8 @@ export const getBeerByName = async (
     `${API_BASE_URL}/beers/name/${name}`
   );
   if (!response.ok) {
-    throw new Error("Failed to fetch beer");
+    const errorData = await response.json();
+    throw new Error(errorData.message);
   }
   const data = await response.json();
   return data.beers;
@@ -72,9 +74,7 @@ export const uploadBeer = async (
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(
-      errorData.error || "Failed to upload beer"
-    );
+    throw new Error(errorData.message);
   }
 
   const data = await response.json();
@@ -93,7 +93,8 @@ export const searchBeers = async (
     `${API_BASE_URL}/beers/search/${encodeURIComponent(query.trim())}`
   );
   if (!response.ok) {
-    throw new Error("Failed to search beers");
+    const errorData = await response.json();
+    throw new Error(errorData.message);
   }
   const data = await response.json();
   return data || [];
@@ -107,12 +108,13 @@ export const getFlavorProfiles = async (): Promise<
     `${API_BASE_URL}/supabase/flavor-profiles`
   );
   if (!response.ok) {
-    throw new Error("Failed to fetch flavor profiles");
+    const errorData = await response.json();
+    throw new Error(errorData.message);
   }
   const data = await response.json();
   return data;
 };
-// Get all flavor profiles
+// Get all presentation styles
 export const getPresentationStyles = async (): Promise<
   PresentationStyle[]
 > => {
@@ -120,7 +122,8 @@ export const getPresentationStyles = async (): Promise<
     `${API_BASE_URL}/supabase/presentation-styles`
   );
   if (!response.ok) {
-    throw new Error("Failed to fetch presentation styles");
+    const errorData = await response.json();
+    throw new Error(errorData.message);
   }
   const data = await response.json();
   return data;

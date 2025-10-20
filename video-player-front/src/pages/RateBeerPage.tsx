@@ -5,7 +5,6 @@ import {
 import { SearchInput } from "@/features/beer-search/components/SearchInput";
 import { BeerItem } from "@/shared/ui/BeerItem";
 import { useState, useEffect } from "react";
-import { Button } from "@/shared/ui/primitives/button";
 import {
   searchBeers,
   type Beer,
@@ -19,6 +18,7 @@ import { BackNavigation } from "@/shared/ui";
 import { useDebounce } from "@/shared/useDebounce";
 import { isEmpty } from "@/shared/utils";
 import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 export const RateBeerPage = () => {
   const navigate = useNavigate();
@@ -38,7 +38,6 @@ export const RateBeerPage = () => {
     data: searchResults = [],
     isLoading: isSearching,
     error: searchError,
-    refetch: refetchSearch,
   } = useQuery({
     queryKey: ["searchBeers", debouncedSearchTerm],
     queryFn: () => searchBeers(debouncedSearchTerm),
@@ -46,15 +45,16 @@ export const RateBeerPage = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
   });
-
   const {
     mutateAsync: uploadBeerAsync,
     isPending: isUploading,
-    isError: isUploadError,
-    error: uploadError,
   } = useMutation({
     mutationFn: uploadBeer,
     onSuccess: () => {
+      toast.success("Оцінка успішно збережена!", {
+        description: "Дякуємо за вашу оцінку",
+        duration: 3000,
+      });
       // Navigate to home page after successful submission
       setTimeout(() => {
         navigate({ to: "/" });
@@ -82,10 +82,6 @@ export const RateBeerPage = () => {
   const hasSearchResults = !isEmpty(searchResults);
   const showLoadingState =
     isSearching || (hasSearchTerm && !isSearchSynced);
-  const showErrorState =
-    searchError &&
-    hasDebouncedSearchTerm &&
-    isSearchComplete;
   const showResultsList =
     hasSearchResults &&
     hasDebouncedSearchTerm &&
@@ -99,7 +95,6 @@ export const RateBeerPage = () => {
 
   const onSubmit = async (value: RateFormValues) => {
     if (!selectedBeer) return;
-
     try {
       // Note: Photos (File objects) are not sent yet - need to implement file upload
       const { photos, ...reviewData } = value;
@@ -112,6 +107,7 @@ export const RateBeerPage = () => {
       await uploadBeerAsync(beer as Beer);
     } catch (error) {
       console.error("Failed to upload beer review:", error);
+      // Error is already handled by the API error handler and React Query
     }
   };
 
@@ -128,20 +124,6 @@ export const RateBeerPage = () => {
       {showLoadingState && (
         <div className="text-center text-muted-foreground bg-muted p-4 rounded-lg mb-4">
           Пошук пива...
-        </div>
-      )}
-
-      {showErrorState && (
-        <div className="text-center text-red-600 bg-red-50 p-4 rounded-lg mb-4">
-          Помилка пошуку: {searchError.message}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetchSearch()}
-            className="ml-2"
-          >
-            Спробувати знову
-          </Button>
         </div>
       )}
 
@@ -178,13 +160,6 @@ export const RateBeerPage = () => {
       {showNoResultsState && (
         <div className="text-center text-muted-foreground bg-muted p-4 rounded-lg mb-4">
           Пиво не знайдено
-        </div>
-      )}
-
-      {isUploadError && (
-        <div className="text-center text-red-600 bg-red-50 p-4 rounded-lg mb-4">
-          Помилка збереження:{" "}
-          {uploadError?.message || "Щось пішло не так"}
         </div>
       )}
 

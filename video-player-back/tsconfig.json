@@ -29,14 +29,18 @@
     "allowUnreachableCode": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": ["./*"],
       "@/config/*": ["config/*"],
       "@/models/*": ["models/*"],
       "@/routes/*": ["routes/*"],
-      "@/middleware/*": ["middleware/*"]
+      "@/middleware/*": ["middleware/*"],
+      "@/controllers/*": ["controllers/*"]
     }
+  },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
   },
   "include": ["**/*.ts", "**/*.js"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]

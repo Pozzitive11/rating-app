@@ -1,4 +1,4 @@
-import { BadgeInput } from "@/shared/ui";
+import { BadgeInput, ErrorBlock } from "@/shared/ui";
 import { useQuery } from "@tanstack/react-query";
 import { getPresentationStyles } from "@/api/beer/api";
 import { Skeleton } from "@/shared/ui/primitives/skeleton";
@@ -12,10 +12,23 @@ export const PresentationStyle = ({
   value,
   onChange,
 }: PresentationStyleProps) => {
-  const { data: presentationStyles, isLoading } = useQuery({
+  const {
+    data: presentationStyles,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["presentation-styles"],
     queryFn: getPresentationStyles,
   });
+
+  if (error) {
+    return (
+      <ErrorBlock
+        title="Failed to load presentation styles"
+        error={error}
+      />
+    );
+  }
 
   if (isLoading) {
     return <Skeleton className="w-full h-10" />;

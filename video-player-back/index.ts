@@ -73,21 +73,19 @@ app.get("/", (req: Request, res: Response) => {
 
 // API Routes
 import apiRoutes from "./routes/api";
-import supabaseApiRoutes from "./routes/supabase-api";
-
+import supabaseRoutes from "./routes/supabase-api";
+import { errorHandler } from "./middleware/errorHandler";
 app.use("/api", apiRoutes);
-app.use("/api/supabase", supabaseApiRoutes);
-
-// Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Something went wrong!" });
-});
+// Use clean architecture with dependency injection
+app.use("/api/supabase", supabaseRoutes);
 
 // 404 handler
 app.use("*", (req: Request, res: Response) => {
   res.status(404).json({ error: "Route not found" });
 });
+
+// Error handling middleware
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

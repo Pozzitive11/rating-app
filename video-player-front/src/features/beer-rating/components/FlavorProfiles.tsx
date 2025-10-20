@@ -1,4 +1,4 @@
-import { BadgeInput } from "@/shared/ui";
+import { BadgeInput, ErrorBlock } from "@/shared/ui";
 import { getFlavorProfiles } from "@/api/beer/api";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/shared/ui/primitives/skeleton";
@@ -12,10 +12,23 @@ export const FlavorProfiles = ({
   value,
   onChange,
 }: FlavorProfilesProps) => {
-  const { data: flavorProfiles, isLoading } = useQuery({
+  const {
+    data: flavorProfiles,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["flavor-profiles"],
     queryFn: getFlavorProfiles,
   });
+
+  if (error) {
+    return (
+      <ErrorBlock
+        title="Failed to load flavor profiles"
+        error={error}
+      />
+    );
+  }
 
   if (isLoading) {
     return <Skeleton className="w-full h-10" />;
