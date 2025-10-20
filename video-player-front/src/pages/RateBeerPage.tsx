@@ -22,7 +22,7 @@ import { toast } from "sonner";
 
 export const RateBeerPage = () => {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("mova");
   const [selectedBeer, setSelectedBeer] =
     useState<Beer | null>(null);
 
@@ -134,7 +134,7 @@ export const RateBeerPage = () => {
               Знайдено {searchResults.length} результат(ів):
             </h3>
           </div>
-          <div className="space-y-2 max-h-96 overflow-y-auto">
+          <ul className="space-y-2 max-h-[700px] overflow-y-auto list-none">
             {searchResults.map((beer, index) => (
               <li
                 className="list-none"
@@ -144,7 +144,7 @@ export const RateBeerPage = () => {
                 <BeerItem beer={beer} variant="small" />
               </li>
             ))}
-          </div>
+          </ul>
         </div>
       )}
 

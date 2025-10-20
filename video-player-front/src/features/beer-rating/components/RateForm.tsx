@@ -1,5 +1,4 @@
 import { Camera, SaveIcon } from "lucide-react";
-import { RangeRating } from "@/features/beer-rating/components/RangeRating";
 import { Label } from "@/shared/ui/primitives/label";
 import { FlavorProfiles } from "@/features/beer-rating/components/FlavorProfiles";
 import { Input } from "@/shared/ui/primitives/input";
@@ -8,6 +7,7 @@ import { PresentationStyle } from "@/features/beer-rating/components/Presentatio
 import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "@/shared/ui";
+import { RangeRating } from "./range-rating/RangeRating";
 
 export interface RateFormValues {
   rating: number;
@@ -49,38 +49,114 @@ export const RateForm = ({
     >
       <form.Field
         name="rating"
+        validators={{
+          onChange: ({ value }) =>
+            value === 0 ? "Оцінка обов'язкова" : undefined,
+        }}
         children={field => (
           <div>
-            <Label className="mb-2">Ваша оцінка</Label>
-            <RangeRating
-              rating={field.state.value}
-              onRate={rating => field.handleChange(rating)}
-            />
+            <Label className="mb-2">
+              Ваша оцінка
+              <span className="text-red-500">*</span>
+            </Label>
+            <div
+              className={
+                field.state.meta.errors?.length
+                  ? "ring-2 ring-red-500 rounded-lg p-2"
+                  : ""
+              }
+            >
+              <RangeRating
+                rating={field.state.value}
+                onRate={rating =>
+                  field.handleChange(rating)
+                }
+              />
+            </div>
+            {field.state.meta.errors &&
+              field.state.meta.errors.length > 0 && (
+                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <span className="font-medium">⚠️</span>
+                  {field.state.meta.errors[0]}
+                </p>
+              )}
           </div>
         )}
       />
       <form.Field
         name="flavorProfiles"
         mode="array"
+        validators={{
+          onChange: ({ value }) =>
+            value.length === 0
+              ? "Виберіть хоча б один смаковий профіль"
+              : undefined,
+        }}
         children={field => (
           <div>
-            <Label className="mb-2">Смакові Профілі</Label>
-            <FlavorProfiles
-              value={field.state.value}
-              onChange={value => field.handleChange(value)}
-            />
+            <Label className="mb-2">
+              Смакові Профілі{" "}
+              <span className="text-red-500">*</span>
+            </Label>
+            <div
+              className={
+                field.state.meta.errors?.length
+                  ? "ring-2 ring-red-500 rounded-lg p-2"
+                  : ""
+              }
+            >
+              <FlavorProfiles
+                value={field.state.value}
+                onChange={value =>
+                  field.handleChange(value)
+                }
+              />
+            </div>
+            {field.state.meta.errors &&
+              field.state.meta.errors.length > 0 && (
+                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <span className="font-medium">⚠️</span>
+                  {field.state.meta.errors[0]}
+                </p>
+              )}
           </div>
         )}
       />
       <form.Field
         name="presentationStyle"
+        validators={{
+          onChange: ({ value }) =>
+            value === null
+              ? "Виберіть стиль подачі"
+              : undefined,
+        }}
         children={field => (
           <div>
-            <Label className="mb-2">Стиль Подачі</Label>
-            <PresentationStyle
-              value={field.state.value}
-              onChange={value => field.handleChange(value)}
-            />
+            <Label className="mb-2">
+              Стиль Подачі{" "}
+              <span className="text-red-500">*</span>
+            </Label>
+            <div
+              className={
+                field.state.meta.errors?.length
+                  ? "ring-2 ring-red-500 rounded-lg p-2"
+                  : ""
+              }
+            >
+              <PresentationStyle
+                value={field.state.value}
+                onChange={value =>
+                  field.handleChange(value)
+                }
+              />
+            </div>
+            {field.state.meta.errors &&
+              field.state.meta.errors.length > 0 && (
+                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <span className="font-medium">⚠️</span>
+                  {field.state.meta.errors[0]}
+                </p>
+              )}
           </div>
         )}
       />
@@ -144,24 +220,36 @@ export const RateForm = ({
           </div>
         )}
       />
-      <div className="flex gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          className="w-1/2"
-          onClick={() => navigate({ to: "/" })}
-        >
-          Скасувати
-        </Button>
-        <Button
-          type="submit"
-          variant="default"
-          className="w-1/2"
-        >
-          <SaveIcon className="w-4 h-4" />
-          Зберегти Оцінку
-        </Button>
-      </div>
+      <form.Subscribe
+        selector={state => [
+          state.canSubmit,
+          state.isSubmitting,
+        ]}
+        children={([canSubmit, isSubmitting]) => (
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-1/2"
+              onClick={() => navigate({ to: "/" })}
+              disabled={isSubmitting}
+            >
+              Скасувати
+            </Button>
+            <Button
+              type="submit"
+              variant="default"
+              className="w-1/2"
+              disabled={!canSubmit || isSubmitting}
+            >
+              <SaveIcon className="w-4 h-4" />
+              {isSubmitting
+                ? "Збереження..."
+                : "Зберегти Оцінку"}
+            </Button>
+          </div>
+        )}
+      />
     </form>
   );
 };

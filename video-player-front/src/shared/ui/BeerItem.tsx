@@ -76,12 +76,13 @@ export const BeerItem = ({
               <Badge
                 variant="secondary"
                 className={cn(
-                  "font-medium",
+                  "font-medium max-w-[150px] inline-block overflow-hidden text-ellipsis whitespace-nowrap",
                   isSmall ? "text-xs" : "text-sm"
                 )}
               >
                 {beer.style}
               </Badge>
+
               <Badge
                 variant="outline"
                 className={cn(
