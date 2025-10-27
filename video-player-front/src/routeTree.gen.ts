@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SearchIndexRouteImport } from './routes/search/index'
 import { Route as RateBeerBeerIdRouteImport } from './routes/rate-beer/$beerId'
 import { Route as BeerDetailsBeerIdRouteImport } from './routes/beer-details/$beerId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchIndexRoute = SearchIndexRouteImport.update({
+  id: '/search/',
+  path: '/search/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RateBeerBeerIdRoute = RateBeerBeerIdRouteImport.update({
@@ -33,30 +39,39 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
+  '/search': typeof SearchIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
+  '/search': typeof SearchIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
+  '/search/': typeof SearchIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/beer-details/$beerId' | '/rate-beer/$beerId'
+  fullPaths: '/' | '/beer-details/$beerId' | '/rate-beer/$beerId' | '/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/beer-details/$beerId' | '/rate-beer/$beerId'
-  id: '__root__' | '/' | '/beer-details/$beerId' | '/rate-beer/$beerId'
+  to: '/' | '/beer-details/$beerId' | '/rate-beer/$beerId' | '/search'
+  id:
+    | '__root__'
+    | '/'
+    | '/beer-details/$beerId'
+    | '/rate-beer/$beerId'
+    | '/search/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BeerDetailsBeerIdRoute: typeof BeerDetailsBeerIdRoute
   RateBeerBeerIdRoute: typeof RateBeerBeerIdRoute
+  SearchIndexRoute: typeof SearchIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -66,6 +81,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search/': {
+      id: '/search/'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rate-beer/$beerId': {
@@ -89,6 +111,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BeerDetailsBeerIdRoute: BeerDetailsBeerIdRoute,
   RateBeerBeerIdRoute: RateBeerBeerIdRoute,
+  SearchIndexRoute: SearchIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

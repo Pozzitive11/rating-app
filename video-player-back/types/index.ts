@@ -6,7 +6,7 @@ export type BeerReview = Tables<"beer_reviews">;
 export type BeerReviewInsert = TablesInsert<"beer_reviews">;
 // Beer-related types
 export interface OriginalBeer {
-  id?: string;
+  id: string;
   name: string;
   brewery: string;
   style: string;

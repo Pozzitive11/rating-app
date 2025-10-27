@@ -2,6 +2,7 @@ import type { Beer } from "@/api/beer/api";
 import { SearchInput } from "./SearchInput";
 import { ActionBlock } from "@/shared/ui";
 import { BeerListItem } from "@/shared/ui/BeerListItem";
+import { Link } from "@tanstack/react-router";
 
 interface BeerSearchResultsProps {
   searchTerm: string;
@@ -49,13 +50,18 @@ const BeerSearchResults = ({
             </h3>
           </div>
           <ul className="space-y-2 max-h-[700px] overflow-y-auto list-none">
-            {searchResults.map((beer, index) => (
+            {searchResults.map(beer => (
               <li
                 className="list-none"
-                key={index}
+                key={beer.id}
                 onClick={() => handleBeerSelect(beer)}
               >
-                <BeerListItem beer={beer} />
+                <Link
+                  to="/rate-beer/$beerId"
+                  params={{ beerId: beer.id }}
+                >
+                  <BeerListItem beer={beer} />
+                </Link>
               </li>
             ))}
           </ul>

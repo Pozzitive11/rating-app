@@ -87,6 +87,7 @@ export async function fetchBeers(
       const description = parseBeerDescription($, $(el));
 
       beers.push({
+        id: uuidv4(),
         name,
         brewery,
         style,

@@ -21,10 +21,7 @@ export const HomePage = () => {
       </header>
 
       <div className="mb-8">
-        <Link
-          to="/rate-beer/$beerId"
-          params={{ beerId: "new" }}
-        >
+        <Link to="/search">
           <Button
             className="w-full h-10 text-lg font-semibold bg-primary cursor-pointer"
             size="lg"

@@ -4,6 +4,10 @@
 
 # Think about add search string to the URL
 
+у мене є сторінка search і сторінка додавання рейтингу до конкретного пива. Треба подумати як прокидати дані обраного пива
+
+1. брати ще раз ендпоінт з пивами і по id з URL витягувати мені потрібний
+
 ## Routing Architecture
 
 This application uses **TanStack Router** with a file-based routing approach for type-safe, declarative routing.
