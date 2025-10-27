@@ -1,5 +1,5 @@
 import { useLoaderData } from "@tanstack/react-router";
-import { BeerItem } from "@/shared/ui/BeerItem";
+import { BeerDetailCard } from "@/shared/ui/BeerDetailCard";
 import { RatingSection } from "@/features/beer-details/components/RatingSection";
 import { AboutSection } from "@/features/beer-details/components/AboutSection";
 import { ImagesSection } from "@/features/beer-details/components/ImagesSection";
@@ -14,7 +14,7 @@ export const BeerDetailsPage = () => {
     <>
       <BackNavigation text="Деталі Пива" />
       <div className="mb-4">
-        <BeerItem beer={beer!} variant="big" />
+        <BeerDetailCard beer={beer!} />
       </div>
       <div className="mb-4">
         <RatingSection

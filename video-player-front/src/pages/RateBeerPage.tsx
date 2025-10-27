@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { BeerItem } from "@/shared/ui/BeerItem";
+import { BeerListItem } from "@/shared/ui/BeerListItem";
 import { useState, useEffect } from "react";
 import { type Beer, uploadBeer } from "@/api/beer/api";
 import {
@@ -93,7 +93,7 @@ export const RateBeerPage = () => {
           <h3 className="text-lg font-semibold mb-3">
             Обране пиво для оцінки:
           </h3>
-          <BeerItem beer={selectedBeer} variant="big" />
+          <BeerListItem beer={selectedBeer} />
         </div>
       )}
 

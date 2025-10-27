@@ -7,3 +7,5 @@ export { FieldError } from "./FieldError";
 export * from "./primitives";
 export { default as ErrorBlock } from "./ErrorBlock";
 export { default as ActionBlock } from "./ActionBlock";
+export { BeerDetailCard } from "./BeerDetailCard";
+export { BeerListItem } from "./BeerListItem";

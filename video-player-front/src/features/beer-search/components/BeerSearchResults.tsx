@@ -1,7 +1,7 @@
 import type { Beer } from "@/api/beer/api";
 import { SearchInput } from "./SearchInput";
 import { ActionBlock } from "@/shared/ui";
-import { BeerItem } from "@/shared/ui/BeerItem";
+import { BeerListItem } from "@/shared/ui/BeerListItem";
 
 interface BeerSearchResultsProps {
   searchTerm: string;
@@ -55,7 +55,7 @@ const BeerSearchResults = ({
                 key={index}
                 onClick={() => handleBeerSelect(beer)}
               >
-                <BeerItem beer={beer} variant="small" />
+                <BeerListItem beer={beer} />
               </li>
             ))}
           </ul>

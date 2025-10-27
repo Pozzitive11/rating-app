@@ -3,7 +3,6 @@ import { Button } from "@/shared/ui/primitives/button";
 import { Plus } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Tabs } from "@/shared/ui/Tabs";
-import { BeerItem } from "@/shared/ui/BeerItem";
 import { SearchInput } from "@/features/beer-search/components/SearchInput";
 
 export const HomePage = () => {
