@@ -6,8 +6,9 @@ import { Textarea } from "@/shared/ui/primitives/textarea";
 import { PresentationStyle } from "@/features/beer-rating/components/PresentationStyle";
 import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
-import { Button } from "@/shared/ui";
+import { Button, FieldWrapper } from "@/shared/ui";
 import { RangeRating } from "./range-rating/RangeRating";
+import { isEmpty } from "@/shared/utils";
 
 export interface RateFormValues {
   rating: number;
@@ -20,8 +21,10 @@ export interface RateFormValues {
 
 export const RateForm = ({
   onSubmit,
+  isUploading,
 }: {
   onSubmit: (value: RateFormValues) => void;
+  isUploading: boolean;
 }) => {
   const navigate = useNavigate();
 
@@ -54,33 +57,16 @@ export const RateForm = ({
             value === 0 ? "Оцінка обов'язкова" : undefined,
         }}
         children={field => (
-          <div>
-            <Label className="mb-2">
-              Ваша оцінка
-              <span className="text-red-500">*</span>
-            </Label>
-            <div
-              className={
-                field.state.meta.errors?.length
-                  ? "ring-2 ring-red-500 rounded-lg p-2"
-                  : ""
-              }
-            >
-              <RangeRating
-                rating={field.state.value}
-                onRate={rating =>
-                  field.handleChange(rating)
-                }
-              />
-            </div>
-            {field.state.meta.errors &&
-              field.state.meta.errors.length > 0 && (
-                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
-                  <span className="font-medium">⚠️</span>
-                  {field.state.meta.errors[0]}
-                </p>
-              )}
-          </div>
+          <FieldWrapper
+            label="Ваша оцінка"
+            required
+            errors={field.state.meta.errors}
+          >
+            <RangeRating
+              rating={field.state.value}
+              onRate={rating => field.handleChange(rating)}
+            />
+          </FieldWrapper>
         )}
       />
       <form.Field
@@ -88,38 +74,21 @@ export const RateForm = ({
         mode="array"
         validators={{
           onChange: ({ value }) =>
-            value.length === 0
+            isEmpty(value)
               ? "Виберіть хоча б один смаковий профіль"
               : undefined,
         }}
         children={field => (
-          <div>
-            <Label className="mb-2">
-              Смакові Профілі{" "}
-              <span className="text-red-500">*</span>
-            </Label>
-            <div
-              className={
-                field.state.meta.errors?.length
-                  ? "ring-2 ring-red-500 rounded-lg p-2"
-                  : ""
-              }
-            >
-              <FlavorProfiles
-                value={field.state.value}
-                onChange={value =>
-                  field.handleChange(value)
-                }
-              />
-            </div>
-            {field.state.meta.errors &&
-              field.state.meta.errors.length > 0 && (
-                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
-                  <span className="font-medium">⚠️</span>
-                  {field.state.meta.errors[0]}
-                </p>
-              )}
-          </div>
+          <FieldWrapper
+            label="Смакові Профілі"
+            required
+            errors={field.state.meta.errors}
+          >
+            <FlavorProfiles
+              value={field.state.value}
+              onChange={value => field.handleChange(value)}
+            />
+          </FieldWrapper>
         )}
       />
       <form.Field
@@ -131,33 +100,16 @@ export const RateForm = ({
               : undefined,
         }}
         children={field => (
-          <div>
-            <Label className="mb-2">
-              Стиль Подачі{" "}
-              <span className="text-red-500">*</span>
-            </Label>
-            <div
-              className={
-                field.state.meta.errors?.length
-                  ? "ring-2 ring-red-500 rounded-lg p-2"
-                  : ""
-              }
-            >
-              <PresentationStyle
-                value={field.state.value}
-                onChange={value =>
-                  field.handleChange(value)
-                }
-              />
-            </div>
-            {field.state.meta.errors &&
-              field.state.meta.errors.length > 0 && (
-                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
-                  <span className="font-medium">⚠️</span>
-                  {field.state.meta.errors[0]}
-                </p>
-              )}
-          </div>
+          <FieldWrapper
+            label="Стиль Подачі"
+            required
+            errors={field.state.meta.errors}
+          >
+            <PresentationStyle
+              value={field.state.value}
+              onChange={value => field.handleChange(value)}
+            />
+          </FieldWrapper>
         )}
       />
       <form.Field
@@ -241,11 +193,10 @@ export const RateForm = ({
               variant="default"
               className="w-1/2"
               disabled={!canSubmit || isSubmitting}
+              isLoading={isUploading}
+              icon={<SaveIcon className="w-4 h-4" />}
             >
-              <SaveIcon className="w-4 h-4" />
-              {isSubmitting
-                ? "Збереження..."
-                : "Зберегти Оцінку"}
+              Зберегти Оцінку
             </Button>
           </div>
         )}

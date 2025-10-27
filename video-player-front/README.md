@@ -4,6 +4,22 @@
 
 # Think about add search string to the URL
 
+## Routing Architecture
+
+This application uses **TanStack Router** with a file-based routing approach for type-safe, declarative routing.
+
+### Route Structure
+
+```
+routes/
+├── __root.tsx                    # Root layout wrapper
+├── index.tsx                     # Home page (/)
+├── beer-details/
+│   └── $beerId.tsx              # Beer details page (/beer-details/:beerId)
+└── rate-beer/
+    └── $beerId.tsx              # Rate beer page (/rate-beer/:beerId)
+```
+
 ```
 src/
 ├── app/ # 🎯 Application Layer

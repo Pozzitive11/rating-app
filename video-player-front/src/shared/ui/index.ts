@@ -2,5 +2,8 @@ export { StarRating } from "./StarRating";
 export { BadgeInput } from "./BadgeInput";
 export { Tabs } from "./Tabs";
 export { BackNavigation } from "./BackNavigation";
+export { FieldWrapper } from "./FieldWrapper";
+export { FieldError } from "./FieldError";
 export * from "./primitives";
 export { default as ErrorBlock } from "./ErrorBlock";
+export { default as ActionBlock } from "./ActionBlock";
