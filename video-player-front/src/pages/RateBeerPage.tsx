@@ -1,37 +1,28 @@
 import { useMutation } from "@tanstack/react-query";
 import { BeerListItem } from "@/shared/ui/BeerListItem";
-import { useState, useEffect } from "react";
 import { type Beer, uploadBeer } from "@/api/beer/api";
 import {
   RateForm,
   type RateFormValues,
 } from "@/features/beer-rating/components/RateForm";
-import { BackNavigation } from "@/shared/ui";
-import { isEmpty } from "@/shared/utils";
-import { useNavigate } from "@tanstack/react-router";
+import { ActionBlock } from "@/shared/ui";
+import {
+  useNavigate,
+  useParams,
+} from "@tanstack/react-router";
 import { toast } from "sonner";
 import useSearchBeer from "@/features/beer-search/hooks/useSearchBeer";
-import BeerSearchResults from "@/features/beer-search/components/BeerSearchResults";
 
 export const RateBeerPage = () => {
+  const { beerId } = useParams({
+    from: "/rate-beer/$beerId",
+  });
   const navigate = useNavigate();
-  const [selectedBeer, setSelectedBeer] =
-    useState<Beer | null>(null);
 
-  const {
-    searchTerm,
-    setSearchTerm,
-    searchResults,
-    showLoadingState,
-    searchError,
-    showResultsList,
-  } = useSearchBeer();
-
-  useEffect(() => {
-    if (isEmpty(searchTerm)) {
-      setSelectedBeer(null);
-    }
-  }, [searchTerm]);
+  const { searchResults } = useSearchBeer();
+  const selectedBeer = searchResults.find(
+    searchBeer => searchBeer.id === beerId
+  );
 
   const {
     mutateAsync: uploadBeerAsync,
@@ -48,15 +39,6 @@ export const RateBeerPage = () => {
       });
     },
   });
-
-  const handleSearch = (search: string) => {
-    setSearchTerm(search);
-    setSelectedBeer(null);
-  };
-
-  const handleBeerSelect = (beer: Beer) => {
-    setSelectedBeer(beer);
-  };
 
   const onSubmit = async (value: RateFormValues) => {
     if (!selectedBeer) return;
@@ -76,31 +58,20 @@ export const RateBeerPage = () => {
 
   return (
     <>
-      <BackNavigation text="Оцінити Пиво" />
-      <BeerSearchResults
-        searchTerm={searchTerm}
-        handleSearch={handleSearch}
-        showLoadingState={showLoadingState}
-        showResultsList={showResultsList}
-        selectedBeer={selectedBeer}
-        searchResults={searchResults}
-        handleBeerSelect={handleBeerSelect}
-        searchError={searchError?.message}
-      />
-
-      {selectedBeer && (
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold mb-3">
-            Обране пиво для оцінки:
-          </h3>
-          <BeerListItem beer={selectedBeer} />
-        </div>
-      )}
-
-      {selectedBeer && (
-        <RateForm
-          isUploading={isUploading}
-          onSubmit={onSubmit}
+      {selectedBeer ? (
+        <>
+          <div className="mb-4">
+            <BeerListItem beer={selectedBeer} />
+          </div>
+          <RateForm
+            isUploading={isUploading}
+            onSubmit={onSubmit}
+          />
+        </>
+      ) : (
+        <ActionBlock
+          text="Пиво не знайдено"
+          variant="error"
         />
       )}
     </>

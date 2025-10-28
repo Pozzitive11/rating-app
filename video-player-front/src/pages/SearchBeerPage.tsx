@@ -1,7 +1,6 @@
 import { BeerListItem } from "@/shared/ui/BeerListItem";
 import { useState, useEffect } from "react";
 import { type Beer } from "@/api/beer/api";
-import { BackNavigation } from "@/shared/ui";
 import { isEmpty } from "@/shared/utils";
 import useSearchBeer from "@/features/beer-search/hooks/useSearchBeer";
 import BeerSearchResults from "@/features/beer-search/components/BeerSearchResults";
@@ -36,7 +35,6 @@ export const SearchBeerPage = () => {
 
   return (
     <>
-      <BackNavigation text="Оцінити Пиво" />
       <BeerSearchResults
         searchTerm={searchTerm}
         handleSearch={handleSearch}
