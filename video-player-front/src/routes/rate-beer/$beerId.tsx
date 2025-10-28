@@ -8,12 +8,4 @@ export const Route = createFileRoute("/rate-beer/$beerId")({
       <RateBeerPage />
     </MainLayout>
   ),
-  loader: async ({ params }) => {
-    // TODO: get beer from api
-    return {
-      beerId: params.beerId,
-    };
-  },
-  // pendingComponent: () => <div>Loading...</div>,
-  // errorComponent: () => <div>Error</div>,
 });

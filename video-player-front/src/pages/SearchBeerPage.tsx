@@ -4,8 +4,12 @@ import { type Beer } from "@/api/beer/api";
 import { isEmpty } from "@/shared/utils";
 import useSearchBeer from "@/features/beer-search/hooks/useSearchBeer";
 import BeerSearchResults from "@/features/beer-search/components/BeerSearchResults";
+import { Route } from "@/routes/search";
 
 export const SearchBeerPage = () => {
+  const navigate = Route.useNavigate();
+  const searchParams = Route.useSearch();
+
   const [selectedBeer, setSelectedBeer] =
     useState<Beer | null>(null);
 
@@ -23,6 +27,19 @@ export const SearchBeerPage = () => {
       setSelectedBeer(null);
     }
   }, [searchTerm]);
+
+  useEffect(() => {
+    if (searchTerm !== searchParams.q) {
+      navigate({
+        to: "/search",
+        search: prev => ({
+          ...prev,
+          q: searchTerm || undefined,
+        }),
+        replace: true,
+      });
+    }
+  }, [searchTerm, searchParams.q, navigate]);
 
   const handleSearch = (search: string) => {
     setSearchTerm(search);

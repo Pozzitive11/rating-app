@@ -20,8 +20,9 @@ export const RateBeerPage = () => {
   const navigate = useNavigate();
 
   const { searchResults } = useSearchBeer();
+  console.log(searchResults);
   const selectedBeer = searchResults.find(
-    searchBeer => searchBeer.id === beerId
+    beer => beer.id === beerId
   );
 
   const {
