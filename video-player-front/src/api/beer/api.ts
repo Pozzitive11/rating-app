@@ -43,18 +43,18 @@ export const getBeers = async (
 };
 
 // Get specific beer
-export const getBeerByName = async (
-  name: string
-): Promise<Beer[]> => {
+export const getBeerById = async (
+  id: number
+): Promise<Beer> => {
   const response = await fetch(
-    `${API_BASE_URL}/beers/name/${name}`
+    `${API_BASE_URL}/supabase/beer/${id}`
   );
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message);
   }
   const data = await response.json();
-  return data.beers;
+  return data;
 };
 
 // Upload beer

@@ -34,6 +34,23 @@ export const searchBeers = async (
   }
 };
 
+export const getBeerById = async (
+  req: Request<{ id: number }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const beer = await supabaseHelpers.getBeerById(id);
+    if (!beer) {
+      throw new NotFoundError(`Beer with id "${id}" not found`);
+    }
+    res.json(beer);
+  } catch (error) {
+    next(error);
+  }
+};
+
 /**
  * Controller: Create a new beer review
  * POST /api/supabase/beer

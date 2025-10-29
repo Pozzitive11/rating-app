@@ -7,18 +7,16 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
-type ActionBlockVariant =
+type InfoBlockVariant =
   | "default"
   | "loading"
   | "error"
   | "info"
   | "success";
 
-interface ActionBlockProps {
-  text: string;
-  variant?: ActionBlockVariant;
-  /** @deprecated Use variant="error" instead */
-  error?: boolean;
+interface InfoBlockProps {
+  title: string;
+  variant?: InfoBlockVariant;
   icon?: ReactNode;
   description?: string;
 }
@@ -56,19 +54,19 @@ const variantStyles = {
   },
 };
 
-const ActionBlock = ({
-  text,
+const InfoBlock = ({
+  title,
   variant = "default",
   icon,
   description,
-}: ActionBlockProps) => {
+}: InfoBlockProps) => {
   const style = variantStyles[variant];
   const IconComponent = style.icon;
 
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center p-8 rounded-xl mb-4 transition-all duration-200 shadow-sm",
+        "flex flex-col items-center justify-center p-8 rounded-xl transition-all duration-200 shadow-sm",
         style.container
       )}
     >
@@ -78,7 +76,7 @@ const ActionBlock = ({
         </div>
 
         <p className="text-base font-semibold leading-relaxed">
-          {text}
+          {title}
         </p>
       </div>
 
@@ -91,4 +89,4 @@ const ActionBlock = ({
   );
 };
 
-export default ActionBlock;
+export default InfoBlock;

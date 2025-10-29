@@ -6,7 +6,7 @@ import { ImagesSection } from "@/features/beer-details/components/ImagesSection"
 import { BackNavigation } from "@/shared/ui";
 
 export const BeerDetailsPage = () => {
-  const { beerId } = useLoaderData({
+  const { beer } = useLoaderData({
     from: "/beer-details/$beerId",
   });
 
@@ -14,20 +14,16 @@ export const BeerDetailsPage = () => {
     <>
       <BackNavigation text="Деталі Пива" />
       <div className="mb-4">
-        <BeerDetailCard beer={beer!} />
+        <BeerDetailCard beer={beer} />
       </div>
       <div className="mb-4">
-        <RatingSection
-          beerId={beerId}
-          rating={beer!.rating}
-          numberOfRatings={beer!.numberOfRatings}
-        />
+        <RatingSection beerId={beer.id} />
       </div>
       <div className="mb-4">
-        <AboutSection description={beer!.description} />
+        <AboutSection description={beer.description} />
       </div>
       <div className="mb-4">
-        <ImagesSection images={beer!.images} />
+        <ImagesSection images={beer.images} />
       </div>
     </>
   );

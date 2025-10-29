@@ -5,7 +5,7 @@ import {
   RateForm,
   type RateFormValues,
 } from "@/features/beer-rating/components/RateForm";
-import { ActionBlock } from "@/shared/ui";
+import { InfoBlock } from "@/shared/ui";
 import {
   useNavigate,
   useParams,
@@ -70,8 +70,8 @@ export const RateBeerPage = () => {
           />
         </>
       ) : (
-        <ActionBlock
-          text="Пиво не знайдено"
+        <InfoBlock
+          title="Пиво не знайдено"
           variant="error"
         />
       )}

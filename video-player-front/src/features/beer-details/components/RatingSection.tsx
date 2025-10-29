@@ -5,49 +5,72 @@ import {
   CardTitle,
 } from "@/shared/ui/primitives/card";
 import { Button } from "@/shared/ui/primitives/button";
-import { Separator } from "@/shared/ui/primitives/separator";
 import { Link } from "@tanstack/react-router";
-import { StarRating } from "@/shared/ui";
-import { Plus } from "lucide-react";
+import {
+  InfoBlock,
+  Separator,
+  StarRating,
+} from "@/shared/ui";
 
 export const RatingSection = ({
   beerId,
-  rating,
+  userRating,
+  communityRating,
   numberOfRatings,
 }: {
   beerId: string;
-  rating: number;
-  numberOfRatings: number;
+  userRating?: number;
+  communityRating?: number;
+  numberOfRatings?: number;
 }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Оцінки</CardTitle>
+        <CardTitle className="text-lg">
+          Моя оцінка
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="text-center space-y-2 mb-4">
-          <Link
-            to="/rate-beer/$beerId"
-            params={{ beerId: beerId }}
-          >
-            <Button className="cursor-pointer">
-              <Plus className="w-4 h-4 mr-2" />
-              Додати Оцінку
-            </Button>
-          </Link>
+          {userRating ? (
+            <div className="flex items-center justify-center flex-col">
+              <StarRating
+                rating={userRating}
+                shortFormat={false}
+              />
+            </div>
+          ) : (
+            <Link
+              to="/rate-beer/$beerId"
+              params={{ beerId: beerId }}
+            >
+              <Button className="cursor-pointer">
+                Додати Власну Оцінку
+              </Button>
+            </Link>
+          )}
         </div>
         <Separator className="my-4" />
         <div className="text-center space-y-2">
-          <p className="text-lg font-medium">
-            Оцінка Спільноти
-          </p>
-          <div className="flex items-center justify-center flex-col">
-            <StarRating
-              rating={rating}
-              numberOfRatings={numberOfRatings}
-              shortFormat={false}
+          {communityRating ? (
+            <>
+              <p className="text-lg font-medium">
+                Оцінка Спільноти
+              </p>
+              <div className="flex items-center justify-center flex-col">
+                <StarRating
+                  rating={communityRating}
+                  numberOfRatings={numberOfRatings}
+                  shortFormat={false}
+                />
+              </div>
+            </>
+          ) : (
+            <InfoBlock
+              title="Оцінка Спільноти відсутня"
+              variant="info"
             />
-          </div>
+          )}
         </div>
       </CardContent>
     </Card>

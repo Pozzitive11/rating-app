@@ -4,7 +4,7 @@ import { RatingButton, Rating } from "./primitives";
 
 interface StarRatingProps {
   rating: number;
-  numberOfRatings: number;
+  numberOfRatings?: number;
   shortFormat?: boolean;
   showRatingValue?: boolean;
   className?: string;
@@ -26,20 +26,28 @@ export const StarRating = ({
   const starButtons = useMemo(
     () =>
       Array.from({ length: 5 }, (_, index) => (
-        <RatingButton size={17} className="text-yellow-500" key={index} />
+        <RatingButton
+          size={17}
+          className="text-yellow-500"
+          key={index}
+        />
       )),
     []
   );
 
   const formattedRating = rating.toFixed(1);
-  const formattedNumberOfRatings = formatNumber(numberOfRatings);
+  const formattedNumberOfRatings = numberOfRatings
+    ? formatNumber(numberOfRatings)
+    : null;
 
   // Create accessible label
   const ariaLabel = `Оцінка: ${formattedRating} з 5 зірок, на основі ${numberOfRatings} відгук${
     numberOfRatings !== 1 ? "ів" : "у"
   }`;
 
-  const currentStarSize = shortFormat ? starSize.SMALL : starSize.MEDIUM;
+  const currentStarSize = shortFormat
+    ? starSize.SMALL
+    : starSize.MEDIUM;
 
   return (
     <div
@@ -63,10 +71,14 @@ export const StarRating = ({
 
       {showRatingValue && shortFormat && (
         <div className="flex items-center gap-1.5 text-sm">
-          <span className="font-medium text-foreground">{formattedRating}</span>
-          <span className="text-muted-foreground">
-            ({formattedNumberOfRatings})
+          <span className="font-medium text-foreground">
+            {formattedRating}
           </span>
+          {formattedNumberOfRatings && (
+            <span className="text-muted-foreground">
+              ({formattedNumberOfRatings})
+            </span>
+          )}
         </div>
       )}
 

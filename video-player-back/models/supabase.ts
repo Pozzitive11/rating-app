@@ -15,6 +15,14 @@ const supabase: SupabaseClient = createClient(
 
 // Helper functions for common operations
 const supabaseHelpers = {
+  getBeerById: async (id: number): Promise<BeerReview> => {
+    const { data, error } = await supabase
+      .from("beer_reviews")
+      .select("*")
+      .eq("id", id);
+    if (error) throw error;
+    return data[0];
+  },
   // Beer ratings operations
   async saveBeer(ratingData: BeerReviewInsert): Promise<BeerReview> {
     const { data, error } = await supabase

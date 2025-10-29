@@ -6,6 +6,6 @@ export { FieldWrapper } from "./FieldWrapper";
 export { FieldError } from "./FieldError";
 export * from "./primitives";
 export { default as ErrorBlock } from "./ErrorBlock";
-export { default as ActionBlock } from "./ActionBlock";
+export { default as InfoBlock } from "./InfoBlock";
 export { BeerDetailCard } from "./BeerDetailCard";
 export { BeerListItem } from "./BeerListItem";

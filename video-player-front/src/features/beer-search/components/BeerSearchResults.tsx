@@ -1,6 +1,6 @@
 import type { Beer } from "@/api/beer/api";
 import { SearchInput } from "./SearchInput";
-import { ActionBlock } from "@/shared/ui";
+import { InfoBlock } from "@/shared/ui";
 import { BeerListItem } from "@/shared/ui/BeerListItem";
 import { Link } from "@tanstack/react-router";
 
@@ -35,11 +35,11 @@ const BeerSearchResults = ({
       </div>
 
       {showLoadingState && (
-        <ActionBlock text="Пошук..." variant="loading" />
+        <InfoBlock title="Пошук..." variant="loading" />
       )}
 
       {!showLoadingState && searchError && (
-        <ActionBlock text={searchError} variant="error" />
+        <InfoBlock title={searchError} variant="error" />
       )}
 
       {showResultsList && !selectedBeer && (
