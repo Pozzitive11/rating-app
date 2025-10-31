@@ -7,58 +7,7 @@ const headers = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
 };
 
-/**
- * Parses beer description from HTML with Show More/Show Less functionality
- * Extracts the full description text from the beer-descrption-read-less block
- */
-function parseBeerDescription(
-  $: cheerio.CheerioAPI,
-  element: cheerio.Cheerio<any>
-): string | null {
-  // Debug: Log the HTML structure to see what we're working with
-  // First try to get the full description from beer-descrption-read-less block
-  const readLessElement = element.find(".beer-descrption-read-more");
-  console.log("readLessElement:", readLessElement.text());
-
-  if (readLessElement.length > 0) {
-    // Clone to avoid modifying the original DOM
-    const descClone = readLessElement.clone();
-
-    // Remove the "Show Less" link
-    descClone.find("a.read-less").remove();
-
-    // Get text content and clean up
-    let description = descClone.text().trim();
-
-    // Replace multiple whitespace with single space
-    description = description.replace(/\s+/g, " ");
-
-    if (description) {
-      return description;
-    }
-  }
-
-  // Fallback: try to get from beer-descrption-read-more block
-  const readMoreElement = element.find(".beer-descrption-read-more");
-
-  if (readMoreElement.length > 0) {
-    const readMoreClone = readMoreElement.clone();
-
-    // Remove the "Show More" link
-    readMoreClone.find("a.read-more").remove();
-
-    let description = readMoreClone.text().trim();
-    description = description.replace(/\s+/g, " ");
-
-    if (description) {
-      return description;
-    }
-  }
-
-  return null;
-}
-
-export async function fetchBeers(
+export async function fetchUntappdBeers(
   query: string,
   page: number = 1
 ): Promise<OriginalBeer[]> {
@@ -84,10 +33,10 @@ export async function fetchBeers(
       const abv = abvText ? parseFloat(abvText) : null;
       const ibuText = $(el).find(".ibu").text().trim();
       const ibu = ibuText ? parseFloat(ibuText) : null;
-      const description = parseBeerDescription($, $(el));
+      const beerId = link.split("/").pop() || uuidv4();
 
       beers.push({
-        id: uuidv4(),
+        id: beerId,
         name,
         brewery,
         style,
@@ -96,13 +45,41 @@ export async function fetchBeers(
         mainImage,
         abv,
         ibu,
-        description,
       });
     });
 
     return Promise.resolve(beers);
   } catch (error) {
     console.error(`Error fetching page ${page}:`, (error as Error).message);
+    return Promise.reject(error);
+  }
+}
+
+export async function fetchUntappdBeerDetailsById(
+  beerId: string
+): Promise<OriginalBeer> {
+  const url = `https://untappd.com/beer/${beerId}`;
+  try {
+    const response = await axios.get(url, { headers });
+    const $ = cheerio.load(response.data);
+    const beer: OriginalBeer = {
+      id: beerId,
+      name: $().find(".beer-name").text().trim(),
+      brewery: $().find(".brewery-name").text().trim(),
+      style: $().find(".beer-style").text().trim(),
+      abv: parseFloat($().find(".beer-abv").text().trim()),
+      ibu: parseFloat($().find(".beer-ibu").text().trim()),
+      rating: parseFloat($().find(".beer-rating").text().trim()),
+      mainImage: $().find(".beer-image").attr("src") || null,
+      link: url,
+      description: $().find(".beer-description").text().trim(),
+    };
+    return Promise.resolve(beer);
+  } catch (error) {
+    console.error(
+      `Error fetching beer details ${beerId}:`,
+      (error as Error).message
+    );
     return Promise.reject(error);
   }
 }

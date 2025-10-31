@@ -8,6 +8,7 @@ interface StarRatingProps {
   shortFormat?: boolean;
   showRatingValue?: boolean;
   className?: string;
+  isShowStatistics?: boolean;
 }
 
 const starSize = {
@@ -21,6 +22,7 @@ export const StarRating = ({
   shortFormat = true,
   showRatingValue = true,
   className,
+  isShowStatistics = true,
 }: StarRatingProps) => {
   // Memoize star buttons to avoid recreating on every render
   const starButtons = useMemo(
@@ -87,10 +89,11 @@ export const StarRating = ({
           <p className="text-lg font-medium text-foreground">
             {formattedRating}/5
           </p>
-          <p className="text-sm text-muted-foreground">
-            На основі {formattedNumberOfRatings} відгук
-            {numberOfRatings !== 1 ? "ів" : "у"}
-          </p>
+          {isShowStatistics && (
+            <p className="text-sm text-muted-foreground">
+              На основі {formattedNumberOfRatings} відгуків
+            </p>
+          )}
         </div>
       )}
     </div>

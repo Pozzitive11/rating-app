@@ -5,7 +5,10 @@ import {
   createBeerReviewSchema,
 } from "../schemas/beer.schema";
 import { BeerReviewInsert } from "../types";
-import { fetchBeers } from "@/middleware/untappd";
+import {
+  fetchUntappdBeerDetailsById,
+  fetchUntappdBeers,
+} from "@/middleware/untappd";
 import { supabaseHelpers } from "@/models/supabase";
 
 /**
@@ -21,7 +24,7 @@ export const searchBeers = async (
     // Validate query parameter with Zod
     const { query } = searchQuerySchema.parse(req.params);
 
-    const beers = await fetchBeers(query);
+    const beers = await fetchUntappdBeers(query);
 
     if (beers.length === 0) {
       throw new NotFoundError(`No beers found for "${query}"`);
@@ -30,6 +33,23 @@ export const searchBeers = async (
     res.json(beers);
   } catch (error) {
     // Error handler will automatically format Zod errors
+    next(error);
+  }
+};
+
+export const getUntappdBeerDetailsById = async (
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const beer = await fetchUntappdBeerDetailsById(id);
+    if (!beer) {
+      throw new NotFoundError(`Beer with id "${id}" not found`);
+    }
+    res.json(beer);
+  } catch (error) {
     next(error);
   }
 };

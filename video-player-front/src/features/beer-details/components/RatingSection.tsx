@@ -11,17 +11,20 @@ import {
   Separator,
   StarRating,
 } from "@/shared/ui";
+import { format } from "date-fns";
 
 export const RatingSection = ({
   beerId,
   userRating,
   communityRating,
   numberOfRatings,
+  rateDate,
 }: {
   beerId: string;
   userRating?: number;
   communityRating?: number;
   numberOfRatings?: number;
+  rateDate?: string;
 }) => {
   return (
     <Card>
@@ -33,11 +36,28 @@ export const RatingSection = ({
       <CardContent>
         <div className="text-center space-y-2 mb-4">
           {userRating ? (
-            <div className="flex items-center justify-center flex-col">
+            <div className="flex items-center justify-center flex-col gap-2">
               <StarRating
                 rating={userRating}
                 shortFormat={false}
+                isShowStatistics={false}
               />
+              {rateDate && (
+                <p className="text-sm text-muted-foreground">
+                  Оцінено: {format(rateDate, "dd.MM.yyyy")}
+                </p>
+              )}
+              <Link
+                to="/rate-beer/$beerId"
+                params={{ beerId: beerId }}
+              >
+                <Button
+                  className="cursor-pointer"
+                  variant="outline"
+                >
+                  Змінити Оцінку
+                </Button>
+              </Link>
             </div>
           ) : (
             <Link

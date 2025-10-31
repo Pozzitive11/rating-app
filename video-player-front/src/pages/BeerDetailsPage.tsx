@@ -17,7 +17,13 @@ export const BeerDetailsPage = () => {
         <BeerDetailCard beer={beer} />
       </div>
       <div className="mb-4">
-        <RatingSection beerId={beer.id} />
+        <RatingSection
+          beerId={beer.id}
+          userRating={3.25}
+          communityRating={4.5}
+          numberOfRatings={100}
+          rateDate={new Date().toISOString()}
+        />
       </div>
       <div className="mb-4">
         <AboutSection description={beer.description} />
