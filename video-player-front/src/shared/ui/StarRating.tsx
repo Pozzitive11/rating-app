@@ -1,4 +1,4 @@
-import { cn, formatNumber } from "@/shared/utils";
+import { cn } from "@/shared/utils";
 import { useMemo } from "react";
 import { RatingButton, Rating } from "./primitives";
 
@@ -38,9 +38,6 @@ export const StarRating = ({
   );
 
   const formattedRating = rating.toFixed(1);
-  const formattedNumberOfRatings = numberOfRatings
-    ? formatNumber(numberOfRatings)
-    : null;
 
   // Create accessible label
   const ariaLabel = `Оцінка: ${formattedRating} з 5 зірок, на основі ${numberOfRatings} відгук${
@@ -76,9 +73,9 @@ export const StarRating = ({
           <span className="font-medium text-foreground">
             {formattedRating}
           </span>
-          {formattedNumberOfRatings && (
+          {numberOfRatings && (
             <span className="text-muted-foreground">
-              ({formattedNumberOfRatings})
+              ({numberOfRatings})
             </span>
           )}
         </div>
@@ -91,7 +88,7 @@ export const StarRating = ({
           </p>
           {isShowStatistics && (
             <p className="text-sm text-muted-foreground">
-              На основі {formattedNumberOfRatings} відгуків
+              На основі {numberOfRatings} відгуків
             </p>
           )}
         </div>

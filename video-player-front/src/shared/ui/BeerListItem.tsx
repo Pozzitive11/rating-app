@@ -76,10 +76,7 @@ export const BeerListItem = ({
               </Badge>
             </div>
 
-            <StarRating
-              rating={beer.rating}
-              numberOfRatings={3}
-            />
+            <StarRating rating={beer.rating} />
           </div>
         </div>
       </CardContent>

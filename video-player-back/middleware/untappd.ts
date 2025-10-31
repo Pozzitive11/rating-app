@@ -7,6 +7,54 @@ const headers = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
 };
 
+/**
+ * Utility function to extract beer data from a Cheerio element
+ */
+function extractBeerData(
+  $: cheerio.CheerioAPI,
+  el: cheerio.Cheerio<any> | string,
+  options?: { link?: string; beerId?: string }
+): OriginalBeer {
+  const $el = typeof el === "string" ? $(el) : el;
+
+  const name =
+    $el.find(".name").find("a").text().trim() ||
+    $el.find(".name").text().trim();
+  const brewery =
+    $el.find(".brewery").find("a").text().trim() ||
+    $el.find(".brewery").text().trim();
+  const style = $el.find(".style").text().trim();
+
+  const ratingText = $el.find(".num").first().text().trim() || null;
+  const rating = ratingText ? +ratingText.replace(/[()]/g, "") : null;
+
+  const link =
+    options?.link ||
+    "https://untappd.com" + ($el.find("a").attr("href") || "").trim();
+
+  const mainImage = $el.find(".label").find("img").attr("src") || null;
+
+  const abvText = $el.find(".abv").text().trim();
+  const abv = abvText ? parseFloat(abvText) : null;
+
+  const ibuText = $el.find(".ibu").text().trim();
+  const ibu = ibuText ? parseFloat(ibuText) : null;
+
+  const beerId = options?.beerId || link.split("/").pop() || uuidv4();
+
+  return {
+    id: beerId,
+    name,
+    brewery,
+    style,
+    rating,
+    link,
+    mainImage,
+    abv,
+    ibu,
+  };
+}
+
 export async function fetchUntappdBeers(
   query: string,
   page: number = 1
@@ -21,31 +69,8 @@ export async function fetchUntappdBeers(
     const beers: OriginalBeer[] = [];
 
     $("div.beer-item").each((i, el) => {
-      const name = $(el).find(".name").find("a").text().trim();
-      const brewery = $(el).find(".brewery").find("a").text().trim();
-      const style = $(el).find(".style").text().trim();
-      const ratingText = $(el).find(".num").first().text().trim() || null;
-      const rating = ratingText ? +ratingText.replace(/[()]/g, "") : null; // Remove parentheses from rating
-      const link =
-        "https://untappd.com" + ($(el).find("a").attr("href") || "").trim();
-      const mainImage = $(el).find(".label").find("img").attr("src") || null;
-      const abvText = $(el).find(".abv").text().trim();
-      const abv = abvText ? parseFloat(abvText) : null;
-      const ibuText = $(el).find(".ibu").text().trim();
-      const ibu = ibuText ? parseFloat(ibuText) : null;
-      const beerId = link.split("/").pop() || uuidv4();
-
-      beers.push({
-        id: beerId,
-        name,
-        brewery,
-        style,
-        rating,
-        link,
-        mainImage,
-        abv,
-        ibu,
-      });
+      const beerData = extractBeerData($, $(el));
+      beers.push(beerData);
     });
 
     return Promise.resolve(beers);
@@ -62,19 +87,12 @@ export async function fetchUntappdBeerDetailsById(
   try {
     const response = await axios.get(url, { headers });
     const $ = cheerio.load(response.data);
-    const beer: OriginalBeer = {
-      id: beerId,
-      name: $().find(".beer-name").text().trim(),
-      brewery: $().find(".brewery-name").text().trim(),
-      style: $().find(".beer-style").text().trim(),
-      abv: parseFloat($().find(".beer-abv").text().trim()),
-      ibu: parseFloat($().find(".beer-ibu").text().trim()),
-      rating: parseFloat($().find(".beer-rating").text().trim()),
-      mainImage: $().find(".beer-image").attr("src") || null,
-      link: url,
-      description: $().find(".beer-description").text().trim(),
-    };
-    return Promise.resolve(beer);
+    const beer = extractBeerData($, "body", { link: url, beerId });
+
+    const description = $(".beer-descrption-read-less").text().trim() || null;
+    const ratersText = $(".raters").text().trim() || "0";
+    const numberOfRatings = parseInt(ratersText.replace(/[^\d]/g, "")) || 0;
+    return Promise.resolve({ ...beer, numberOfRatings, description });
   } catch (error) {
     console.error(
       `Error fetching beer details ${beerId}:`,

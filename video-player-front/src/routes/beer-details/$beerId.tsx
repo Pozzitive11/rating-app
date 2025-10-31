@@ -1,4 +1,4 @@
-import { getBeerById } from "@/api/beer/api";
+import { getUntappdBeerDetailsById } from "@/api/beer/api";
 import { BeerDetailsPage } from "@/pages/BeerDetailsPage";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -7,7 +7,9 @@ export const Route = createFileRoute(
 )({
   component: BeerDetailsPage,
   loader: async ({ params }) => {
-    const beer = await getBeerById(Number(params.beerId));
+    const beer = await getUntappdBeerDetailsById(
+      params.beerId
+    );
     return {
       beer,
     };

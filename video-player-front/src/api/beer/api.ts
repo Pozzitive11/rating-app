@@ -82,7 +82,7 @@ export const uploadBeer = async (
 };
 
 // Search beers by query
-export const searchBeers = async (
+export const searchUntappdBeers = async (
   query: string
 ): Promise<Beer[]> => {
   if (!query || query.trim().length === 0) {
@@ -90,7 +90,7 @@ export const searchBeers = async (
   }
 
   const response = await fetch(
-    `${API_BASE_URL}/beers/search/${encodeURIComponent(query.trim())}`
+    `${API_BASE_URL}/untappd/search/${encodeURIComponent(query.trim())}`
   );
   if (!response.ok) {
     const errorData = await response.json();
@@ -98,6 +98,21 @@ export const searchBeers = async (
   }
   const data = await response.json();
   return data || [];
+};
+
+// Get a beer from Untappd
+export const getUntappdBeerDetailsById = async (
+  id: string
+): Promise<Beer> => {
+  const response = await fetch(
+    `${API_BASE_URL}/untappd/beer/${id}`
+  );
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message);
+  }
+  const data = await response.json();
+  return data;
 };
 
 // Get all flavor profiles

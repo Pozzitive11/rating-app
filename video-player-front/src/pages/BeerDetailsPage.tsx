@@ -20,8 +20,8 @@ export const BeerDetailsPage = () => {
         <RatingSection
           beerId={beer.id}
           userRating={3.25}
-          communityRating={4.5}
-          numberOfRatings={100}
+          communityRating={beer.rating}
+          numberOfRatings={beer.numberOfRatings}
           rateDate={new Date().toISOString()}
         />
       </div>

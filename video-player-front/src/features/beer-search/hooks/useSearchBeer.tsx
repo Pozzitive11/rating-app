@@ -1,4 +1,4 @@
-import { searchBeers } from "@/api/beer/api";
+import { searchUntappdBeers } from "@/api/beer/api";
 import { useDebounce } from "@/shared/useDebounce";
 import { isEmpty } from "@/shared/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +14,7 @@ const useSearchBeer = () => {
     error: searchError,
   } = useQuery({
     queryKey: ["searchBeers", debouncedSearchTerm],
-    queryFn: () => searchBeers(debouncedSearchTerm),
+    queryFn: () => searchUntappdBeers(debouncedSearchTerm),
     enabled: !isEmpty(debouncedSearchTerm),
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,

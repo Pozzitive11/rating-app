@@ -15,7 +15,7 @@ import { supabaseHelpers } from "@/models/supabase";
  * Controller: Search for beers
  * GET /api/beers/search/:query
  */
-export const searchBeers = async (
+export const searchUntappdBeers = async (
   req: Request<{ query: string }>,
   res: Response,
   next: NextFunction
