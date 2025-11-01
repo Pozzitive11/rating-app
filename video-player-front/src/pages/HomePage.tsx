@@ -3,11 +3,32 @@ import { Button } from "@/shared/ui/primitives/button";
 import { Plus } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Tabs } from "@/shared/ui/Tabs";
-import { SearchInput } from "@/features/beer-search/components/SearchInput";
+import useSearchBeer from "@/features/beer-search/hooks/useSearchBeer";
+import BeerSearchResults from "@/features/beer-search/components/BeerSearchResults";
+import { type Beer } from "@/api/beer/api";
 
 export const HomePage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("search");
+  const [selectedBeer, setSelectedBeer] =
+    useState<Beer | null>(null);
+
+  const {
+    searchTerm,
+    setSearchTerm,
+    searchResults,
+    showLoadingState,
+    showResultsList,
+    searchError,
+  } = useSearchBeer();
+
+  const handleSearch = (search: string) => {
+    setSearchTerm(search);
+    setSelectedBeer(null);
+  };
+
+  const handleBeerSelect = (beer: Beer) => {
+    setSelectedBeer(beer);
+  };
 
   return (
     <>
@@ -48,25 +69,17 @@ export const HomePage = () => {
       </div>
 
       {activeTab === "search" && (
-        <>
-          <div className="mb-6">
-            <SearchInput
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-            />
-          </div>
-
-          <div className="flex gap-2 flex-col">
-            {/* {mockBeers.map(beer => (
-              <BeerItem
-                key={beer.id}
-                beer={beer}
-                variant="small"
-                linkTo="/beer-details/$beerId"
-              />
-            ))} */}
-          </div>
-        </>
+        <BeerSearchResults
+          searchTerm={searchTerm}
+          handleSearch={handleSearch}
+          showLoadingState={showLoadingState}
+          showResultsList={showResultsList}
+          selectedBeer={selectedBeer}
+          searchResults={searchResults}
+          handleBeerSelect={handleBeerSelect}
+          searchError={searchError?.message}
+          linkTo="/beer-details/$beerId"
+        />
       )}
 
       {activeTab === "ratings" && (

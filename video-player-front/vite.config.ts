@@ -6,12 +6,12 @@ import path from "path";
 
 export default defineConfig({
   plugins: [
-    react(),
-    tailwindcss(),
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,
     }),
+    react(),
+    tailwindcss(),
   ],
   resolve: {
     alias: {

@@ -1,10 +1,15 @@
-import { User } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { Button } from "../ui";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../ui/primitives/popover";
 
 const Header = () => {
-  const handleLoginClick = () => {
-    // TODO: Implement login/register logic
-    console.log("Login/Register clicked");
+  const handleLogoutClick = () => {
+    // TODO: Implement logout logic
+    console.log("Logout clicked");
   };
 
   return (
@@ -19,14 +24,30 @@ const Header = () => {
           </div>
 
           {/* Login/Register Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleLoginClick}
-            aria-label="Login or Register"
-          >
-            <User className="size-5" />
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Login or Register"
+              >
+                <User className="size-5" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              className="w-40 p-1"
+            >
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2"
+                onClick={handleLogoutClick}
+              >
+                <LogOut className="size-4" />
+                Logout
+              </Button>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </header>

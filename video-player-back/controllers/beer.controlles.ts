@@ -38,7 +38,7 @@ export const searchUntappdBeers = async (
 };
 
 export const getUntappdBeerDetailsById = async (
-  req: Request<{ id: string }>,
+  req: Request<{ id: number }>,
   res: Response,
   next: NextFunction
 ): Promise<void> => {

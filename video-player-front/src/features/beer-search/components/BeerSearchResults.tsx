@@ -13,6 +13,7 @@ interface BeerSearchResultsProps {
   searchResults: Beer[];
   handleBeerSelect: (beer: Beer) => void;
   searchError?: string;
+  linkTo?: string;
 }
 
 const BeerSearchResults = ({
@@ -24,6 +25,7 @@ const BeerSearchResults = ({
   searchResults,
   handleBeerSelect,
   searchError,
+  linkTo,
 }: BeerSearchResultsProps) => {
   return (
     <div>
@@ -57,8 +59,8 @@ const BeerSearchResults = ({
                 onClick={() => handleBeerSelect(beer)}
               >
                 <Link
-                  to="/rate-beer/$beerId"
-                  params={{ beerId: beer.id }}
+                  to={linkTo || ""}
+                  params={{ beerId: beer.id.toString() }}
                 >
                   <BeerListItem beer={beer} />
                 </Link>

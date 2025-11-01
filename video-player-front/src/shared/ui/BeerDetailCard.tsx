@@ -82,7 +82,10 @@ export const BeerDetailCard = ({
 
   if (linkTo) {
     return (
-      <Link to={linkTo} params={{ beerId: beer.id }}>
+      <Link
+        to={linkTo}
+        params={{ beerId: beer.id.toString() }}
+      >
         {cardContent}
       </Link>
     );

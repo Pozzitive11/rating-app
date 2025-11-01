@@ -61,6 +61,7 @@ export const SearchBeerPage = () => {
         searchResults={searchResults}
         handleBeerSelect={handleBeerSelect}
         searchError={searchError?.message}
+        linkTo="/rate-beer/$beerId"
       />
 
       {selectedBeer && (

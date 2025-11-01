@@ -6,7 +6,7 @@ import type {
 const API_BASE_URL = "http://localhost:5000/api";
 
 export interface Beer {
-  id: string;
+  id: number;
   name: string;
   brewery: string;
   style: string;
@@ -102,7 +102,7 @@ export const searchUntappdBeers = async (
 
 // Get a beer from Untappd
 export const getUntappdBeerDetailsById = async (
-  id: string
+  id: number
 ): Promise<Beer> => {
   const response = await fetch(
     `${API_BASE_URL}/untappd/beer/${id}`

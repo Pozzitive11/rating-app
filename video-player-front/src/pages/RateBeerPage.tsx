@@ -22,9 +22,8 @@ export const RateBeerPage = () => {
   const { searchResults } = useSearchBeer();
   console.log(searchResults);
   const selectedBeer = searchResults.find(
-    beer => beer.id === beerId
+    beer => beer.id === Number(beerId)
   );
-
   const {
     mutateAsync: uploadBeerAsync,
     isPending: isUploading,

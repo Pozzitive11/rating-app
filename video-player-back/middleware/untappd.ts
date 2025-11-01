@@ -13,7 +13,7 @@ const headers = {
 function extractBeerData(
   $: cheerio.CheerioAPI,
   el: cheerio.Cheerio<any> | string,
-  options?: { link?: string; beerId?: string }
+  options?: { link?: string; beerId?: number }
 ): OriginalBeer {
   const $el = typeof el === "string" ? $(el) : el;
 
@@ -40,7 +40,7 @@ function extractBeerData(
   const ibuText = $el.find(".ibu").text().trim();
   const ibu = ibuText ? parseFloat(ibuText) : null;
 
-  const beerId = options?.beerId || link.split("/").pop() || uuidv4();
+  const beerId = parseInt(link.split("/").pop() || "0");
 
   return {
     id: beerId,
@@ -81,7 +81,7 @@ export async function fetchUntappdBeers(
 }
 
 export async function fetchUntappdBeerDetailsById(
-  beerId: string
+  beerId: number
 ): Promise<OriginalBeer> {
   const url = `https://untappd.com/beer/${beerId}`;
   try {

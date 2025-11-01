@@ -20,7 +20,7 @@ export const RatingSection = ({
   numberOfRatings,
   rateDate,
 }: {
-  beerId: string;
+  beerId: number;
   userRating?: number;
   communityRating?: number;
   numberOfRatings?: number;
@@ -49,7 +49,7 @@ export const RatingSection = ({
               )}
               <Link
                 to="/rate-beer/$beerId"
-                params={{ beerId: beerId }}
+                params={{ beerId: beerId.toString() }}
               >
                 <Button
                   className="cursor-pointer"
@@ -62,7 +62,7 @@ export const RatingSection = ({
           ) : (
             <Link
               to="/rate-beer/$beerId"
-              params={{ beerId: beerId }}
+              params={{ beerId: beerId.toString() }}
             >
               <Button className="cursor-pointer">
                 Додати Власну Оцінку

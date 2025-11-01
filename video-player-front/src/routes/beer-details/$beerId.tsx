@@ -8,7 +8,7 @@ export const Route = createFileRoute(
   component: BeerDetailsPage,
   loader: async ({ params }) => {
     const beer = await getUntappdBeerDetailsById(
-      params.beerId
+      Number(params.beerId)
     );
     return {
       beer,

@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SearchIndexRouteImport } from './routes/search/index'
+import { Route as RegisterIndexRouteImport } from './routes/register/index'
+import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as RateBeerBeerIdRouteImport } from './routes/rate-beer/$beerId'
 import { Route as BeerDetailsBeerIdRouteImport } from './routes/beer-details/$beerId'
 
@@ -22,6 +24,16 @@ const IndexRoute = IndexRouteImport.update({
 const SearchIndexRoute = SearchIndexRouteImport.update({
   id: '/search/',
   path: '/search/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterIndexRoute = RegisterIndexRouteImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginIndexRoute = LoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RateBeerBeerIdRoute = RateBeerBeerIdRouteImport.update({
@@ -39,12 +51,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
+  '/login': typeof LoginIndexRoute
+  '/register': typeof RegisterIndexRoute
   '/search': typeof SearchIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
+  '/login': typeof LoginIndexRoute
+  '/register': typeof RegisterIndexRoute
   '/search': typeof SearchIndexRoute
 }
 export interface FileRoutesById {
@@ -52,18 +68,34 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
+  '/login/': typeof LoginIndexRoute
+  '/register/': typeof RegisterIndexRoute
   '/search/': typeof SearchIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/beer-details/$beerId' | '/rate-beer/$beerId' | '/search'
+  fullPaths:
+    | '/'
+    | '/beer-details/$beerId'
+    | '/rate-beer/$beerId'
+    | '/login'
+    | '/register'
+    | '/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/beer-details/$beerId' | '/rate-beer/$beerId' | '/search'
+  to:
+    | '/'
+    | '/beer-details/$beerId'
+    | '/rate-beer/$beerId'
+    | '/login'
+    | '/register'
+    | '/search'
   id:
     | '__root__'
     | '/'
     | '/beer-details/$beerId'
     | '/rate-beer/$beerId'
+    | '/login/'
+    | '/register/'
     | '/search/'
   fileRoutesById: FileRoutesById
 }
@@ -71,6 +103,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BeerDetailsBeerIdRoute: typeof BeerDetailsBeerIdRoute
   RateBeerBeerIdRoute: typeof RateBeerBeerIdRoute
+  LoginIndexRoute: typeof LoginIndexRoute
+  RegisterIndexRoute: typeof RegisterIndexRoute
   SearchIndexRoute: typeof SearchIndexRoute
 }
 
@@ -88,6 +122,20 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register/': {
+      id: '/register/'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rate-beer/$beerId': {
@@ -111,6 +159,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BeerDetailsBeerIdRoute: BeerDetailsBeerIdRoute,
   RateBeerBeerIdRoute: RateBeerBeerIdRoute,
+  LoginIndexRoute: LoginIndexRoute,
+  RegisterIndexRoute: RegisterIndexRoute,
   SearchIndexRoute: SearchIndexRoute,
 }
 export const routeTree = rootRouteImport

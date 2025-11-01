@@ -9,22 +9,19 @@ import {
   AvatarFallback,
 } from "@/shared/ui/primitives/avatar";
 import { Badge } from "@/shared/ui/primitives/badge";
-import { Link } from "@tanstack/react-router";
 import { StarRating } from "@/shared/ui";
 import { cn } from "@/shared/utils";
 
 interface BeerListItemProps {
   beer: Beer;
-  linkTo?: string;
   className?: string;
 }
 
 export const BeerListItem = ({
   beer,
-  linkTo,
   className,
 }: BeerListItemProps) => {
-  const cardContent = (
+  return (
     <Card
       className={cn(
         "p-4 hover:shadow-md transition-shadow duration-200",
@@ -82,14 +79,4 @@ export const BeerListItem = ({
       </CardContent>
     </Card>
   );
-
-  if (linkTo) {
-    return (
-      <Link to={linkTo} params={{ beerId: beer.id }}>
-        {cardContent}
-      </Link>
-    );
-  }
-
-  return cardContent;
 };

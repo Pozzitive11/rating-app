@@ -16,6 +16,7 @@ import { routeTree } from "./routeTree.gen";
 import ErrorBoundary from "./shared/ErrorBoundaty";
 import { Toaster } from "./shared/ui";
 import { toast } from "sonner";
+import { AuthProvider } from "./features/auth/hooks/useAuth";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -52,13 +53,15 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <ErrorBoundary showToast={true}>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <ReactQueryDevtools initialIsOpen={false} />
-          <Toaster />
-        </QueryClientProvider>
-      </ErrorBoundary>
+      <AuthProvider>
+        <ErrorBoundary showToast={true}>
+          <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+            <ReactQueryDevtools initialIsOpen={false} />
+            <Toaster />
+          </QueryClientProvider>
+        </ErrorBoundary>
+      </AuthProvider>
     </StrictMode>
   );
 }

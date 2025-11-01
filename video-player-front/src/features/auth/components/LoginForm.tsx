@@ -1,0 +1,134 @@
+import { useForm } from "@tanstack/react-form";
+import { Button, FieldWrapper, Input } from "@/shared/ui";
+
+export interface LoginFormValues {
+  email: string;
+  password: string;
+}
+
+interface LoginFormProps {
+  onSubmit: (
+    values: LoginFormValues
+  ) => void | Promise<void>;
+  isLoading?: boolean;
+}
+
+export const LoginForm = ({
+  onSubmit,
+  isLoading = false,
+}: LoginFormProps) => {
+  const form = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: async ({ value }) => {
+      await onSubmit(value);
+    },
+  });
+
+  const validateEmail = (value: string) => {
+    if (!value) {
+      return "Email is required";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      return "Please enter a valid email address";
+    }
+    return undefined;
+  };
+
+  const validatePassword = (value: string) => {
+    if (!value) {
+      return "Password is required";
+    }
+    if (value.length < 6) {
+      return "Password must be at least 6 characters";
+    }
+    return undefined;
+  };
+
+  return (
+    <form
+      onSubmit={e => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
+      className="flex flex-col gap-4"
+    >
+      <form.Field
+        name="email"
+        validators={{
+          onChange: ({ value }) => validateEmail(value),
+        }}
+        children={field => (
+          <FieldWrapper
+            label="Email"
+            required
+            errors={field.state.meta.errors}
+          >
+            <Input
+              type="email"
+              value={field.state.value}
+              onChange={e =>
+                field.handleChange(e.target.value)
+              }
+              onBlur={field.handleBlur}
+              placeholder="Enter your email"
+              aria-invalid={
+                field.state.meta.errors.length > 0
+              }
+            />
+          </FieldWrapper>
+        )}
+      />
+
+      <form.Field
+        name="password"
+        validators={{
+          onChange: ({ value }) => validatePassword(value),
+        }}
+        children={field => (
+          <FieldWrapper
+            label="Password"
+            required
+            errors={field.state.meta.errors}
+          >
+            <Input
+              type="password"
+              value={field.state.value}
+              onChange={e =>
+                field.handleChange(e.target.value)
+              }
+              onBlur={field.handleBlur}
+              placeholder="Enter your password"
+              aria-invalid={
+                field.state.meta.errors.length > 0
+              }
+            />
+          </FieldWrapper>
+        )}
+      />
+
+      <form.Subscribe
+        selector={state => [
+          state.canSubmit,
+          state.isSubmitting,
+        ]}
+        children={([canSubmit, isSubmitting]) => (
+          <Button
+            type="submit"
+            variant="default"
+            disabled={
+              !canSubmit || isSubmitting || isLoading
+            }
+            isLoading={isSubmitting || isLoading}
+            className="w-full"
+          >
+            Login
+          </Button>
+        )}
+      />
+    </form>
+  );
+};
