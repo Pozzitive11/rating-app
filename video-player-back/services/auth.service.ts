@@ -36,25 +36,25 @@ export class AuthService {
       throw new Error(error.message);
     }
 
-    if (!data.session || !data.user) {
-      throw new Error("Registration failed");
+    // User is created in auth.users even if session is null (email confirmation required)
+    if (!data.user) {
+      throw new Error("Registration failed - user not created");
     }
 
+    // If session exists, user is immediately authenticated
+    // If session is null, email confirmation is required
     return {
       user: {
         id: data.user.id,
         email: data.user.email!,
       },
-      accessToken: data.session.access_token,
-      refreshToken: data.session.refresh_token,
+      accessToken: data.session?.access_token || "",
+      refreshToken: data.session?.refresh_token || "",
     };
   }
 
   async logout(token: string): Promise<void> {
-    // Create admin client for logout
     const { error } = await supabase.auth.admin.signOut(token);
-    // Or use user's token
-    // const { error } = await supabase.auth.signOut();
     if (error) throw new Error(error.message);
   }
 

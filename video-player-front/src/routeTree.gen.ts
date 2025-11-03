@@ -15,6 +15,7 @@ import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as RateBeerBeerIdRouteImport } from './routes/rate-beer/$beerId'
 import { Route as BeerDetailsBeerIdRouteImport } from './routes/beer-details/$beerId'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,9 +47,15 @@ const BeerDetailsBeerIdRoute = BeerDetailsBeerIdRouteImport.update({
   path: '/beer-details/$beerId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
   '/login': typeof LoginIndexRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
   '/login': typeof LoginIndexRoute
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
   '/login/': typeof LoginIndexRoute
@@ -76,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth/callback'
     | '/beer-details/$beerId'
     | '/rate-beer/$beerId'
     | '/login'
@@ -84,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth/callback'
     | '/beer-details/$beerId'
     | '/rate-beer/$beerId'
     | '/login'
@@ -92,6 +103,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/auth/callback'
     | '/beer-details/$beerId'
     | '/rate-beer/$beerId'
     | '/login/'
@@ -101,6 +113,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   BeerDetailsBeerIdRoute: typeof BeerDetailsBeerIdRoute
   RateBeerBeerIdRoute: typeof RateBeerBeerIdRoute
   LoginIndexRoute: typeof LoginIndexRoute
@@ -152,11 +165,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BeerDetailsBeerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   BeerDetailsBeerIdRoute: BeerDetailsBeerIdRoute,
   RateBeerBeerIdRoute: RateBeerBeerIdRoute,
   LoginIndexRoute: LoginIndexRoute,

@@ -71,11 +71,22 @@ export const AuthProvider = ({
       email,
       password,
     });
-    tokenUtils.setTokens(
-      response.accessToken,
-      response.refreshToken
-    );
-    setUser(response.user);
+
+    // If accessToken exists, user is immediately logged in
+    if (response.accessToken) {
+      tokenUtils.setTokens(
+        response.accessToken,
+        response.refreshToken
+      );
+      setUser(response.user);
+    } else {
+      // Email confirmation required - user exists but needs to confirm email
+      // Don't set tokens yet, but show success message
+      // The user will be logged in after clicking the confirmation link
+      throw new Error(
+        "Registration successful! Please check your email to confirm your account."
+      );
+    }
   };
 
   const logout = async () => {
