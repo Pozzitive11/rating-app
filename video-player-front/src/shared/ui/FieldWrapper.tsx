@@ -15,9 +15,6 @@ export const FieldWrapper = ({
   errors,
   children,
 }: FieldWrapperProps) => {
-  const hasErrors =
-    errors && Array.isArray(errors) && errors.length > 0;
-
   return (
     <div>
       <Label className="mb-2">
@@ -26,15 +23,7 @@ export const FieldWrapper = ({
           <span className="text-red-500">*</span>
         )}
       </Label>
-      <div
-        className={
-          hasErrors
-            ? "ring-2 ring-red-500 rounded-lg p-2"
-            : ""
-        }
-      >
-        {children}
-      </div>
+      <div>{children}</div>
       <FieldError errors={errors} />
     </div>
   );

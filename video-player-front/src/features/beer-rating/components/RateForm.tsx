@@ -87,6 +87,9 @@ export const RateForm = ({
             <FlavorProfiles
               value={field.state.value}
               onChange={value => field.handleChange(value)}
+              aria-invalid={
+                field.state.meta.errors.length > 0
+              }
             />
           </FieldWrapper>
         )}

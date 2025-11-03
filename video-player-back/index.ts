@@ -9,6 +9,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { config } from "./config";
+import authRoutes from "./routes/auth.routes";
 
 const app = express();
 const PORT = config.PORT;
@@ -78,7 +79,7 @@ import { errorHandler } from "./middleware/errorHandler";
 app.use("/api", apiRoutes);
 // Use clean architecture with dependency injection
 app.use("/api/supabase", supabaseRoutes);
-
+app.use("/api/auth", authRoutes);
 // 404 handler
 app.use("*", (req: Request, res: Response) => {
   res.status(404).json({ error: "Route not found" });

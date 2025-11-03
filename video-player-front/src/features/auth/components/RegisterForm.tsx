@@ -20,9 +20,9 @@ export const RegisterForm = ({
 }: RegisterFormProps) => {
   const form = useForm({
     defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
+      email: "test@test.com",
+      password: "testtest",
+      confirmPassword: "testtest",
     },
     onSubmit: async ({ value }) => {
       const { confirmPassword, ...formData } = value;
@@ -172,7 +172,7 @@ export const RegisterForm = ({
               !canSubmit || isSubmitting || isLoading
             }
             isLoading={isSubmitting || isLoading}
-            className="w-full"
+            className="w-full cursor-pointer"
           >
             Register
           </Button>
