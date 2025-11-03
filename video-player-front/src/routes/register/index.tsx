@@ -1,10 +1,9 @@
-import {
-  createFileRoute,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useState } from "react";
+
+import { Modal } from "@/shared/ui";
 
 export const Route = createFileRoute("/register/")({
   component: RouteComponent,
@@ -12,9 +11,10 @@ export const Route = createFileRoute("/register/")({
 
 function RouteComponent() {
   const { register } = useAuth();
-  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] =
+    useState(false);
 
   const handleRegister = async (values: {
     email: string;
@@ -25,7 +25,7 @@ function RouteComponent() {
 
     try {
       await register(values.email, values.password);
-      navigate({ to: "/" });
+      setShowSuccessDialog(true);
     } catch (err) {
       setError(
         err instanceof Error
@@ -38,7 +38,7 @@ function RouteComponent() {
   };
 
   return (
-    <div>
+    <>
       <RegisterForm
         onSubmit={handleRegister}
         isLoading={isLoading}
@@ -48,6 +48,13 @@ function RouteComponent() {
           {error}
         </p>
       )}
-    </div>
+
+      <Modal
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        title="Registration Successful!"
+        description="Please check your email to confirm your account."
+      />
+    </>
   );
 }

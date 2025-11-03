@@ -6,10 +6,9 @@ import {
   type ReactNode,
 } from "react";
 import { tokenUtils } from "../utils/token.utils";
-import { authApi, type User } from "@/api/auth/auth.api";
-
+import { authApi } from "@/api/auth/auth.api";
+import { jwtDecode } from "jwt-decode";
 interface AuthContextType {
-  user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -18,6 +17,7 @@ interface AuthContextType {
     password: string
   ) => Promise<void>;
   logout: () => Promise<void>;
+  userId: string | null;
 }
 
 const AuthContext = createContext<
@@ -29,26 +29,16 @@ export const AuthProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] =
+    useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   // Check if user is logged in on mount
   useEffect(() => {
-    const checkAuth = async () => {
-      if (tokenUtils.isAuthenticated()) {
-        try {
-          const currentUser =
-            await authApi.getCurrentUser();
-          setUser(currentUser);
-        } catch (error) {
-          tokenUtils.clearTokens();
-          setUser(null);
-        }
-      }
-      setIsLoading(false);
-    };
-
-    checkAuth();
+    setIsAuthenticated(tokenUtils.isAuthenticated());
+    setUserId(getUserIdFromToken());
+    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -60,7 +50,8 @@ export const AuthProvider = ({
       response.accessToken,
       response.refreshToken
     );
-    setUser(response.user);
+    setIsAuthenticated(true);
+    setUserId(getUserIdFromToken());
   };
 
   const register = async (
@@ -71,22 +62,12 @@ export const AuthProvider = ({
       email,
       password,
     });
-
-    // If accessToken exists, user is immediately logged in
-    if (response.accessToken) {
-      tokenUtils.setTokens(
-        response.accessToken,
-        response.refreshToken
-      );
-      setUser(response.user);
-    } else {
-      // Email confirmation required - user exists but needs to confirm email
-      // Don't set tokens yet, but show success message
-      // The user will be logged in after clicking the confirmation link
-      throw new Error(
-        "Registration successful! Please check your email to confirm your account."
-      );
-    }
+    tokenUtils.setTokens(
+      response.accessToken,
+      response.refreshToken
+    );
+    setIsAuthenticated(true);
+    setUserId(getUserIdFromToken());
   };
 
   const logout = async () => {
@@ -96,17 +77,33 @@ export const AuthProvider = ({
       console.error("Logout error:", error);
     } finally {
       tokenUtils.clearTokens();
-      setUser(null);
+      setIsAuthenticated(false);
+      setUserId(null);
+    }
+  };
+
+  const getUserIdFromToken = (): string | null => {
+    const token = tokenUtils.getAccessToken();
+    if (!token) return null;
+
+    try {
+      const decoded = jwtDecode<{
+        sub: string;
+        email: string;
+      }>(token);
+      return decoded.sub;
+    } catch {
+      return null;
     }
   };
 
   const value: AuthContextType = {
-    user,
     isLoading,
-    isAuthenticated: !!user,
+    isAuthenticated,
     login,
     register,
     logout,
+    userId,
   };
 
   return (

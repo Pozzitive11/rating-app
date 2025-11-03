@@ -41,8 +41,6 @@ export class AuthService {
       throw new Error("Registration failed - user not created");
     }
 
-    // If session exists, user is immediately authenticated
-    // If session is null, email confirmation is required
     return {
       user: {
         id: data.user.id,

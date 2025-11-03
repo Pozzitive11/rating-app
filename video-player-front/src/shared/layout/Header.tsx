@@ -5,11 +5,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../ui/primitives/popover";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useNavigate } from "@tanstack/react-router";
 
 const Header = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const handleLogoutClick = () => {
-    // TODO: Implement logout logic
-    console.log("Logout clicked");
+    logout();
+    navigate({ to: "/login" });
   };
 
   return (

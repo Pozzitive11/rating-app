@@ -9,3 +9,4 @@ export { default as ErrorBlock } from "./ErrorBlock";
 export { default as InfoBlock } from "./InfoBlock";
 export { BeerDetailCard } from "./BeerDetailCard";
 export { BeerListItem } from "./BeerListItem";
+export { default as Modal } from "./Modal";

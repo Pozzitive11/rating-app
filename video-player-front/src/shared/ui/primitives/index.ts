@@ -7,14 +7,6 @@ export { Input } from "./input";
 export { RatingButton, Rating } from "./shadcn-io/rating";
 export { Toaster } from "./sonner";
 export { ThemeProvider, useTheme } from "../theme-provider";
-export {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./tooltip";
-export {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./popover";
+export * from "./tooltip";
+export * from "./popover";
+export * from "./dialog";
