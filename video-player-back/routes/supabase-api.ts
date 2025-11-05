@@ -5,11 +5,12 @@ import {
   getFlavorProfiles,
   getPresentationStyles,
 } from "../controllers/beer.controlles";
+import { authenticate } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
 // POST /api/supabase/beer - Create a new beer review
-router.post("/beer", createBeerReview);
+router.post("/beer", authenticate, createBeerReview);
 
 // GET /api/supabase/beer/:id - Get a beer review by id
 router.get("/beer/:id", getBeerById);

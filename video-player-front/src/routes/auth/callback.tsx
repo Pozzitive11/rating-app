@@ -4,6 +4,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { tokenUtils } from "@/features/auth/utils/token.utils";
+import { InfoBlock } from "@/shared/ui";
 
 export const Route = createFileRoute("/auth/callback")({
   component: RouteComponent,
@@ -46,7 +47,6 @@ function RouteComponent() {
           setStatus("error");
         }
       } catch (error) {
-        console.error("Callback error:", error);
         setStatus("error");
       }
     };
@@ -56,23 +56,29 @@ function RouteComponent() {
 
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div>Confirming email...</div>
-      </div>
+      <InfoBlock
+        title="Confirming email..."
+        description="Please wait while we confirm your email."
+        variant="loading"
+      />
     );
   }
 
   if (status === "success") {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div>Email confirmed! Redirecting...</div>
-      </div>
+      <InfoBlock
+        title="Email confirmed!"
+        description="Redirecting to home..."
+        variant="success"
+      />
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div>Error confirming email. Please try again.</div>
-    </div>
+    <InfoBlock
+      title="Error confirming email"
+      description="Please try again."
+      variant="error"
+    />
   );
 }

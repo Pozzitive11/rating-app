@@ -10,6 +10,7 @@ declare global {
         id: string;
         email: string;
       };
+      accessToken?: string;
     }
   }
 }
@@ -35,11 +36,12 @@ export const authenticate = async (
       throw new HttpError("Invalid or expired token", 401);
     }
 
-    // Attach user to request object
+    // Attach user and token to request object
     req.user = {
       id: user.id,
       email: user.email!,
     };
+    req.accessToken = token;
 
     next();
   } catch (error) {

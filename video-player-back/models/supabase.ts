@@ -13,6 +13,26 @@ const supabase: SupabaseClient = createClient(
   config.SUPABASE_KEY!
 );
 
+// Helper function to create an authenticated Supabase client
+// This creates a client that uses the access token for RLS policies
+export const createAuthenticatedClient = (
+  accessToken: string
+): SupabaseClient => {
+  const client = createClient(config.SUPABASE_URL!, config.SUPABASE_KEY!, {
+    global: {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+    auth: {
+      persistSession: false, // We're manually managing the token
+      autoRefreshToken: false, // We're manually managing the token
+      detectSessionInUrl: false,
+    },
+  });
+  return client;
+};
+
 // Helper functions for common operations
 const supabaseHelpers = {
   getBeerById: async (id: number): Promise<BeerReview> => {
@@ -24,8 +44,16 @@ const supabaseHelpers = {
     return data[0];
   },
   // Beer ratings operations
-  async saveBeer(ratingData: BeerReviewInsert): Promise<BeerReview> {
-    const { data, error } = await supabase
+  async saveBeer(
+    ratingData: BeerReviewInsert,
+    accessToken?: string
+  ): Promise<BeerReview> {
+    // Use authenticated client if token is provided (needed for RLS)
+    const client = accessToken
+      ? createAuthenticatedClient(accessToken)
+      : supabase;
+
+    const { data, error } = await client
       .from("beer_reviews")
       .insert(ratingData)
       .select();
@@ -36,7 +64,8 @@ const supabaseHelpers = {
 
   async saveBeerReviewFlavorProfiles(
     beerReviewId: number,
-    flavorProfileIds: number[]
+    flavorProfileIds: number[],
+    accessToken?: string
   ): Promise<void> {
     if (flavorProfileIds.length === 0) return;
 
@@ -45,7 +74,12 @@ const supabaseHelpers = {
       flavor_profile_id: fpId,
     }));
 
-    const { error } = await supabase
+    // Use authenticated client if token is provided (needed for RLS)
+    const client = accessToken
+      ? createAuthenticatedClient(accessToken)
+      : supabase;
+
+    const { error } = await client
       .from("beer_review_flavor_profiles")
       .insert(entries);
 

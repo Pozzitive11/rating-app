@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { NotFoundError } from "../middleware/errorHandler";
+import { HttpError, NotFoundError } from "../middleware/errorHandler";
 import {
   searchQuerySchema,
   createBeerReviewSchema,
@@ -84,6 +84,11 @@ export const createBeerReview = async (
     // Validate request body with Zod
     const validatedData = createBeerReviewSchema.parse(req.body);
 
+    // Get user ID from the authenticated request (set by authenticate middleware)
+    if (!req.user) {
+      throw new HttpError("User not authenticated", 401);
+    }
+
     const {
       name,
       brewery,
@@ -104,6 +109,7 @@ export const createBeerReview = async (
     // Map API format (camelCase) to DB format (snake_case)
     const reviewData: BeerReviewInsert = {
       name: name,
+      user_id: req.user.id,
       brewery: brewery || "",
       style: style || null,
       rating: rating,
@@ -119,13 +125,20 @@ export const createBeerReview = async (
       created_at: new Date().toISOString(),
     };
 
-    const savedReview = await supabaseHelpers.saveBeer(reviewData);
+    // Get access token from request (set by authenticate middleware)
+    const accessToken = req.accessToken;
+    if (!accessToken) {
+      throw new HttpError("Access token not found", 401);
+    }
+
+    const savedReview = await supabaseHelpers.saveBeer(reviewData, accessToken);
 
     // Save flavor profiles if provided
     if (flavorProfiles && flavorProfiles.length > 0) {
       await supabaseHelpers.saveBeerReviewFlavorProfiles(
         savedReview.id,
-        flavorProfiles
+        flavorProfiles,
+        accessToken
       );
     }
 
