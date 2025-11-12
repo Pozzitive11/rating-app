@@ -6,11 +6,19 @@ import {
   FlavorProfile,
   PresentationStyle,
 } from "../types";
+import { DatabaseError } from "../middleware/errorHandler";
+
+// Validate Supabase configuration
+if (!config.SUPABASE_URL || !config.SUPABASE_KEY) {
+  throw new Error(
+    "Missing Supabase configuration. SUPABASE_URL and SUPABASE_KEY must be set."
+  );
+}
 
 // Create Supabase client for general use (with anon key)
 const supabase: SupabaseClient = createClient(
-  config.SUPABASE_URL!,
-  config.SUPABASE_KEY!
+  config.SUPABASE_URL,
+  config.SUPABASE_KEY
 );
 
 // Helper function to create an authenticated Supabase client
@@ -33,71 +41,108 @@ export const createAuthenticatedClient = (
   return client;
 };
 
+// Helper function to get the appropriate client (DRY principle)
+const getClient = (accessToken?: string): SupabaseClient => {
+  return accessToken ? createAuthenticatedClient(accessToken) : supabase;
+};
+
 // Helper functions for common operations
 const supabaseHelpers = {
-  getBeerById: async (id: number): Promise<BeerReview> => {
+  getBeerById: async (id: number): Promise<BeerReview | null> => {
     const { data, error } = await supabase
       .from("beer_reviews")
       .select("*")
-      .eq("id", id);
-    if (error) throw error;
-    return data[0];
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) {
+      throw new DatabaseError(
+        `Failed to get beer by id: ${error.message || "Unknown error"}`
+      );
+    }
+
+    return data;
   },
+
   // Beer ratings operations
   async saveBeer(
     ratingData: BeerReviewInsert,
     accessToken?: string
   ): Promise<BeerReview> {
-    // Use authenticated client if token is provided (needed for RLS)
-    const client = accessToken
-      ? createAuthenticatedClient(accessToken)
-      : supabase;
+    const client = getClient(accessToken);
 
     const { data, error } = await client
       .from("beer_reviews")
       .insert(ratingData)
-      .select();
+      .select()
+      .single();
 
-    if (error) throw error;
-    return data[0];
+    if (error) {
+      throw new DatabaseError(
+        `Failed to save beer: ${error.message || "Unknown error"}`
+      );
+    }
+
+    if (!data) {
+      throw new DatabaseError("Insert operation returned no data");
+    }
+
+    return data;
   },
 
   async saveBeerReviewFlavorProfiles(
     beerReviewId: number,
-    flavorProfileIds: number[],
+    flavorProfileIds: ReadonlyArray<number>,
     accessToken?: string
   ): Promise<void> {
-    if (flavorProfileIds.length === 0) return;
+    // Deduplicate flavor profile IDs
+    const uniqueIds = [...new Set(flavorProfileIds)];
+    if (uniqueIds.length === 0) return;
 
-    const entries = flavorProfileIds.map((fpId) => ({
+    const entries = uniqueIds.map((fpId) => ({
       beer_review_id: beerReviewId,
       flavor_profile_id: fpId,
     }));
 
-    // Use authenticated client if token is provided (needed for RLS)
-    const client = accessToken
-      ? createAuthenticatedClient(accessToken)
-      : supabase;
+    const client = getClient(accessToken);
 
     const { error } = await client
       .from("beer_review_flavor_profiles")
-      .insert(entries);
+      .upsert(entries, { ignoreDuplicates: true });
 
-    if (error) throw error;
+    if (error) {
+      throw new DatabaseError(
+        `Failed to save beer review flavor profiles: ${
+          error.message || "Unknown error"
+        }`
+      );
+    }
   },
 
   getFlavorProfiles: async (): Promise<FlavorProfile[]> => {
     const { data, error } = await supabase.from("flavor_profiles").select("*");
-    if (error) throw error;
-    return data;
+
+    if (error) {
+      throw new DatabaseError(
+        `Failed to get flavor profiles: ${error.message || "Unknown error"}`
+      );
+    }
+
+    return data || [];
   },
 
   getPresentationStyles: async (): Promise<PresentationStyle[]> => {
     const { data, error } = await supabase
       .from("presentation_styles")
       .select("*");
-    if (error) throw error;
-    return data;
+
+    if (error) {
+      throw new DatabaseError(
+        `Failed to get presentation styles: ${error.message || "Unknown error"}`
+      );
+    }
+
+    return data || [];
   },
 };
 

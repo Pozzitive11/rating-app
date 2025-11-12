@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { loginSchema, registerSchema } from "../schemas/auth.schema";
-import { AuthService } from "../services/auth.service";
-import { HttpError } from "../middleware/errorHandler";
+import { extractToken } from "../utils/auth.utils";
+import { serviceContainer } from "../services/serviceContainer";
 
-const authService = new AuthService();
+const authService = serviceContainer.getAuthService();
 
 export const login = async (
   req: Request,
@@ -39,10 +39,7 @@ export const logout = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const token = req.headers.authorization?.replace("Bearer ", "");
-    if (!token) {
-      throw new HttpError("No token provided", 401);
-    }
+    const token = extractToken(req);
     await authService.logout(token);
     res.json({ message: "Logged out successfully" });
   } catch (error) {
@@ -56,10 +53,7 @@ export const getCurrentUser = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const token = req.headers.authorization?.replace("Bearer ", "");
-    if (!token) {
-      throw new HttpError("No token provided", 401);
-    }
+    const token = extractToken(req);
     const user = await authService.getCurrentUser(token);
     res.json({ user });
   } catch (error) {

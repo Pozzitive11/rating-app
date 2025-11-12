@@ -1,4 +1,4 @@
-import { supabase } from "../models/supabase";
+import { supabase, createAuthenticatedClient } from "../models/supabase";
 import { AuthResponse, LoginRequest, RegisterRequest } from "../types/auth";
 
 export class AuthService {
@@ -19,7 +19,7 @@ export class AuthService {
     return {
       user: {
         id: data.user.id,
-        email: data.user.email!,
+        email: data.user.email || "",
       },
       accessToken: data.session.access_token,
       refreshToken: data.session.refresh_token,
@@ -44,7 +44,7 @@ export class AuthService {
     return {
       user: {
         id: data.user.id,
-        email: data.user.email!,
+        email: data.user.email || "",
       },
       accessToken: data.session?.access_token || "",
       refreshToken: data.session?.refresh_token || "",
@@ -52,11 +52,20 @@ export class AuthService {
   }
 
   async logout(token: string): Promise<void> {
-    const { error } = await supabase.auth.admin.signOut(token);
-    if (error) throw new Error(error.message);
+    // Create an authenticated client using the user's token
+    const authenticatedClient = createAuthenticatedClient(token);
+
+    // Sign out using the authenticated client (user session)
+    const { error } = await authenticatedClient.auth.signOut();
+
+    if (error) {
+      throw new Error(error.message);
+    }
   }
 
-  async getCurrentUser(token: string) {
+  async getCurrentUser(
+    token: string
+  ): Promise<{ id: string; email?: string } | null> {
     const {
       data: { user },
       error,

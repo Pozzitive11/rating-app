@@ -10,6 +10,7 @@ import morgan from "morgan";
 import path from "path";
 import { config } from "./config";
 import authRoutes from "./routes/auth.routes";
+import { requestTimeout } from "./middleware/timeout.middleware";
 
 const app = express();
 const PORT = config.PORT;
@@ -22,15 +23,13 @@ app.use(
   })
 );
 
+// Request timeout middleware (should be early in the chain)
+app.use(requestTimeout);
+
 // CORS configuration for video streaming
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:5173",
-      "http://127.0.0.1:3000",
-      "http://127.0.0.1:5173",
-    ],
+    origin: config.CORS_ORIGINS.length > 0 ? config.CORS_ORIGINS : false,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Range"],

@@ -4,7 +4,7 @@ import {
   getBeerById,
   getFlavorProfiles,
   getPresentationStyles,
-} from "../controllers/beer.controlles";
+} from "../controllers/beer.controllers";
 import { authenticate } from "../middleware/auth.middleware";
 
 const router = express.Router();

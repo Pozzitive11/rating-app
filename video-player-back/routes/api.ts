@@ -2,7 +2,7 @@ import express from "express";
 import {
   getUntappdBeerDetailsById,
   searchUntappdBeers,
-} from "../controllers/beer.controlles";
+} from "../controllers/beer.controllers";
 
 const router = express.Router();
 

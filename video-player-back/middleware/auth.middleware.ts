@@ -1,19 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { supabase } from "../models/supabase";
-import { HttpError } from "./errorHandler";
-
-// Extend Express Request type
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-      };
-      accessToken?: string;
-    }
-  }
-}
+import { UnauthorizedError } from "./errorHandler";
+import { extractToken } from "../utils/auth.utils";
 
 export const authenticate = async (
   req: Request,
@@ -21,11 +9,7 @@ export const authenticate = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const token = req.headers.authorization?.replace("Bearer ", "");
-
-    if (!token) {
-      throw new HttpError("Authentication required", 401);
-    }
+    const token = extractToken(req);
 
     const {
       data: { user },
@@ -33,13 +17,13 @@ export const authenticate = async (
     } = await supabase.auth.getUser(token);
 
     if (error || !user) {
-      throw new HttpError("Invalid or expired token", 401);
+      throw new UnauthorizedError("Invalid or expired token");
     }
 
     // Attach user and token to request object
     req.user = {
       id: user.id,
-      email: user.email!,
+      email: user.email || "",
     };
     req.accessToken = token;
 

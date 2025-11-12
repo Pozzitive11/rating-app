@@ -36,7 +36,8 @@
       "@/models/*": ["models/*"],
       "@/routes/*": ["routes/*"],
       "@/middleware/*": ["middleware/*"],
-      "@/controllers/*": ["controllers/*"]
+      "@/controllers/*": ["controllers/*"],
+      "@/services/*": ["services/*"]
     }
   },
   "ts-node": {
