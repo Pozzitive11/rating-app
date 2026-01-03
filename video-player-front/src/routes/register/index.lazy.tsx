@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useState } from "react";
 
 import { Modal } from "@/shared/ui";
 
-export const Route = createFileRoute("/register/")({
+export const Route = createLazyFileRoute("/register/")({
   component: RouteComponent,
 });
 

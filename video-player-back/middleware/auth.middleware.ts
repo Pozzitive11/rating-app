@@ -10,7 +10,6 @@ export const authenticate = async (
 ): Promise<void> => {
   try {
     const token = extractToken(req);
-
     const {
       data: { user },
       error,

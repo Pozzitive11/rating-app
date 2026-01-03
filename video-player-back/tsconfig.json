@@ -38,7 +38,8 @@
       "@/middleware/*": ["middleware/*"],
       "@/controllers/*": ["controllers/*"],
       "@/services/*": ["services/*"]
-    }
+    },
+    "typeRoots": ["@types"]
   },
   "ts-node": {
     "require": ["tsconfig-paths/register"]

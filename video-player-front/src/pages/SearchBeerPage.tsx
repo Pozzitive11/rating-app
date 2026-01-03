@@ -4,11 +4,20 @@ import { type Beer } from "@/api/beer/api";
 import { isEmpty } from "@/shared/utils";
 import useSearchBeer from "@/features/beer-search/hooks/useSearchBeer";
 import BeerSearchResults from "@/features/beer-search/components/BeerSearchResults";
-import { Route } from "@/routes/search";
+import {
+  useNavigate,
+  useSearch,
+} from "@tanstack/react-router";
+
+type SearchParams = {
+  q?: string;
+};
 
 export const SearchBeerPage = () => {
-  const navigate = Route.useNavigate();
-  const searchParams = Route.useSearch();
+  const navigate = useNavigate();
+  const searchParams = useSearch({
+    from: "/search/",
+  }) as SearchParams;
 
   const [selectedBeer, setSelectedBeer] =
     useState<Beer | null>(null);
@@ -32,7 +41,7 @@ export const SearchBeerPage = () => {
     if (searchTerm !== searchParams.q) {
       navigate({
         to: "/search",
-        search: prev => ({
+        search: (prev: SearchParams) => ({
           ...prev,
           q: searchTerm || undefined,
         }),

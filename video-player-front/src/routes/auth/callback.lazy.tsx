@@ -1,12 +1,12 @@
 import {
-  createFileRoute,
   useNavigate,
+  createLazyFileRoute,
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { tokenUtils } from "@/features/auth/utils/token.utils";
 import { InfoBlock } from "@/shared/ui";
 
-export const Route = createFileRoute("/auth/callback")({
+export const Route = createLazyFileRoute("/auth/callback")({
   component: RouteComponent,
 });
 

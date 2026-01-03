@@ -1,6 +1,5 @@
-import { Request } from "express";
+import * as express from "express";
 
-// Extend Express Request type
 declare global {
   namespace Express {
     interface Request {

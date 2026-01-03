@@ -8,78 +8,89 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SearchIndexRouteImport } from './routes/search/index'
-import { Route as RegisterIndexRouteImport } from './routes/register/index'
-import { Route as LoginIndexRouteImport } from './routes/login/index'
-import { Route as RateBeerBeerIdRouteImport } from './routes/rate-beer/$beerId'
-import { Route as BeerDetailsBeerIdRouteImport } from './routes/beer-details/$beerId'
-import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+
+const SearchIndexLazyRouteImport = createFileRoute('/search/')()
+const RegisterIndexLazyRouteImport = createFileRoute('/register/')()
+const LoginIndexLazyRouteImport = createFileRoute('/login/')()
+const RateBeerBeerIdLazyRouteImport = createFileRoute('/rate-beer/$beerId')()
+const BeerDetailsBeerIdLazyRouteImport = createFileRoute(
+  '/beer-details/$beerId',
+)()
+const AuthCallbackLazyRouteImport = createFileRoute('/auth/callback')()
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SearchIndexRoute = SearchIndexRouteImport.update({
+const SearchIndexLazyRoute = SearchIndexLazyRouteImport.update({
   id: '/search/',
   path: '/search/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const RegisterIndexRoute = RegisterIndexRouteImport.update({
+} as any).lazy(() => import('./routes/search/index.lazy').then((d) => d.Route))
+const RegisterIndexLazyRoute = RegisterIndexLazyRouteImport.update({
   id: '/register/',
   path: '/register/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const LoginIndexRoute = LoginIndexRouteImport.update({
+} as any).lazy(() =>
+  import('./routes/register/index.lazy').then((d) => d.Route),
+)
+const LoginIndexLazyRoute = LoginIndexLazyRouteImport.update({
   id: '/login/',
   path: '/login/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const RateBeerBeerIdRoute = RateBeerBeerIdRouteImport.update({
+} as any).lazy(() => import('./routes/login/index.lazy').then((d) => d.Route))
+const RateBeerBeerIdLazyRoute = RateBeerBeerIdLazyRouteImport.update({
   id: '/rate-beer/$beerId',
   path: '/rate-beer/$beerId',
   getParentRoute: () => rootRouteImport,
-} as any)
-const BeerDetailsBeerIdRoute = BeerDetailsBeerIdRouteImport.update({
+} as any).lazy(() =>
+  import('./routes/rate-beer/$beerId.lazy').then((d) => d.Route),
+)
+const BeerDetailsBeerIdLazyRoute = BeerDetailsBeerIdLazyRouteImport.update({
   id: '/beer-details/$beerId',
   path: '/beer-details/$beerId',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthCallbackRoute = AuthCallbackRouteImport.update({
+} as any).lazy(() =>
+  import('./routes/beer-details/$beerId.lazy').then((d) => d.Route),
+)
+const AuthCallbackLazyRoute = AuthCallbackLazyRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/auth/callback.lazy').then((d) => d.Route))
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth/callback': typeof AuthCallbackRoute
-  '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
-  '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
-  '/login': typeof LoginIndexRoute
-  '/register': typeof RegisterIndexRoute
-  '/search': typeof SearchIndexRoute
+  '/auth/callback': typeof AuthCallbackLazyRoute
+  '/beer-details/$beerId': typeof BeerDetailsBeerIdLazyRoute
+  '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
+  '/login': typeof LoginIndexLazyRoute
+  '/register': typeof RegisterIndexLazyRoute
+  '/search': typeof SearchIndexLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth/callback': typeof AuthCallbackRoute
-  '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
-  '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
-  '/login': typeof LoginIndexRoute
-  '/register': typeof RegisterIndexRoute
-  '/search': typeof SearchIndexRoute
+  '/auth/callback': typeof AuthCallbackLazyRoute
+  '/beer-details/$beerId': typeof BeerDetailsBeerIdLazyRoute
+  '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
+  '/login': typeof LoginIndexLazyRoute
+  '/register': typeof RegisterIndexLazyRoute
+  '/search': typeof SearchIndexLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/auth/callback': typeof AuthCallbackRoute
-  '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
-  '/rate-beer/$beerId': typeof RateBeerBeerIdRoute
-  '/login/': typeof LoginIndexRoute
-  '/register/': typeof RegisterIndexRoute
-  '/search/': typeof SearchIndexRoute
+  '/auth/callback': typeof AuthCallbackLazyRoute
+  '/beer-details/$beerId': typeof BeerDetailsBeerIdLazyRoute
+  '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
+  '/login/': typeof LoginIndexLazyRoute
+  '/register/': typeof RegisterIndexLazyRoute
+  '/search/': typeof SearchIndexLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -113,12 +124,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthCallbackRoute: typeof AuthCallbackRoute
-  BeerDetailsBeerIdRoute: typeof BeerDetailsBeerIdRoute
-  RateBeerBeerIdRoute: typeof RateBeerBeerIdRoute
-  LoginIndexRoute: typeof LoginIndexRoute
-  RegisterIndexRoute: typeof RegisterIndexRoute
-  SearchIndexRoute: typeof SearchIndexRoute
+  AuthCallbackLazyRoute: typeof AuthCallbackLazyRoute
+  BeerDetailsBeerIdLazyRoute: typeof BeerDetailsBeerIdLazyRoute
+  RateBeerBeerIdLazyRoute: typeof RateBeerBeerIdLazyRoute
+  LoginIndexLazyRoute: typeof LoginIndexLazyRoute
+  RegisterIndexLazyRoute: typeof RegisterIndexLazyRoute
+  SearchIndexLazyRoute: typeof SearchIndexLazyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -134,42 +145,42 @@ declare module '@tanstack/react-router' {
       id: '/search/'
       path: '/search'
       fullPath: '/search'
-      preLoaderRoute: typeof SearchIndexRouteImport
+      preLoaderRoute: typeof SearchIndexLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register/': {
       id: '/register/'
       path: '/register'
       fullPath: '/register'
-      preLoaderRoute: typeof RegisterIndexRouteImport
+      preLoaderRoute: typeof RegisterIndexLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login/': {
       id: '/login/'
       path: '/login'
       fullPath: '/login'
-      preLoaderRoute: typeof LoginIndexRouteImport
+      preLoaderRoute: typeof LoginIndexLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rate-beer/$beerId': {
       id: '/rate-beer/$beerId'
       path: '/rate-beer/$beerId'
       fullPath: '/rate-beer/$beerId'
-      preLoaderRoute: typeof RateBeerBeerIdRouteImport
+      preLoaderRoute: typeof RateBeerBeerIdLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/beer-details/$beerId': {
       id: '/beer-details/$beerId'
       path: '/beer-details/$beerId'
       fullPath: '/beer-details/$beerId'
-      preLoaderRoute: typeof BeerDetailsBeerIdRouteImport
+      preLoaderRoute: typeof BeerDetailsBeerIdLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/callback': {
       id: '/auth/callback'
       path: '/auth/callback'
       fullPath: '/auth/callback'
-      preLoaderRoute: typeof AuthCallbackRouteImport
+      preLoaderRoute: typeof AuthCallbackLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -177,12 +188,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthCallbackRoute: AuthCallbackRoute,
-  BeerDetailsBeerIdRoute: BeerDetailsBeerIdRoute,
-  RateBeerBeerIdRoute: RateBeerBeerIdRoute,
-  LoginIndexRoute: LoginIndexRoute,
-  RegisterIndexRoute: RegisterIndexRoute,
-  SearchIndexRoute: SearchIndexRoute,
+  AuthCallbackLazyRoute: AuthCallbackLazyRoute,
+  BeerDetailsBeerIdLazyRoute: BeerDetailsBeerIdLazyRoute,
+  RateBeerBeerIdLazyRoute: RateBeerBeerIdLazyRoute,
+  LoginIndexLazyRoute: LoginIndexLazyRoute,
+  RegisterIndexLazyRoute: RegisterIndexLazyRoute,
+  SearchIndexLazyRoute: SearchIndexLazyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

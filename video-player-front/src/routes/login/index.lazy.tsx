@@ -1,12 +1,12 @@
 import {
-  createFileRoute,
   useNavigate,
+  createLazyFileRoute,
 } from "@tanstack/react-router";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
-export const Route = createFileRoute("/login/")({
+export const Route = createLazyFileRoute("/login/")({
   component: RouteComponent,
 });
 
