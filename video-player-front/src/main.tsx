@@ -17,6 +17,7 @@ import ErrorBoundary from "./shared/ErrorBoundaty";
 import { Toaster } from "./shared/ui";
 import { toast } from "sonner";
 import { AuthProvider } from "./features/auth/hooks/useAuth";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -39,7 +40,10 @@ const queryClient = new QueryClient({
 });
 
 // Create a new router instance
-const router = createRouter({ routeTree });
+const router = createRouter({
+  routeTree,
+  defaultNotFoundComponent: NotFoundPage,
+});
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {

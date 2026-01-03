@@ -12,14 +12,12 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BeerDetailsBeerIdRouteImport } from './routes/beer-details/$beerId'
 
 const SearchIndexLazyRouteImport = createFileRoute('/search/')()
 const RegisterIndexLazyRouteImport = createFileRoute('/register/')()
 const LoginIndexLazyRouteImport = createFileRoute('/login/')()
 const RateBeerBeerIdLazyRouteImport = createFileRoute('/rate-beer/$beerId')()
-const BeerDetailsBeerIdLazyRouteImport = createFileRoute(
-  '/beer-details/$beerId',
-)()
 const AuthCallbackLazyRouteImport = createFileRoute('/auth/callback')()
 
 const IndexRoute = IndexRouteImport.update({
@@ -51,23 +49,21 @@ const RateBeerBeerIdLazyRoute = RateBeerBeerIdLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/rate-beer/$beerId.lazy').then((d) => d.Route),
 )
-const BeerDetailsBeerIdLazyRoute = BeerDetailsBeerIdLazyRouteImport.update({
-  id: '/beer-details/$beerId',
-  path: '/beer-details/$beerId',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() =>
-  import('./routes/beer-details/$beerId.lazy').then((d) => d.Route),
-)
 const AuthCallbackLazyRoute = AuthCallbackLazyRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/auth/callback.lazy').then((d) => d.Route))
+const BeerDetailsBeerIdRoute = BeerDetailsBeerIdRouteImport.update({
+  id: '/beer-details/$beerId',
+  path: '/beer-details/$beerId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/auth/callback': typeof AuthCallbackLazyRoute
-  '/beer-details/$beerId': typeof BeerDetailsBeerIdLazyRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
   '/login': typeof LoginIndexLazyRoute
   '/register': typeof RegisterIndexLazyRoute
@@ -75,8 +71,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/auth/callback': typeof AuthCallbackLazyRoute
-  '/beer-details/$beerId': typeof BeerDetailsBeerIdLazyRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
   '/login': typeof LoginIndexLazyRoute
   '/register': typeof RegisterIndexLazyRoute
@@ -85,8 +81,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/auth/callback': typeof AuthCallbackLazyRoute
-  '/beer-details/$beerId': typeof BeerDetailsBeerIdLazyRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
   '/login/': typeof LoginIndexLazyRoute
   '/register/': typeof RegisterIndexLazyRoute
@@ -96,8 +92,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth/callback'
     | '/beer-details/$beerId'
+    | '/auth/callback'
     | '/rate-beer/$beerId'
     | '/login'
     | '/register'
@@ -105,8 +101,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth/callback'
     | '/beer-details/$beerId'
+    | '/auth/callback'
     | '/rate-beer/$beerId'
     | '/login'
     | '/register'
@@ -114,8 +110,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/auth/callback'
     | '/beer-details/$beerId'
+    | '/auth/callback'
     | '/rate-beer/$beerId'
     | '/login/'
     | '/register/'
@@ -124,8 +120,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BeerDetailsBeerIdRoute: typeof BeerDetailsBeerIdRoute
   AuthCallbackLazyRoute: typeof AuthCallbackLazyRoute
-  BeerDetailsBeerIdLazyRoute: typeof BeerDetailsBeerIdLazyRoute
   RateBeerBeerIdLazyRoute: typeof RateBeerBeerIdLazyRoute
   LoginIndexLazyRoute: typeof LoginIndexLazyRoute
   RegisterIndexLazyRoute: typeof RegisterIndexLazyRoute
@@ -169,13 +165,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RateBeerBeerIdLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/beer-details/$beerId': {
-      id: '/beer-details/$beerId'
-      path: '/beer-details/$beerId'
-      fullPath: '/beer-details/$beerId'
-      preLoaderRoute: typeof BeerDetailsBeerIdLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/callback': {
       id: '/auth/callback'
       path: '/auth/callback'
@@ -183,13 +172,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/beer-details/$beerId': {
+      id: '/beer-details/$beerId'
+      path: '/beer-details/$beerId'
+      fullPath: '/beer-details/$beerId'
+      preLoaderRoute: typeof BeerDetailsBeerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BeerDetailsBeerIdRoute: BeerDetailsBeerIdRoute,
   AuthCallbackLazyRoute: AuthCallbackLazyRoute,
-  BeerDetailsBeerIdLazyRoute: BeerDetailsBeerIdLazyRoute,
   RateBeerBeerIdLazyRoute: RateBeerBeerIdLazyRoute,
   LoginIndexLazyRoute: LoginIndexLazyRoute,
   RegisterIndexLazyRoute: RegisterIndexLazyRoute,
