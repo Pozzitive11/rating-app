@@ -3,7 +3,9 @@ import { RateBeerPage } from "@/pages/RateBeerPage";
 import MainLayout from "@/shared/layout/MainLayout";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute("/rate-beer/$beerId")({
+export const Route = createLazyFileRoute(
+  "/rate-beer/$beerId"
+)({
   component: RouteComponent,
 });
 function RouteComponent() {
