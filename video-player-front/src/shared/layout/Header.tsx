@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "../ui/primitives/popover";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 const Header = () => {
   const { logout } = useAuth();
@@ -22,9 +22,9 @@ const Header = () => {
         <div className="flex h-14 items-center justify-between px-4">
           {/* Logo/Brand */}
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-semibold">
+            <Link to="/" className="text-lg font-semibold">
               Beer Rating
-            </h1>
+            </Link>
           </div>
 
           {/* Login/Register Button */}

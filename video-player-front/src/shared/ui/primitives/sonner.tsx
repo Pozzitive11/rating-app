@@ -5,7 +5,7 @@ import {
 } from "sonner";
 
 const Toaster = ({
-  duration = 3000,
+  duration = Infinity,
   ...props
 }: ToasterProps) => {
   const { theme = "system" } = useTheme();
