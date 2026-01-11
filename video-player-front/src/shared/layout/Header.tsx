@@ -9,11 +9,16 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Link, useNavigate } from "@tanstack/react-router";
 
 const Header = () => {
-  const { logout } = useAuth();
+  const { logout, isLoading } = useAuth();
   const navigate = useNavigate();
-  const handleLogoutClick = () => {
-    logout();
-    navigate({ to: "/login" });
+
+  const handleLogoutClick = async () => {
+    try {
+      await logout();
+    } catch (err) {
+    } finally {
+      navigate({ to: "/login" });
+    }
   };
 
   return (
@@ -46,9 +51,10 @@ const Header = () => {
                 variant="ghost"
                 className="w-full justify-start gap-2"
                 onClick={handleLogoutClick}
+                disabled={isLoading}
               >
                 <LogOut className="size-4" />
-                Logout
+                {isLoading ? "Logging out..." : "Logout"}
               </Button>
             </PopoverContent>
           </Popover>

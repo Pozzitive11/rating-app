@@ -2,7 +2,7 @@ import { createLazyFileRoute } from "@tanstack/react-router";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useState } from "react";
-
+import { InfoBlock } from "@/shared/ui";
 import { Modal } from "@/shared/ui";
 
 export const Route = createLazyFileRoute("/register/")({
@@ -10,9 +10,7 @@ export const Route = createLazyFileRoute("/register/")({
 });
 
 function RouteComponent() {
-  const { register } = useAuth();
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { register, error, isLoading } = useAuth();
   const [showSuccessDialog, setShowSuccessDialog] =
     useState(false);
 
@@ -20,20 +18,12 @@ function RouteComponent() {
     email: string;
     password: string;
   }) => {
-    setIsLoading(true);
-    setError(null);
-
     try {
       await register(values.email, values.password);
+      // Only show success dialog on successful registration
       setShowSuccessDialog(true);
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Registration failed"
-      );
-    } finally {
-      setIsLoading(false);
+      // Error is already handled by useAuth and will be shown via error state
     }
   };
 
@@ -44,9 +34,7 @@ function RouteComponent() {
         isLoading={isLoading}
       />
       {error && (
-        <p className="text-red-500 mt-4 text-center">
-          {error}
-        </p>
+        <InfoBlock title={error.message} variant="error" />
       )}
 
       <Modal

@@ -57,15 +57,15 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <AuthProvider>
-        <ErrorBoundary showToast={true}>
-          <QueryClientProvider client={queryClient}>
+      <ErrorBoundary showToast={true}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
             <RouterProvider router={router} />
             <ReactQueryDevtools initialIsOpen={false} />
             <Toaster />
-          </QueryClientProvider>
-        </ErrorBoundary>
-      </AuthProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
     </StrictMode>
   );
 }

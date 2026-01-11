@@ -33,8 +33,8 @@ export const createAuthenticatedClient = (
       },
     },
     auth: {
-      persistSession: false, // We're manually managing the token
-      autoRefreshToken: false, // We're manually managing the token
+      persistSession: false,
+      autoRefreshToken: false,
       detectSessionInUrl: false,
     },
   });
