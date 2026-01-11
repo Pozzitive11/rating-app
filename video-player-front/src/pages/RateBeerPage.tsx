@@ -19,7 +19,8 @@ export const RateBeerPage = () => {
   });
   const navigate = useNavigate();
 
-  const { searchResults } = useSearchBeer();
+  const { searchResults, showLoadingState, searchError } =
+    useSearchBeer();
 
   const selectedBeer = searchResults.find(
     beer => beer.id === Number(beerId)
@@ -55,6 +56,23 @@ export const RateBeerPage = () => {
       console.error("Failed to upload beer review:", error);
     }
   };
+
+  if (showLoadingState) {
+    return (
+      <InfoBlock
+        title="Завантаження пива..."
+        variant="loading"
+      />
+    );
+  }
+  if (searchError) {
+    return (
+      <InfoBlock
+        title={searchError.message}
+        variant="error"
+      />
+    );
+  }
 
   return (
     <>
