@@ -1,3 +1,4 @@
+-- ✅ COMPLETED
 -- -- Migration: Add auth_user_id to users table
 -- -- Run this in your Supabase SQL Editor
 

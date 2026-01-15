@@ -1,6 +1,8 @@
-# Think about lazy loading for some pages
+# перевірити чи приходять усі потрібні дані з усіх ендпоінтів ()
 
-# TODO: get beer from api in loader
+# перевірити що таке http://localhost:5000/api/auth/me
+
+# налаштувати коректне відобрадення та обрахування оцінок
 
 # Think about add search string to the URL
 

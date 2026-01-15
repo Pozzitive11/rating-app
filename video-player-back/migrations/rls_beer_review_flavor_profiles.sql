@@ -1,3 +1,4 @@
+-- ✅ COMPLETED
 -- -- RLS Policies for beer_review_flavor_profiles table
 -- -- Run this in your Supabase SQL Editor
 

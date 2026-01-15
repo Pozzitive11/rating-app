@@ -1,3 +1,4 @@
+-- ✅ COMPLETED
 -- -- Database Trigger: Automatically create user profile when auth user is created
 -- -- Run this in your Supabase SQL Editor
 -- -- 
