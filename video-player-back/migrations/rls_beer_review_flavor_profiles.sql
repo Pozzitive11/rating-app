@@ -1,0 +1,63 @@
+-- -- RLS Policies for beer_review_flavor_profiles table
+-- -- Run this in your Supabase SQL Editor
+
+-- -- Enable RLS
+-- ALTER TABLE beer_review_flavor_profiles ENABLE ROW LEVEL SECURITY;
+
+-- -- Policy: Users can insert flavor profiles for their own reviews
+-- -- This checks that the beer_review belongs to the authenticated user
+-- CREATE POLICY "Users can insert flavor profiles for their own reviews"
+-- ON beer_review_flavor_profiles FOR INSERT
+-- WITH CHECK (
+--   EXISTS (
+--     SELECT 1 FROM beer_reviews
+--     WHERE beer_reviews.id = beer_review_flavor_profiles.beer_review_id
+--     AND beer_reviews.user_id = auth.uid()
+--   )
+-- );
+
+-- -- Policy: Users can view flavor profiles for their own reviews
+-- -- Change to USING (true) if you want all users to see all flavor profiles
+-- CREATE POLICY "Users can view flavor profiles for their own reviews"
+-- ON beer_review_flavor_profiles FOR SELECT
+-- USING (
+--   EXISTS (
+--     SELECT 1 FROM beer_reviews
+--     WHERE beer_reviews.id = beer_review_flavor_profiles.beer_review_id
+--     AND beer_reviews.user_id = auth.uid()
+--   )
+-- );
+
+-- -- Alternative: If you want everyone to see all flavor profiles, use this instead:
+-- -- CREATE POLICY "Users can view all flavor profiles"
+-- -- ON beer_review_flavor_profiles FOR SELECT
+-- -- USING (true);
+
+-- -- Policy: Users can update flavor profiles for their own reviews
+-- CREATE POLICY "Users can update flavor profiles for their own reviews"
+-- ON beer_review_flavor_profiles FOR UPDATE
+-- USING (
+--   EXISTS (
+--     SELECT 1 FROM beer_reviews
+--     WHERE beer_reviews.id = beer_review_flavor_profiles.beer_review_id
+--     AND beer_reviews.user_id = auth.uid()
+--   )
+-- )
+-- WITH CHECK (
+--   EXISTS (
+--     SELECT 1 FROM beer_reviews
+--     WHERE beer_reviews.id = beer_review_flavor_profiles.beer_review_id
+--     AND beer_reviews.user_id = auth.uid()
+--   )
+-- );
+
+-- -- Policy: Users can delete flavor profiles for their own reviews
+-- CREATE POLICY "Users can delete flavor profiles for their own reviews"
+-- ON beer_review_flavor_profiles FOR DELETE
+-- USING (
+--   EXISTS (
+--     SELECT 1 FROM beer_reviews
+--     WHERE beer_reviews.id = beer_review_flavor_profiles.beer_review_id
+--     AND beer_reviews.user_id = auth.uid()
+--   )
+-- );

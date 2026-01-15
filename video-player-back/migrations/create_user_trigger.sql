@@ -1,0 +1,31 @@
+-- -- Database Trigger: Automatically create user profile when auth user is created
+-- -- Run this in your Supabase SQL Editor
+-- -- 
+-- -- IMPORTANT: After adding this trigger, remove the manual user insert from auth.service.ts
+-- -- The trigger handles user profile creation automatically
+
+-- -- Function to create user profile
+-- -- Uses ON CONFLICT to handle cases where user might already exist
+-- CREATE OR REPLACE FUNCTION public.handle_new_user()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+--   INSERT INTO public.users (email, username, auth_user_id, created_at)
+--   VALUES (
+--     NEW.email,
+--     COALESCE(NEW.raw_user_meta_data->>'username', split_part(NEW.email, '@', 1)),
+--     NEW.id,
+--     NOW()
+--   )
+--   ON CONFLICT (auth_user_id) DO NOTHING;  -- Prevents duplicate key errors
+--   RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- -- Trigger to call function on new user creation
+-- CREATE TRIGGER on_auth_user_created
+--   AFTER INSERT ON auth.users
+--   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- -- Optional: Add a comment for documentation
+-- COMMENT ON FUNCTION public.handle_new_user() IS 
+--   'Automatically creates a user profile in public.users when a new auth user is created';
