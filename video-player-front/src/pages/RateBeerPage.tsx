@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BeerListItem } from "@/shared/ui/BeerListItem";
 import { type Beer, uploadBeer } from "@/api/beer/api";
 import {
@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import useSearchBeer from "@/features/beer-search/hooks/useSearchBeer";
 
 export const RateBeerPage = () => {
+  const queryClient = useQueryClient();
   const { beerId } = useParams({
     from: "/rate-beer/$beerId",
   });
@@ -32,6 +33,15 @@ export const RateBeerPage = () => {
     mutationFn: uploadBeer,
     onSuccess: () => {
       toast.success("Оцінка успішно збережена!");
+      queryClient.invalidateQueries({
+        queryKey: ["beer-details", beerId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["my-beer-rating", beerId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["my-ratings"],
+      });
       navigate({ to: "/" });
     },
     onError: error => {
@@ -46,12 +56,13 @@ export const RateBeerPage = () => {
     try {
       const { photos, ...reviewData } = value;
 
-      const beer = {
+      const beer: Beer = {
+        untappdId: selectedBeer.id,
         ...selectedBeer,
         ...reviewData,
         photos: null, // TODO: Implement photo upload to Supabase Storage
       };
-      await uploadBeerAsync(beer as Beer);
+      await uploadBeerAsync(beer);
     } catch (error) {
       console.error("Failed to upload beer review:", error);
     }

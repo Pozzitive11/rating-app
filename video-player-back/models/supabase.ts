@@ -48,6 +48,26 @@ const getClient = (accessToken?: string): SupabaseClient => {
 
 // Helper functions for common operations
 const supabaseHelpers = {
+  getMyBeerRating: async (untappdBeerId: number, userId: string): Promise<Pick<BeerReview, "rating" | "created_at"> | null> => {
+    const { data, error } = await supabase
+      .from("beer_reviews")
+      .select("rating, created_at")
+      .eq("untappd_id", untappdBeerId)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (error) throw new DatabaseError(error.message);
+    return data ?? null;
+  },
+  getMyAllRatings: async (userId: string): Promise<BeerReview[]> => {
+    const { data, error } = await supabase
+      .from("beer_reviews")
+      .select("*")
+      .eq("user_id", userId);
+    if (error) throw new DatabaseError(error.message);
+    return data || [];
+  },
+
   getBeerById: async (id: number): Promise<BeerReview | null> => {
     const { data, error } = await supabase
       .from("beer_reviews")
@@ -73,7 +93,9 @@ const supabaseHelpers = {
 
     const { data, error } = await client
       .from("beer_reviews")
-      .insert(ratingData)
+      .upsert(ratingData, {
+        onConflict: "user_id,untappd_id",
+      })
       .select()
       .single();
 
@@ -106,14 +128,18 @@ const supabaseHelpers = {
 
     const client = getClient(accessToken);
 
+    await client
+      .from("beer_review_flavor_profiles")
+      .delete()
+      .eq("beer_review_id", beerReviewId);
+
     const { error } = await client
       .from("beer_review_flavor_profiles")
-      .upsert(entries, { ignoreDuplicates: true });
+      .insert(entries);
 
     if (error) {
       throw new DatabaseError(
-        `Failed to save beer review flavor profiles: ${
-          error.message || "Unknown error"
+        `Failed to save beer review flavor profiles: ${error.message || "Unknown error"
         }`
       );
     }

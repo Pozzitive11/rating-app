@@ -5,7 +5,7 @@ import { RatingSection } from "@/features/beer-details/components/RatingSection"
 import { AboutSection } from "@/features/beer-details/components/AboutSection";
 import { ImagesSection } from "@/features/beer-details/components/ImagesSection";
 import { BackNavigation, InfoBlock } from "@/shared/ui";
-import { getUntappdBeerDetailsById } from "@/api/beer/api";
+import { getMyBeerRating, getUntappdBeerDetailsById } from "@/api/beer/api";
 
 export const BeerDetailsPage = () => {
   const { beerId } = useParams({
@@ -20,6 +20,15 @@ export const BeerDetailsPage = () => {
     queryKey: ["beer-details", beerId],
     queryFn: () =>
       getUntappdBeerDetailsById(Number(beerId)),
+  });
+
+  const {
+    data: myBeerRating,
+    isLoading: isMyBeerRatingLoading,
+    error: myBeerRatingError,
+  } = useQuery({
+    queryKey: ["my-beer-rating", beerId],
+    queryFn: () => getMyBeerRating(Number(beerId)),
   });
 
   if (isLoading) {
@@ -51,10 +60,12 @@ export const BeerDetailsPage = () => {
       <div className="mb-4">
         <RatingSection
           beerId={beer.id}
-          userRating={3.25}
+          userRating={myBeerRating?.rating}
           communityRating={beer.rating}
           numberOfRatings={beer.numberOfRatings}
-          rateDate={new Date().toISOString()}
+          rateDate={myBeerRating?.created_at}
+          isLoading={isMyBeerRatingLoading}
+          error={myBeerRatingError}
         />
       </div>
       <div className="mb-4">

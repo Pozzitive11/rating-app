@@ -19,13 +19,33 @@ export const RatingSection = ({
   communityRating,
   numberOfRatings,
   rateDate,
+  isLoading,
+  error,
 }: {
   beerId: number;
   userRating?: number;
   communityRating?: number;
   numberOfRatings?: number;
   rateDate?: string;
+  isLoading?: boolean;
+  error?: Error | null;
 }) => {
+  if (isLoading) {
+    return (
+      <InfoBlock
+        title="Завантаження оцінки..."
+        variant="loading"
+      />
+    );
+  }
+  if (error) {
+    return (
+      <InfoBlock
+        title={error.message}
+        variant="error"
+      />
+    );
+  }
   return (
     <Card>
       <CardHeader>

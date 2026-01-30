@@ -6,6 +6,7 @@ import type {
 
 export interface Beer {
   id: number;
+  untappdId?: number;
   name: string;
   brewery: string;
   style: string;
@@ -18,7 +19,9 @@ export interface Beer {
   images: string[];
   description: string;
   glassType: string;
+  photos?: string[] | null;
 }
+
 
 // Get all beers
 export const getBeers = async (
@@ -74,5 +77,19 @@ export const getPresentationStyles = async (): Promise<
 > => {
   return await apiGet<PresentationStyle[]>(
     `/supabase/presentation-styles`
+  );
+};
+
+// Get my beer rating
+export const getMyBeerRating = async (beerId: number) => {
+  return await apiGet<{ rating: number; created_at: string } | null>(
+    `/supabase/beer/${beerId}/my-rating`
+  );
+};
+
+// Get my all ratings
+export const getMyAllRatings = async () => {
+  return await apiGet<Beer[]>(
+    `/supabase/beer/my-all-ratings`
   );
 };

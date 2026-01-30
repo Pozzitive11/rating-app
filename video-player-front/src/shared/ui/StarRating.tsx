@@ -37,12 +37,11 @@ export const StarRating = ({
     []
   );
 
-  const formattedRating = rating.toFixed(1);
+  const formattedRating = rating.toFixed(2);
 
   // Create accessible label
-  const ariaLabel = `Оцінка: ${formattedRating} з 5 зірок, на основі ${numberOfRatings} відгук${
-    numberOfRatings !== 1 ? "ів" : "у"
-  }`;
+  const ariaLabel = `Оцінка: ${formattedRating} з 5 зірок, на основі ${numberOfRatings} відгук${numberOfRatings !== 1 ? "ів" : "у"
+    }`;
 
   const currentStarSize = shortFormat
     ? starSize.SMALL

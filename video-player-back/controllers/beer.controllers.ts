@@ -63,6 +63,48 @@ export const getBeerById = async (
   }
 };
 
+
+/**
+ * Controller: Get a beer rating by user ID and Untappd beer ID
+ * GET /api/supabase/beer/:untappdBeerId/my-rating
+ */
+export const getMyBeerRating = async (
+  req: Request<{ untappdBeerId: string }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    if (!req.user) throw new UnauthorizedError("User not authenticated");
+
+    const beerId = Number(req.params.untappdBeerId);
+    const userId = req.user.id;
+
+    const rating = await beerService.getMyBeerRating(beerId, userId);
+    res.json(rating);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Controller: Get all beer ratings by user ID
+ * GET /api/supabase/beer/my-all-ratings
+ */
+export const getMyAllRatings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+
+  try {
+    if (!req.user) throw new UnauthorizedError("User not authenticated");
+    const userId = req.user.id;
+    const ratings = await beerService.getMyAllRatings(userId);
+    res.json(ratings);
+  } catch (error) {
+    next(error);
+  }
+};
 /**
  * Controller: Create a new beer review
  * POST /api/supabase/beer

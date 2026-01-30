@@ -42,6 +42,7 @@ export class BeerService {
   ): Promise<BeerReview> {
     // Transform API format (camelCase) to DB format (snake_case)
     const dbReviewData: BeerReviewInsert = {
+      untappd_id: reviewData.untappdId || null,
       name: reviewData.name,
       user_id: userId,
       brewery: reviewData.brewery || "",
@@ -88,6 +89,11 @@ export class BeerService {
       accessToken
     );
   }
+  // service
+  async getMyBeerRating(untappdBeerId: number, userId: string): Promise<Pick<BeerReview, "rating" | "created_at"> | null> {
+    const rating = await supabaseHelpers.getMyBeerRating(untappdBeerId, userId);
+    return rating ?? null;
+  }
 
   async searchUntappdBeers(query: string): Promise<OriginalBeer[]> {
     const beers = await fetchUntappdBeers(query);
@@ -108,4 +114,49 @@ export class BeerService {
 
     return beer;
   }
+
+  async getMyAllRatings(
+    userId: string
+  ): Promise<BeerReviewResponse[]> {
+    const ratings = await supabaseHelpers.getMyAllRatings(userId);
+    return ratings.map(mapBeerReviewToResponse);
+  }
 }
+
+type BeerReviewResponse = {
+  id: number;
+  untappdId?: number;
+  name: string;
+  brewery: string;
+  style: string;
+  abv: number;
+  ibu: number;
+  rating: number;
+  userRating: number;
+  numberOfRatings: number;
+  mainImage: string;
+  images: string[];
+  description: string;
+  glassType: string;
+  photos?: string[] | null;
+};
+
+const mapBeerReviewToResponse = (
+  review: BeerReview
+): BeerReviewResponse => ({
+  id: review.untappd_id ?? review.id,
+  untappdId: review.untappd_id ?? undefined,
+  name: review.name,
+  brewery: review.brewery ?? "",
+  style: review.style ?? "",
+  abv: review.abv ?? 0,
+  ibu: review.ibu ?? 0,
+  rating: review.rating,
+  userRating: review.rating,
+  numberOfRatings: review.number_of_ratings ?? 0,
+  mainImage: review.main_image ?? "",
+  images: review.photos ?? [],
+  description: review.description ?? "",
+  glassType: "",
+  photos: review.photos ?? null,
+});

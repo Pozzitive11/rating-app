@@ -16,6 +16,7 @@ import { Route as BeerDetailsBeerIdRouteImport } from './routes/beer-details/$be
 
 const SearchIndexLazyRouteImport = createFileRoute('/search/')()
 const RegisterIndexLazyRouteImport = createFileRoute('/register/')()
+const MyRatingsIndexLazyRouteImport = createFileRoute('/my-ratings/')()
 const LoginIndexLazyRouteImport = createFileRoute('/login/')()
 const RateBeerBeerIdLazyRouteImport = createFileRoute('/rate-beer/$beerId')()
 const AuthCallbackLazyRouteImport = createFileRoute('/auth/callback')()
@@ -36,6 +37,13 @@ const RegisterIndexLazyRoute = RegisterIndexLazyRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() =>
   import('./routes/register/index.lazy').then((d) => d.Route),
+)
+const MyRatingsIndexLazyRoute = MyRatingsIndexLazyRouteImport.update({
+  id: '/my-ratings/',
+  path: '/my-ratings/',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/my-ratings/index.lazy').then((d) => d.Route),
 )
 const LoginIndexLazyRoute = LoginIndexLazyRouteImport.update({
   id: '/login/',
@@ -66,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackLazyRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
   '/login': typeof LoginIndexLazyRoute
+  '/my-ratings': typeof MyRatingsIndexLazyRoute
   '/register': typeof RegisterIndexLazyRoute
   '/search': typeof SearchIndexLazyRoute
 }
@@ -75,6 +84,7 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackLazyRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
   '/login': typeof LoginIndexLazyRoute
+  '/my-ratings': typeof MyRatingsIndexLazyRoute
   '/register': typeof RegisterIndexLazyRoute
   '/search': typeof SearchIndexLazyRoute
 }
@@ -85,6 +95,7 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackLazyRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
   '/login/': typeof LoginIndexLazyRoute
+  '/my-ratings/': typeof MyRatingsIndexLazyRoute
   '/register/': typeof RegisterIndexLazyRoute
   '/search/': typeof SearchIndexLazyRoute
 }
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/rate-beer/$beerId'
     | '/login'
+    | '/my-ratings'
     | '/register'
     | '/search'
   fileRoutesByTo: FileRoutesByTo
@@ -105,6 +117,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/rate-beer/$beerId'
     | '/login'
+    | '/my-ratings'
     | '/register'
     | '/search'
   id:
@@ -114,6 +127,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/rate-beer/$beerId'
     | '/login/'
+    | '/my-ratings/'
     | '/register/'
     | '/search/'
   fileRoutesById: FileRoutesById
@@ -124,6 +138,7 @@ export interface RootRouteChildren {
   AuthCallbackLazyRoute: typeof AuthCallbackLazyRoute
   RateBeerBeerIdLazyRoute: typeof RateBeerBeerIdLazyRoute
   LoginIndexLazyRoute: typeof LoginIndexLazyRoute
+  MyRatingsIndexLazyRoute: typeof MyRatingsIndexLazyRoute
   RegisterIndexLazyRoute: typeof RegisterIndexLazyRoute
   SearchIndexLazyRoute: typeof SearchIndexLazyRoute
 }
@@ -149,6 +164,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterIndexLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-ratings/': {
+      id: '/my-ratings/'
+      path: '/my-ratings'
+      fullPath: '/my-ratings'
+      preLoaderRoute: typeof MyRatingsIndexLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login/': {
@@ -188,6 +210,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCallbackLazyRoute: AuthCallbackLazyRoute,
   RateBeerBeerIdLazyRoute: RateBeerBeerIdLazyRoute,
   LoginIndexLazyRoute: LoginIndexLazyRoute,
+  MyRatingsIndexLazyRoute: MyRatingsIndexLazyRoute,
   RegisterIndexLazyRoute: RegisterIndexLazyRoute,
   SearchIndexLazyRoute: SearchIndexLazyRoute,
 }

@@ -50,6 +50,7 @@ export type Database = {
       beer_reviews: {
         Row: {
           abv: number | null
+          untappd_id: number
           brewery: string | null
           comment: string | null
           created_at: string
@@ -69,6 +70,7 @@ export type Database = {
         }
         Insert: {
           abv?: number | null
+          untappd_id?: number | null
           brewery?: string | null
           comment?: string | null
           created_at?: string
@@ -88,6 +90,7 @@ export type Database = {
         }
         Update: {
           abv?: number | null
+          untappd_id?: number | null
           brewery?: string | null
           comment?: string | null
           created_at?: string

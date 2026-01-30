@@ -12,6 +12,7 @@ export const searchQuerySchema = z.object({
  * This validates incoming request data before mapping to DB format
  */
 export const createBeerReviewSchema = z.object({
+  untappdId: z.number().nullable().optional(),
   name: z.string().min(1, "Beer name is required").trim(),
   brewery: z.string().optional(),
   style: z.string().nullable().optional(),
