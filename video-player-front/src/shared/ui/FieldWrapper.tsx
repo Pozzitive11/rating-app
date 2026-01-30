@@ -1,30 +1,34 @@
 import type { ReactNode } from "react";
-import { Label } from "@/shared/ui/primitives/label";
-import { FieldError } from "./FieldError";
+import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from "./primitives";
 
 interface FieldWrapperProps {
+  htmlFor: string;
   label: string;
+  description?: string;
   required?: boolean;
-  errors?: unknown;
+  errors?: ReactNode;
   children: ReactNode;
 }
 
 export const FieldWrapper = ({
+  htmlFor,
   label,
+  description,
   required = false,
   errors,
   children,
 }: FieldWrapperProps) => {
   return (
-    <div>
-      <Label className="mb-2">
+    <Field>
+      <FieldLabel htmlFor={htmlFor}>
         {label}
         {required && (
           <span className="text-red-500">*</span>
         )}
-      </Label>
-      <div>{children}</div>
-      <FieldError errors={errors} />
-    </div>
+      </FieldLabel>
+      <FieldContent>{children}</FieldContent>
+      {description && <FieldDescription>{description}</FieldDescription>}
+      <FieldError>{errors}</FieldError>
+    </Field >
   );
 };

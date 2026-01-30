@@ -1,5 +1,4 @@
 import { Camera, SaveIcon } from "lucide-react";
-import { Label } from "@/shared/ui/primitives/label";
 import { FlavorProfiles } from "@/features/beer-rating/components/FlavorProfiles";
 import { Input } from "@/shared/ui/primitives/input";
 import { Textarea } from "@/shared/ui/primitives/textarea";
@@ -61,6 +60,7 @@ export const RateForm = ({
             label="Ваша оцінка"
             required
             errors={field.state.meta.errors}
+            htmlFor="rating"
           >
             <RangeRating
               rating={field.state.value}
@@ -83,13 +83,12 @@ export const RateForm = ({
             label="Смакові Профілі"
             required
             errors={field.state.meta.errors}
+            htmlFor="flavorProfiles"
           >
             <FlavorProfiles
               value={field.state.value}
               onChange={value => field.handleChange(value)}
-              aria-invalid={
-                field.state.meta.errors.length > 0
-              }
+              aria-invalid={!isEmpty(field.state.meta.errors)}
             />
           </FieldWrapper>
         )}
@@ -107,6 +106,7 @@ export const RateForm = ({
             label="Стиль Подачі"
             required
             errors={field.state.meta.errors}
+            htmlFor="presentationStyle"
           >
             <PresentationStyle
               value={field.state.value}
@@ -118,60 +118,87 @@ export const RateForm = ({
       <form.Field
         name="location"
         children={field => (
-          <div>
-            <Label className="mb-2">Місце</Label>
+          <FieldWrapper
+            label="Місце"
+            errors={field.state.meta.errors}
+            htmlFor="location"
+          >
             <Input
+              id="location"
               type="text"
               value={field.state.value}
               onChange={e =>
                 field.handleChange(e.target.value)
               }
+              onBlur={field.handleBlur}
               placeholder="Де ти пив це пиво?"
+              aria-invalid={!isEmpty(field.state.meta.errors)}
             />
-          </div>
+          </FieldWrapper>
         )}
       />
       <form.Field
         name="comment"
         children={field => (
-          <div>
-            <Label className="mb-2">Коментар</Label>
+          <FieldWrapper
+            label="Коментар"
+            errors={field.state.meta.errors}
+            htmlFor="comment"
+          >
             <Textarea
+              id="comment"
               value={field.state.value}
               onChange={e =>
                 field.handleChange(e.target.value)
               }
+              onBlur={field.handleBlur}
               placeholder="Що ти думаєш про це пиво?"
+              aria-invalid={!isEmpty(field.state.meta.errors)}
             />
-          </div>
+          </FieldWrapper>
         )}
       />
       <form.Field
         name="photos"
         mode="array"
-        children={field => (
-          <div>
-            <Label className="mb-2">Фото</Label>
-            <div className="relative">
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={e => {
-                  const files = e.target.files;
-                  if (files) {
-                    field.handleChange(Array.from(files));
-                  }
-                }}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-              <div className="flex items-center justify-center gap-2 w-full h-10 px-4 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors">
-                <Camera className="w-5 h-5 text-black" />
-                <span className="text-black font-medium">
-                  Додати Фото
-                </span>
-              </div>
-            </div>
+        children={() => (
+          // <FieldWrapper
+          //   label="Фото"
+          //   errors={field.state.meta.errors}
+          //   htmlFor="photos"
+          // >
+          //   <div className="relative">
+          //     <input
+          //       id="photos"
+          //       type="file"
+          //       multiple
+          //       accept="image/*"
+          //       onChange={e => {
+          //         const files = e.target.files;
+          //         if (files) {
+          //           field.handleChange(Array.from(files));
+          //         }
+          //       }}
+          //       onBlur={field.handleBlur}
+          //       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          //       aria-invalid={!isEmpty(field.state.meta.errors)}
+          //     />
+          //     <div className="flex items-center justify-center gap-2 w-full h-10 px-4 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors">
+          //       <Camera className="w-5 h-5 text-black" />
+          //       <span className="text-black font-medium">
+          //         Додати Фото
+          //       </span>
+          //     </div>
+          //   </div>
+          // </FieldWrapper>
+          <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-center">
+            <Camera className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+            <p className="text-sm text-gray-600 font-medium mb-1">
+              Завантаження фото
+            </p>
+            <p className="text-xs text-gray-500">
+              Функціонал буде реалізовано пізніше
+            </p>
           </div>
         )}
       />

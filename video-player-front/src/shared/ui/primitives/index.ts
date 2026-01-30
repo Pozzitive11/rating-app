@@ -10,3 +10,4 @@ export { ThemeProvider, useTheme } from "../theme-provider";
 export * from "./tooltip";
 export * from "./popover";
 export * from "./dialog";
+export * from "./field";

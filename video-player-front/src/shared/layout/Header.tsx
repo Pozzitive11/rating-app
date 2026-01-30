@@ -26,7 +26,7 @@ const Header = () => {
       <div className="container mx-auto max-w-md lg:max-w-lg xl:max-w-xl">
         <div className="flex h-14 items-center justify-between px-4">
           {/* Logo/Brand */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer">
             <Link to="/" className="text-lg font-semibold">
               Beer Rating
             </Link>
@@ -39,6 +39,7 @@ const Header = () => {
                 variant="ghost"
                 size="icon"
                 aria-label="Login or Register"
+                className="cursor-pointer"
               >
                 <User className="size-5" />
               </Button>
@@ -49,7 +50,7 @@ const Header = () => {
             >
               <Button
                 variant="ghost"
-                className="w-full justify-start gap-2"
+                className="w-full justify-start gap-2 cursor-pointer"
                 onClick={handleLogoutClick}
                 disabled={isLoading}
               >

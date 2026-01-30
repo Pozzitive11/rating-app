@@ -5,6 +5,7 @@ import {
   validateEmail,
   validatePassword,
 } from "../utils/validators";
+import { isEmpty } from "@/shared/utils";
 
 export interface LoginFormValues {
   email: string;
@@ -51,6 +52,7 @@ export const LoginForm = ({
               label="Електронна пошта"
               required
               errors={field.state.meta.errors}
+              htmlFor="email"
             >
               <Input
                 type="email"
@@ -60,9 +62,7 @@ export const LoginForm = ({
                 }
                 onBlur={field.handleBlur}
                 placeholder="Введіть вашу email"
-                aria-invalid={
-                  field.state.meta.errors.length > 0
-                }
+                aria-invalid={!isEmpty(field.state.meta.errors)}
               />
             </FieldWrapper>
           )}
@@ -79,6 +79,7 @@ export const LoginForm = ({
               label="Пароль"
               required
               errors={field.state.meta.errors}
+              htmlFor="password"
             >
               <Input
                 type="password"
@@ -88,9 +89,7 @@ export const LoginForm = ({
                 }
                 onBlur={field.handleBlur}
                 placeholder="Введіть ваш пароль"
-                aria-invalid={
-                  field.state.meta.errors.length > 0
-                }
+                aria-invalid={!isEmpty(field.state.meta.errors)}
               />
             </FieldWrapper>
           )}
@@ -109,7 +108,7 @@ export const LoginForm = ({
                 !canSubmit || isSubmitting || isLoading
               }
               isLoading={isSubmitting || isLoading}
-              className="w-full"
+              className="w-full cursor-pointer"
             >
               Увійти
             </Button>

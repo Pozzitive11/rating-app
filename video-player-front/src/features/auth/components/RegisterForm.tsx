@@ -5,6 +5,7 @@ import {
   validateEmail,
   validatePassword,
 } from "../utils/validators";
+import { isEmpty } from "@/shared/utils";
 
 export interface RegisterFormValues {
   email: string;
@@ -67,6 +68,7 @@ export const RegisterForm = ({
               label="Електронна пошта"
               required
               errors={field.state.meta.errors}
+              htmlFor="email"
             >
               <Input
                 type="email"
@@ -95,6 +97,7 @@ export const RegisterForm = ({
               label="Пароль"
               required
               errors={field.state.meta.errors}
+              htmlFor="password"
             >
               <Input
                 type="password"
@@ -104,9 +107,7 @@ export const RegisterForm = ({
                 }
                 onBlur={field.handleBlur}
                 placeholder="Введіть ваш пароль"
-                aria-invalid={
-                  field.state.meta.errors.length > 0
-                }
+                aria-invalid={!isEmpty(field.state.meta.errors)}
               />
             </FieldWrapper>
           )}
@@ -135,6 +136,7 @@ export const RegisterForm = ({
               label="Підтвердіть пароль"
               required
               errors={field.state.meta.errors}
+              htmlFor="confirmPassword"
             >
               <Input
                 type="password"
@@ -144,9 +146,7 @@ export const RegisterForm = ({
                 }
                 onBlur={field.handleBlur}
                 placeholder="Підтвердіть ваш пароль"
-                aria-invalid={
-                  field.state.meta.errors.length > 0
-                }
+                aria-invalid={!isEmpty(field.state.meta.errors)}
               />
             </FieldWrapper>
           )}
