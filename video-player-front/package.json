@@ -41,6 +41,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
+    "@nx/eslint": "^20.5.0",
+    "@nx/vite": "^20.5.0",
     "@tanstack/react-router-devtools": "^1.87.9",
     "@tanstack/router-vite-plugin": "^1.87.8",
     "@types/node": "^24.1.0",
@@ -53,11 +55,12 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "jiti": "2.4.2",
+    "nx": "^20.5.0",
     "prettier": "^3.6.2",
     "tw-animate-css": "^1.3.6",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
-    "vite": "^7.0.4",
+    "vite": "^6.0.0",
     "vitest": "^3.0.0"
   },
   "nx": {}
