@@ -1,6 +1,7 @@
+import { env } from "@/config/env";
 import { tokenUtils } from "@/features/auth/utils/token.utils";
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = env.API_BASE_URL;
 
 export interface ApiClientOptions extends RequestInit {
   skipAuth?: boolean; // Option to skip adding auth token
