@@ -14,6 +14,7 @@ import { requestTimeout } from "./middleware/timeout.middleware";
 
 const app = express();
 const PORT = config.PORT;
+const isVercel = Boolean(process.env["VERCEL"]);
 
 // Middleware
 app.use(
@@ -87,9 +88,11 @@ app.use("*", (req: Request, res: Response) => {
 // Error handling middleware
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`API documentation available at http://localhost:${PORT}`);
-});
+if (!isVercel) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log(`API documentation available at http://localhost:${PORT}`);
+  });
+}
 
 export default app;
