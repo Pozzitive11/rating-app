@@ -42,22 +42,6 @@ app.use(morgan("combined"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files (videos, images, etc.) with proper headers
-app.use(
-  "/uploads",
-  (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
-    res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Range, Content-Type");
-    res.header(
-      "Access-Control-Expose-Headers",
-      "Content-Range, Accept-Ranges, Content-Length"
-    );
-    next();
-  },
-  express.static(path.join(__dirname, "uploads"))
-);
-
 // Routes
 app.get("/", (req: Request, res: Response) => {
   res.json({
