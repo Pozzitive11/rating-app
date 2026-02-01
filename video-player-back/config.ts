@@ -12,8 +12,8 @@ const envSchema = z.object({
     .default("development"),
   CORS_ORIGIN: z.string().optional(),
   CORS_ORIGINS: z.string().optional(), // Comma-separated list of origins
-  SUPABASE_URL: z.string().url("SUPABASE_URL must be a valid URL"),
-  SUPABASE_KEY: z.string().min(1, "SUPABASE_KEY is required"),
+  SUPABASE_URL: z.string().url("SUPABASE_URL must be a valid URL").optional(),
+  SUPABASE_KEY: z.string().min(1, "SUPABASE_KEY is required").optional(),
   API_BASE_URL: z.string().default("/api"),
   REQUEST_TIMEOUT_MS: z
     .string()
@@ -86,4 +86,12 @@ export const config = {
 
   // Request Timeout Configuration
   REQUEST_TIMEOUT_MS: validatedEnv.REQUEST_TIMEOUT_MS,
+};
+
+export const assertSupabaseConfig = (): void => {
+  if (!config.SUPABASE_URL || !config.SUPABASE_KEY) {
+    throw new Error(
+      "Missing Supabase configuration. SUPABASE_URL and SUPABASE_KEY must be set."
+    );
+  }
 };

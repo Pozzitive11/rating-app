@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { supabase } from "../models/supabase";
+import { getSupabaseClient } from "../models/supabase";
 import { UnauthorizedError } from "./errorHandler";
 import { extractToken } from "../utils/auth.utils";
 
@@ -13,7 +13,7 @@ export const authenticate = async (
     const {
       data: { user },
       error,
-    } = await supabase.auth.getUser(token);
+    } = await getSupabaseClient().auth.getUser(token);
 
     if (error || !user) {
       throw new UnauthorizedError("Invalid or expired token");

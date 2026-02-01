@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { config } from "../config";
+import { assertSupabaseConfig, config } from "../config";
 import {
   BeerReview,
   BeerReviewInsert,
@@ -8,24 +8,22 @@ import {
 } from "../types";
 import { DatabaseError } from "../middleware/errorHandler";
 
-// Validate Supabase configuration
-if (!config.SUPABASE_URL || !config.SUPABASE_KEY) {
-  throw new Error(
-    "Missing Supabase configuration. SUPABASE_URL and SUPABASE_KEY must be set."
-  );
-}
+let supabase: SupabaseClient | null = null;
 
-// Create Supabase client for general use (with anon key)
-const supabase: SupabaseClient = createClient(
-  config.SUPABASE_URL,
-  config.SUPABASE_KEY
-);
+export const getSupabaseClient = (): SupabaseClient => {
+  assertSupabaseConfig();
+  if (!supabase) {
+    supabase = createClient(config.SUPABASE_URL!, config.SUPABASE_KEY!);
+  }
+  return supabase;
+};
 
 // Helper function to create an authenticated Supabase client
 // This creates a client that uses the access token for RLS policies
 export const createAuthenticatedClient = (
   accessToken: string
 ): SupabaseClient => {
+  assertSupabaseConfig();
   const client = createClient(config.SUPABASE_URL!, config.SUPABASE_KEY!, {
     global: {
       headers: {
@@ -43,13 +41,13 @@ export const createAuthenticatedClient = (
 
 // Helper function to get the appropriate client (DRY principle)
 const getClient = (accessToken?: string): SupabaseClient => {
-  return accessToken ? createAuthenticatedClient(accessToken) : supabase;
+  return accessToken ? createAuthenticatedClient(accessToken) : getSupabaseClient();
 };
 
 // Helper functions for common operations
 const supabaseHelpers = {
   getMyBeerRating: async (untappdBeerId: number, userId: string): Promise<Pick<BeerReview, "rating" | "created_at"> | null> => {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from("beer_reviews")
       .select("rating, created_at")
       .eq("untappd_id", untappdBeerId)
@@ -60,7 +58,7 @@ const supabaseHelpers = {
     return data ?? null;
   },
   getMyAllRatings: async (userId: string): Promise<BeerReview[]> => {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from("beer_reviews")
       .select("*")
       .eq("user_id", userId);
@@ -69,7 +67,7 @@ const supabaseHelpers = {
   },
 
   getBeerById: async (id: number): Promise<BeerReview | null> => {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from("beer_reviews")
       .select("*")
       .eq("id", id)
@@ -146,7 +144,9 @@ const supabaseHelpers = {
   },
 
   getFlavorProfiles: async (): Promise<FlavorProfile[]> => {
-    const { data, error } = await supabase.from("flavor_profiles").select("*");
+    const { data, error } = await getSupabaseClient()
+      .from("flavor_profiles")
+      .select("*");
 
     if (error) {
       throw new DatabaseError(
@@ -158,7 +158,7 @@ const supabaseHelpers = {
   },
 
   getPresentationStyles: async (): Promise<PresentationStyle[]> => {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from("presentation_styles")
       .select("*");
 
@@ -172,4 +172,4 @@ const supabaseHelpers = {
   },
 };
 
-export { supabase, supabaseHelpers };
+export { supabaseHelpers };

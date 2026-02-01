@@ -1,9 +1,9 @@
-import { supabase, createAuthenticatedClient } from "../models/supabase";
+import { getSupabaseClient, createAuthenticatedClient } from "../models/supabase";
 import { AuthResponse, LoginRequest, RegisterRequest } from "../types/auth";
 
 export class AuthService {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await getSupabaseClient().auth.signInWithPassword({
       email: credentials.email,
       password: credentials.password,
     });
@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   async register(userData: RegisterRequest): Promise<AuthResponse> {
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await getSupabaseClient().auth.signUp({
       email: userData.email,
       password: userData.password,
     });
@@ -73,7 +73,7 @@ export class AuthService {
     const {
       data: { user },
       error,
-    } = await supabase.auth.getUser(token);
+    } = await getSupabaseClient().auth.getUser(token);
     if (error) throw new Error(error.message);
     return user;
   }
