@@ -6,7 +6,7 @@ const envSchema = z.object({
     .string()
     .transform((val) => parseInt(val, 10))
     .pipe(z.number().int().positive())
-    .default(5000),
+    .default("5000"),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
@@ -19,7 +19,7 @@ const envSchema = z.object({
     .string()
     .transform((val) => parseInt(val, 10))
     .pipe(z.number().int().positive())
-    .default(30000), // 30 seconds default
+    .default("30000"), // 30 seconds default
 });
 
 // Parse and validate environment variables

@@ -41,12 +41,12 @@ export const createBeerReviewSchema: z.ZodType<CreateBeerReviewInput> =
       .number()
       .min(0.25, "Rating must be at least 0.25")
       .max(5, "Rating must be at most 5"),
-    link: z.url().nullable().optional(),
-    mainImage: z.url().nullable().optional(),
+    link: z.string().url().nullable().optional(),
+    mainImage: z.string().url().nullable().optional(),
     description: z.string().nullable().optional(),
     comment: z.string().nullable().optional(),
     location: z.string().nullable().optional(),
-    photos: z.array(z.url()).nullable().optional(),
+    photos: z.array(z.string().url()).nullable().optional(),
     flavorProfiles: z.array(z.number()).optional(),
     presentationStyle: z.number().nullable().optional(),
   });
