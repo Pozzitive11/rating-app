@@ -1,6 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BeerListItem } from "@/shared/ui/BeerListItem";
-import { type Beer, uploadBeer } from "@/api/beer/api";
+import {
+  type Beer,
+  getUntappdBeerDetailsById,
+  uploadBeer,
+} from "@/api/beer/api";
 import {
   RateForm,
   type RateFormValues,
@@ -11,7 +15,6 @@ import {
   useParams,
 } from "@tanstack/react-router";
 import { toast } from "sonner";
-import useSearchBeer from "@/features/beer-search/hooks/useSearchBeer";
 
 export const RateBeerPage = () => {
   const queryClient = useQueryClient();
@@ -20,12 +23,20 @@ export const RateBeerPage = () => {
   });
   const navigate = useNavigate();
 
-  const { searchResults, showLoadingState, searchError } =
-    useSearchBeer();
+  const parsedBeerId = Number(beerId);
+  const isBeerIdValid = Number.isFinite(parsedBeerId);
 
-  const selectedBeer = searchResults.find(
-    beer => beer.id === Number(beerId)
-  );
+  const {
+    data: selectedBeer,
+    isLoading: isBeerLoading,
+    error: beerError,
+  } = useQuery({
+    queryKey: ["untappd-beer", parsedBeerId],
+    queryFn: () => getUntappdBeerDetailsById(parsedBeerId),
+    enabled: isBeerIdValid,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   const {
     mutateAsync: uploadBeerAsync,
     isPending: isUploading,
@@ -68,7 +79,7 @@ export const RateBeerPage = () => {
     }
   };
 
-  if (showLoadingState) {
+  if (isBeerLoading) {
     return (
       <InfoBlock
         title="Завантаження пива..."
@@ -76,10 +87,10 @@ export const RateBeerPage = () => {
       />
     );
   }
-  if (searchError) {
+  if (beerError instanceof Error) {
     return (
       <InfoBlock
-        title={searchError.message}
+        title={beerError.message}
         variant="error"
       />
     );

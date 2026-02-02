@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 const useSearchBeer = () => {
-  const [searchTerm, setSearchTerm] = useState("mova");
+  const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const {
@@ -19,6 +19,8 @@ const useSearchBeer = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
   });
+
+  console.log('searchResults in hook', searchResults);
 
   const hasSearchTerm = !isEmpty(debouncedSearchTerm);
   const hasDebouncedSearchTerm = !isEmpty(
