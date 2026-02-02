@@ -3,6 +3,7 @@ import { assertSupabaseConfig, config } from "../config";
 import {
   BeerReview,
   BeerReviewInsert,
+  BeerReviewRatingSummary,
   FlavorProfile,
   PresentationStyle,
 } from "../types";
@@ -46,10 +47,13 @@ const getClient = (accessToken?: string): SupabaseClient => {
 
 // Helper functions for common operations
 const supabaseHelpers = {
-  getMyBeerRating: async (untappdBeerId: number, userId: string): Promise<Pick<BeerReview, "rating" | "created_at"> | null> => {
+  getMyBeerRating: async (
+    untappdBeerId: number,
+    userId: string
+  ): Promise<BeerReviewRatingSummary | null> => {
     const { data, error } = await getSupabaseClient()
       .from("beer_reviews")
-      .select("rating, created_at")
+      .select("untappd_rating, community_rating, community_number_of_ratings, created_at")
       .eq("untappd_id", untappdBeerId)
       .eq("user_id", userId)
       .maybeSingle();
@@ -64,6 +68,28 @@ const supabaseHelpers = {
       .eq("user_id", userId);
     if (error) throw new DatabaseError(error.message);
     return data || [];
+  },
+  getCommunityRating: async (
+    untappdBeerId: number
+  ): Promise<{
+    communityRating: number | null;
+    communityNumberOfRatings: number;
+  }> => {
+    const { data, error } = await getSupabaseClient()
+      .from("beer_reviews")
+      .select("untappd_rating")
+      .eq("untappd_id", untappdBeerId);
+
+    if (error) throw new DatabaseError(error.message);
+    if (!data || data.length === 0) {
+      return { communityRating: null, communityNumberOfRatings: 0 };
+    }
+
+    const total = data.reduce((sum, row) => sum + row.untappd_rating, 0);
+    return {
+      communityRating: total / data.length,
+      communityNumberOfRatings: data.length,
+    };
   },
 
   getBeerById: async (id: number): Promise<BeerReview | null> => {

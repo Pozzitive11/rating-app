@@ -5,10 +5,10 @@ import { RatingButton, Rating } from "./primitives";
 interface StarRatingProps {
   rating: number;
   numberOfRatings?: number;
-  shortFormat?: boolean;
-  showRatingValue?: boolean;
+  shortFormat: boolean;
+  showRatingValue: boolean;
   className?: string;
-  isShowStatistics?: boolean;
+  isShowStatistics: boolean;
 }
 
 const starSize = {

@@ -47,7 +47,8 @@ export class BeerService {
       user_id: userId,
       brewery: reviewData.brewery || "",
       style: reviewData.style || null,
-      rating: reviewData.rating,
+      untappd_rating: reviewData.untappdRating,
+      user_rating: reviewData.userRating,
       abv: reviewData.abv || null,
       ibu: reviewData.ibu || null,
       link: reviewData.link || null,
@@ -90,9 +91,16 @@ export class BeerService {
     );
   }
   // service
-  async getMyBeerRating(untappdBeerId: number, userId: string): Promise<Pick<BeerReview, "rating" | "created_at"> | null> {
+  async getMyBeerRating(
+    untappdBeerId: number,
+    userId: string
+  ): Promise<{ rating: number; created_at: string } | null> {
     const rating = await supabaseHelpers.getMyBeerRating(untappdBeerId, userId);
-    return rating ?? null;
+    if (!rating) return null;
+    return {
+      rating: rating.untappd_rating,
+      created_at: rating.created_at,
+    };
   }
 
   async searchUntappdBeers(query: string): Promise<OriginalBeer[]> {
@@ -112,7 +120,12 @@ export class BeerService {
       throw new NotFoundError(`Beer with id "${id}" not found`);
     }
 
-    return beer;
+    const community = await supabaseHelpers.getCommunityRating(id);
+    return {
+      ...beer,
+      communityRating: community.communityRating,
+      communityNumberOfRatings: community.communityNumberOfRatings,
+    };
   }
 
   async getMyAllRatings(
@@ -131,9 +144,7 @@ type BeerReviewResponse = {
   style: string;
   abv: number;
   ibu: number;
-  rating: number;
-  userRating: number;
-  numberOfRatings: number;
+  user_rating: number;
   mainImage: string;
   images: string[];
   description: string;
@@ -151,9 +162,7 @@ const mapBeerReviewToResponse = (
   style: review.style ?? "",
   abv: review.abv ?? 0,
   ibu: review.ibu ?? 0,
-  rating: review.rating,
-  userRating: review.rating,
-  numberOfRatings: review.number_of_ratings ?? 0,
+  user_rating: review.untappd_rating,
   mainImage: review.main_image ?? "",
   images: review.photos ?? [],
   description: review.description ?? "",

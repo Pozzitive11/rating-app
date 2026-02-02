@@ -59,12 +59,14 @@ export const RateForm = ({
           <FieldWrapper
             label="Ваша оцінка"
             required
-            errors={field.state.meta.errors}
             htmlFor="rating"
           >
             <RangeRating
               rating={field.state.value}
               onRate={rating => field.handleChange(rating)}
+              errorText={
+                field.state.meta.errors?.[0] as string | undefined
+              }
             />
           </FieldWrapper>
         )}

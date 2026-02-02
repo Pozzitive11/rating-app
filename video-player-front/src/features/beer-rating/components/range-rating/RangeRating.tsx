@@ -16,9 +16,11 @@ const RATING_CONFIG = {
 export const RangeRating = ({
   rating,
   onRate,
+  errorText,
 }: {
   rating: number;
   onRate: (rating: number) => void;
+  errorText?: string;
 }) => {
   const { max, step, ranges, notRatedText } = RATING_CONFIG;
   const percentage = (rating / max) * 100;
@@ -64,10 +66,13 @@ export const RangeRating = ({
         </div>
       </div>
       <div className="text-center">
-        <span className="text-lg font-semibold">
+        <span
+          className={`text-lg font-semibold ${errorText ? "text-red-500" : ""
+            }`}
+        >
           {rating > 0
             ? `${parseFloat(rating.toFixed(2))}/${max}`
-            : notRatedText}
+            : errorText || notRatedText}
         </span>
         {rating > 0 && (
           <div className="text-sm text-muted-foreground">

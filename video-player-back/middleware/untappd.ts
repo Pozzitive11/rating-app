@@ -46,7 +46,9 @@ function extractBeerData(
   const style = $el.find(".style").text().trim();
 
   const ratingText = $el.find(".num").first().text().trim() || null;
-  const rating = ratingText ? +ratingText.replace(/[()]/g, "") : null;
+  const untappdRating = ratingText
+    ? +ratingText.replace(/[()]/g, "")
+    : null;
 
   const link =
     options?.link ||
@@ -67,7 +69,7 @@ function extractBeerData(
     name,
     brewery,
     style,
-    rating,
+    untappdRating,
     link,
     mainImage,
     abv,
@@ -139,8 +141,13 @@ export async function fetchUntappdBeerDetailsById(
 
     const description = $(".beer-descrption-read-less").text().trim() || null;
     const ratersText = $(".raters").text().trim() || "0";
-    const numberOfRatings = parseInt(ratersText.replace(/[^\d]/g, "")) || 0;
-    return Promise.resolve({ ...beer, numberOfRatings, description });
+    const untappdNumberOfRatings =
+      parseInt(ratersText.replace(/[^\d]/g, "")) || 0;
+    return Promise.resolve({
+      ...beer,
+      untappdNumberOfRatings,
+      description,
+    });
   } catch (error) {
     console.error(
       `Error fetching beer details ${sanitizedId}:`,

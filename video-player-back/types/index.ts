@@ -4,6 +4,10 @@ export type FlavorProfile = Tables<"flavor_profiles">;
 export type PresentationStyle = Tables<"presentation_styles">;
 export type BeerReview = Tables<"beer_reviews">;
 export type BeerReviewInsert = TablesInsert<"beer_reviews">;
+export type BeerReviewRatingSummary = Pick<
+  BeerReview,
+  "untappd_rating" | "community_rating" | "community_number_of_ratings" | "created_at"
+>;
 // Beer-related types
 export interface OriginalBeer {
   id: number;
@@ -14,8 +18,11 @@ export interface OriginalBeer {
   style: string;
   abv: number | null;
   ibu: number | null;
-  rating: number | null;
-  numberOfRatings?: number;
+  untappdRating: number | null;
+  untappdNumberOfRatings?: number;
+  communityRating?: number | null;
+  communityNumberOfRatings?: number | null;
+  userRating: number | null;
   mainImage: string | null;
   link: string;
   description?: string | null;

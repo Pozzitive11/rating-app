@@ -12,9 +12,11 @@ export interface Beer {
   style: string;
   abv: number;
   ibu: number;
-  rating: number;
-  userRating?: number;
-  numberOfRatings: number;
+  userRating: number | null;
+  untappdRating: number | null;
+  untappdNumberOfRatings: number | null;
+  communityRating: number | null;
+  communityNumberOfRatings: number | null;
   mainImage: string;
   images: string[];
   description: string;

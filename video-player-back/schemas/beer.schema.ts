@@ -18,7 +18,8 @@ export type CreateBeerReviewInput = {
   style?: string | null | undefined;
   abv?: number | null | undefined;
   ibu?: number | null | undefined;
-  rating: number;
+  untappdRating: number | null;
+  userRating: number | null;
   link?: string | null | undefined;
   mainImage?: string | null | undefined;
   description?: string | null | undefined;
@@ -37,10 +38,11 @@ export const createBeerReviewSchema: z.ZodType<CreateBeerReviewInput> =
     style: z.string().nullable().optional(),
     abv: z.number().nullable().optional(),
     ibu: z.number().nullable().optional(),
-    rating: z
+    untappdRating: z
       .number()
       .min(0.25, "Rating must be at least 0.25")
       .max(5, "Rating must be at most 5"),
+    userRating: z.number().nullable(),
     link: z.string().url().nullable().optional(),
     mainImage: z.string().url().nullable().optional(),
     description: z.string().nullable().optional(),

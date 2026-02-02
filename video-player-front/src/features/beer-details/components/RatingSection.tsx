@@ -12,12 +12,16 @@ import {
   StarRating,
 } from "@/shared/ui";
 import { format } from "date-fns";
+import { formatNumber } from "@/shared/utils/format-number";
+import { Beer, Users } from "lucide-react";
 
 export const RatingSection = ({
   beerId,
   userRating,
   communityRating,
   numberOfRatings,
+  untappdRating,
+  untappdNumberOfRatings,
   rateDate,
   isLoading,
   error,
@@ -26,10 +30,18 @@ export const RatingSection = ({
   userRating?: number;
   communityRating?: number;
   numberOfRatings?: number;
+  untappdRating?: number;
+  untappdNumberOfRatings?: number;
   rateDate?: string;
   isLoading?: boolean;
   error?: Error | null;
 }) => {
+  const formatRatingValue = (value: number) =>
+    value
+      .toFixed(2)
+      .replace(/\.00$/, ".0")
+      .replace(/(\.\d)0$/, "$1");
+
   if (isLoading) {
     return (
       <InfoBlock
@@ -91,25 +103,77 @@ export const RatingSection = ({
           )}
         </div>
         <Separator className="my-4" />
-        <div className="text-center space-y-2">
+        <div className="rounded-xl border border-border/60 bg-background p-4">
           {communityRating ? (
-            <>
-              <p className="text-lg font-medium">
-                Оцінка Спільноти
-              </p>
-              <div className="flex items-center justify-center flex-col">
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-foreground/80 text-background">
+                    <Users className="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                  <span>Оцінка спільноти</span>
+                </div>
                 <StarRating
                   rating={communityRating}
                   numberOfRatings={numberOfRatings}
-                  shortFormat={false}
+                  shortFormat
+                  showRatingValue={false}
                 />
               </div>
-            </>
+              <div className="text-right">
+                <p className="text-2xl font-semibold text-foreground">
+                  {formatRatingValue(communityRating)}
+                </p>
+                {numberOfRatings !== undefined && (
+                  <p className="text-sm text-muted-foreground">
+                    {formatNumber(numberOfRatings)}{" "}
+                    {numberOfRatings === 1 ? "відгук" : "відгуків"}
+                  </p>
+                )}
+              </div>
+            </div>
           ) : (
             <InfoBlock
               title="Оцінка Спільноти відсутня"
               variant="info"
             />
+          )}
+        </div>
+        <Separator className="my-4" />
+        <div className="rounded-xl border border-amber-200/70 bg-amber-50/40 p-4">
+          {untappdRating ? (
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm font-medium text-amber-700">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-white">
+                    <Beer className="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                  <span>Untappd</span>
+                </div>
+                <StarRating
+                  rating={untappdRating}
+                  numberOfRatings={untappdNumberOfRatings}
+                  shortFormat
+                  showRatingValue={false}
+                  className="text-amber-600"
+                />
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-semibold text-amber-700">
+                  {formatRatingValue(untappdRating)}
+                </p>
+                {untappdNumberOfRatings !== undefined && (
+                  <p className="text-sm text-amber-700/80">
+                    {formatNumber(untappdNumberOfRatings)}{" "}
+                    {untappdNumberOfRatings === 1
+                      ? "відгук"
+                      : "відгуків"}
+                  </p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <InfoBlock title="Оцінка Untappd відсутня" variant="info" />
           )}
         </div>
       </CardContent>

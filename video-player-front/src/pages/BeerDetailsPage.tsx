@@ -61,8 +61,10 @@ export const BeerDetailsPage = () => {
         <RatingSection
           beerId={beer.id}
           userRating={myBeerRating?.rating}
-          communityRating={beer.rating}
-          numberOfRatings={beer.numberOfRatings}
+          communityRating={beer.communityRating}
+          communityNumberOfRatings={beer.communityNumberOfRatings}
+          untappdRating={beer.untappdRating}
+          untappdNumberOfRatings={beer.untappdNumberOfRatings}
           rateDate={myBeerRating?.created_at}
           isLoading={isMyBeerRatingLoading}
           error={myBeerRatingError}

@@ -115,7 +115,7 @@ Thumbs.db
 .nx/workspace-data/
 
 # Cursor
-.cursor/rules/nx-rules.mdc
+.cursor/
 .github/instructions/nx.instructions.md
 
 # Vite
@@ -140,3 +140,4 @@ vitest.config.*.timestamp*
 # Local configuration
 config.local.js
 config.local.json
+
