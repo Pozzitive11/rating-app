@@ -1,12 +1,12 @@
+import dotenv from "dotenv";
 import { z } from "zod";
+
+// Ensure environment variables are loaded before parsing
+dotenv.config();
 
 // Environment variables schema
 const envSchema = z.object({
-  PORT: z
-    .string()
-    .transform((val) => parseInt(val, 10))
-    .pipe(z.number().int().positive())
-    .default("5000"),
+  PORT: z.coerce.number().int().positive().default(5000),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
@@ -15,11 +15,11 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().url("SUPABASE_URL must be a valid URL").optional(),
   SUPABASE_KEY: z.string().min(1, "SUPABASE_KEY is required").optional(),
   API_BASE_URL: z.string().default("/api"),
-  REQUEST_TIMEOUT_MS: z
-    .string()
-    .transform((val) => parseInt(val, 10))
-    .pipe(z.number().int().positive())
-    .default("30000"), // 30 seconds default
+  REQUEST_TIMEOUT_MS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(30000), // 30 seconds default
 });
 
 // Parse and validate environment variables
@@ -45,6 +45,15 @@ const parseEnv = () => {
 };
 
 const validatedEnv = parseEnv();
+
+// Fail fast in production when CORS is not configured
+if (
+  validatedEnv.NODE_ENV !== "development" &&
+  !validatedEnv.CORS_ORIGIN &&
+  !validatedEnv.CORS_ORIGINS
+) {
+  throw new Error("CORS_ORIGIN or CORS_ORIGINS must be set in production");
+}
 
 // Parse CORS origins from environment variable or use defaults for development
 const getCorsOrigins = (): string[] => {
