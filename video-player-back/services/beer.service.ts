@@ -1,12 +1,12 @@
-import { supabaseHelpers } from "@/models/supabase";
-import { NotFoundError } from "@/middleware/errorHandler";
-import { BeerReviewInsert, OriginalBeer, BeerReview } from "@/types";
-import { CreateBeerReviewInput } from "@/schemas/beer.schema";
+import { supabaseHelpers } from "../models/supabase";
+import { NotFoundError } from "../middleware/errorHandler";
+import { BeerReviewInsert, OriginalBeer, BeerReview } from "../types";
+import { CreateBeerReviewInput } from "../schemas/beer.schema";
 import {
   fetchUntappdBeerDetailsById,
   fetchUntappdBeers,
-} from "@/middleware/untappd";
-import { FlavorProfile, PresentationStyle } from "@/types";
+} from "../middleware/untappd";
+import { FlavorProfile, PresentationStyle } from "../types";
 
 export class BeerService {
   async getBeerById(id: number): Promise<BeerReview> {
