@@ -23,17 +23,27 @@ app.use(
 app.use(requestTimeout);
 
 // CORS configuration for video streaming
-app.use(
-  cors({
-    // origin: config.CORS_ORIGINS.length > 0 ? config.CORS_ORIGINS : false,
-    // credentials: true,
-    origin: "*",
-    credentials: false,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Range"],
-    exposedHeaders: ["Content-Range", "Accept-Ranges", "Content-Length"],
-  })
-);
+// app.use(
+//   cors({
+//     // origin: config.CORS_ORIGINS.length > 0 ? config.CORS_ORIGINS : false,
+//     // credentials: true,
+//     origin: "*",
+//     credentials: false,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization", "Range"],
+//     exposedHeaders: ["Content-Range", "Accept-Ranges", "Content-Length"],
+//   })
+// );
+const allowAllCors = cors({
+  origin: "*",
+  credentials: false,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Range"],
+  exposedHeaders: ["Content-Range", "Accept-Ranges", "Content-Length"],
+});
+
+app.use(allowAllCors);
+app.options("*", allowAllCors);
 
 app.use(morgan("combined"));
 app.use(express.json());
