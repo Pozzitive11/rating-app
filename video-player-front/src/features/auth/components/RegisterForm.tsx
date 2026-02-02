@@ -39,9 +39,9 @@ export const RegisterForm = ({
 }: RegisterFormProps) => {
   const form = useForm({
     defaultValues: {
-      email: "palahinvlad@gmail.com",
-      password: "testtest",
-      confirmPassword: "testtest",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
     onSubmit: async ({ value }) => {
       const { confirmPassword, ...formData } = value;

@@ -25,8 +25,8 @@ export const LoginForm = ({
 }: LoginFormProps) => {
   const form = useForm({
     defaultValues: {
-      email: "palahinvlad@gmail.com",
-      password: "testtest",
+      email: "",
+      password: "",
     },
     onSubmit: async ({ value }) => {
       await onSubmit(value);
