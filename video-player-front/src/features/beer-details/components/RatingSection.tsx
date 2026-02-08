@@ -28,10 +28,10 @@ export const RatingSection = ({
 }: {
   beerId: number;
   userRating?: number;
-  communityRating?: number;
-  numberOfRatings?: number;
-  untappdRating?: number;
-  untappdNumberOfRatings?: number;
+  communityRating: number | null;
+  numberOfRatings: number;
+  untappdRating: number | null;
+  untappdNumberOfRatings: number | null;
   rateDate?: string;
   isLoading?: boolean;
   error?: Error | null;
@@ -72,6 +72,7 @@ export const RatingSection = ({
               <StarRating
                 rating={userRating}
                 shortFormat={false}
+                showRatingValue={true}
                 isShowStatistics={false}
               />
               {rateDate && (
@@ -118,6 +119,7 @@ export const RatingSection = ({
                   numberOfRatings={numberOfRatings}
                   shortFormat
                   showRatingValue={false}
+                  isShowStatistics={false}
                 />
               </div>
               <div className="text-right">
@@ -152,9 +154,10 @@ export const RatingSection = ({
                 </div>
                 <StarRating
                   rating={untappdRating}
-                  numberOfRatings={untappdNumberOfRatings}
+                  numberOfRatings={untappdNumberOfRatings ?? 0}
                   shortFormat
                   showRatingValue={false}
+                  isShowStatistics={false}
                   className="text-amber-600"
                 />
               </div>
@@ -162,7 +165,7 @@ export const RatingSection = ({
                 <p className="text-2xl font-semibold text-amber-700">
                   {formatRatingValue(untappdRating)}
                 </p>
-                {untappdNumberOfRatings !== undefined && (
+                {untappdNumberOfRatings && (
                   <p className="text-sm text-amber-700/80">
                     {formatNumber(untappdNumberOfRatings)}{" "}
                     {untappdNumberOfRatings === 1

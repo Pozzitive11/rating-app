@@ -2,78 +2,48 @@ import { apiGet, apiPost } from "../auth-interceptor";
 import type {
   FlavorProfile,
   PresentationStyle,
+  BeerReview,
+  BeerDetailsResponse,
+  UntappdBeer,
+  UserRatingResponse,
+  CreateBeerReviewInput,
+  MyRatingListItem,
 } from "../types";
 
-export interface Beer {
-  id: number;
-  untappdId?: number;
-  name: string;
-  brewery: string;
-  style: string;
-  abv: number;
-  ibu: number;
-  userRating: number | null;
-  untappdRating: number | null;
-  untappdNumberOfRatings: number | null;
-  communityRating: number | null;
-  communityNumberOfRatings: number | null;
-  mainImage: string;
-  images: string[];
-  description: string;
-  glassType: string;
-  photos?: string[] | null;
-}
-
-
-// Get all beers
-export const getBeers = async (
-  name?: string
-): Promise<Beer[]> => {
-  const response = await apiGet<{ beers: Beer[] }>(
-    `/beers?name=${name}`
-  );
-  return response.beers;
+// Get beer review by DB id (Supabase)
+export const getBeerById = async (id: number): Promise<BeerReview> => {
+  return await apiGet<BeerReview>(`/supabase/beer/${id}`);
 };
 
-// Get specific beer
-export const getBeerById = async (
-  id: number
-): Promise<Beer> => {
-  return await apiGet<Beer>(`/supabase/beer/${id}`);
-};
-
-// Upload beer
+// Create beer review (Supabase). Returns new review id.
 export const uploadBeer = async (
-  beer: Beer
-): Promise<Beer> => {
-  return await apiPost<Beer>(`/supabase/beer`, beer);
+  payload: CreateBeerReviewInput
+): Promise<number> => {
+  return await apiPost<number>(`/supabase/beer`, payload);
 };
 
-// Search beers by query
+// Search Untappd
 export const searchUntappdBeers = async (
   query: string
-): Promise<Beer[]> => {
-  return await apiGet<Beer[]>(
+): Promise<UntappdBeer[]> => {
+  return await apiGet<UntappdBeer[]>(
     `/untappd/search/${encodeURIComponent(query.trim())}`
   );
 };
 
-// Get a beer from Untappd
+// Beer details (Untappd + community)
 export const getUntappdBeerDetailsById = async (
   id: number
-): Promise<Beer> => {
-  return await apiGet<Beer>(`/untappd/beer/${id}`);
+): Promise<BeerDetailsResponse> => {
+  return await apiGet<BeerDetailsResponse>(`/untappd/beer/${id}`);
 };
 
-// Get all flavor profiles
-export const getFlavorProfiles = async (): Promise<
-  FlavorProfile[]
-> => {
-  return await apiGet<FlavorProfile[]>(
-    `/supabase/flavor-profiles`
-  );
+// Flavor profiles (Supabase)
+export const getFlavorProfiles = async (): Promise<FlavorProfile[]> => {
+  return await apiGet<FlavorProfile[]>(`/supabase/flavor-profiles`);
 };
-// Get all presentation styles
+
+// Presentation styles (Supabase)
 export const getPresentationStyles = async (): Promise<
   PresentationStyle[]
 > => {
@@ -82,16 +52,16 @@ export const getPresentationStyles = async (): Promise<
   );
 };
 
-// Get my beer rating
-export const getMyBeerRating = async (beerId: number) => {
-  return await apiGet<{ rating: number; created_at: string } | null>(
+// My rating for a beer by Untappd id (auth required)
+export const getMyBeerRating = async (
+  beerId: number
+): Promise<UserRatingResponse | null> => {
+  return await apiGet<UserRatingResponse | null>(
     `/supabase/beer/${beerId}/my-rating`
   );
 };
 
-// Get my all ratings
-export const getMyAllRatings = async () => {
-  return await apiGet<Beer[]>(
-    `/supabase/beer/my-all-ratings`
-  );
+// All my ratings (auth required)
+export const getMyAllRatings = async (): Promise<MyRatingListItem[]> => {
+  return await apiGet<MyRatingListItem[]>(`/supabase/beer/my-all-ratings`);
 };

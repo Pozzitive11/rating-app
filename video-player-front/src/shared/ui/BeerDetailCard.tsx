@@ -1,4 +1,4 @@
-import { type Beer } from "@/api/beer/api";
+import type { UntappdBeerDetails } from "@/api/types";
 import {
   Card,
   CardContent,
@@ -9,26 +9,17 @@ import {
   AvatarFallback,
 } from "@/shared/ui/primitives/avatar";
 import { Badge } from "@/shared/ui/primitives/badge";
-import { Link } from "@tanstack/react-router";
-import { cn } from "../utils";
 
 interface BeerDetailCardProps {
-  beer: Beer;
-  linkTo?: string;
-  className?: string;
+  beer: UntappdBeerDetails;
 }
 
 export const BeerDetailCard = ({
   beer,
-  linkTo,
-  className,
 }: BeerDetailCardProps) => {
   const cardContent = (
     <Card
-      className={cn(
-        "p-4 hover:shadow-md transition-shadow duration-200",
-        className
-      )}
+      className="p-4 hover:shadow-md transition-shadow duration-200"
     >
       <CardContent className="p-0">
         <div className="flex items-center gap-4">
@@ -49,7 +40,7 @@ export const BeerDetailCard = ({
                 {beer.name}
               </h3>
               <p className="text-muted-foreground mt-1 text-sm">
-                {beer.brewery}
+                {beer.brewery ?? ""}
               </p>
             </div>
 
@@ -58,20 +49,20 @@ export const BeerDetailCard = ({
                 variant="secondary"
                 className="font-medium max-w-[150px] text-xs inline-block overflow-hidden text-ellipsis whitespace-nowrap"
               >
-                {beer.style}
+                {beer.style ?? ""}
               </Badge>
 
               <Badge
                 variant="outline"
                 className="font-medium text-xs"
               >
-                {beer.abv}% ABV
+                {beer.abv ?? 0}% ABV
               </Badge>
               <Badge
                 variant="outline"
                 className="font-medium text-xs"
               >
-                {beer.ibu} IBU
+                {beer.ibu ?? 0} IBU
               </Badge>
             </div>
           </div>
@@ -80,16 +71,6 @@ export const BeerDetailCard = ({
     </Card>
   );
 
-  if (linkTo) {
-    return (
-      <Link
-        to={linkTo}
-        params={{ beerId: beer.id.toString() }}
-      >
-        {cardContent}
-      </Link>
-    );
-  }
 
   return cardContent;
 };

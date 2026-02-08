@@ -8,7 +8,7 @@ import {
 export const AboutSection = ({
   description,
 }: {
-  description: string;
+  description: string | null;
 }) => {
   return (
     <Card className="gap-1">
@@ -16,7 +16,7 @@ export const AboutSection = ({
         <CardTitle className="text-lg">Про Пиво</CardTitle>
       </CardHeader>
       <CardContent>
-        <p>{description}</p>
+        <p>{description || "Опис відсутній"}</p>
       </CardContent>
     </Card>
   );

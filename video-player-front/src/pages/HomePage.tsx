@@ -5,7 +5,8 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Tabs } from "@/shared/ui/Tabs";
 import useSearchBeer from "@/features/beer-search/hooks/useSearchBeer";
 import BeerSearchResults from "@/features/beer-search/components/BeerSearchResults";
-import { getMyAllRatings, type Beer } from "@/api/beer/api";
+import { getMyAllRatings } from "@/api/beer/api";
+import type { UntappdBeer, MyRatingListItem } from "@/api/types";
 import { useQuery } from "@tanstack/react-query";
 import { SearchInput } from "@/features/beer-search/components/SearchInput";
 import { BeerListItem } from "@/shared/ui/BeerListItem";
@@ -14,7 +15,7 @@ import { isEmpty } from "@/shared/utils";
 
 export const HomePage = () => {
   const [selectedBeer, setSelectedBeer] =
-    useState<Beer | null>(null);
+    useState<UntappdBeer | null>(null);
   const [ratingsSearchTerm, setRatingsSearchTerm] =
     useState("");
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ export const HomePage = () => {
     navigate({ to: "/" });
   };
 
-  const handleBeerSelect = (beer: Beer) => {
+  const handleBeerSelect = (beer: UntappdBeer) => {
     setSelectedBeer(beer);
   };
 
@@ -177,7 +178,9 @@ export const HomePage = () => {
                     <li className="list-none" key={beer.id}>
                       <Link
                         to="/beer-details/$beerId"
-                        params={{ beerId: beer.id.toString() }}
+                        params={{
+                          beerId: (beer.untappdId ?? beer.id).toString(),
+                        }}
                       >
                         <BeerListItem beer={beer} />
                       </Link>

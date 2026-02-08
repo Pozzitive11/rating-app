@@ -28,7 +28,7 @@ export const searchUntappdBeers = async (
   }
 };
 
-export const getUntappdBeerDetailsById = async (
+export const getBeerDetailsById = async (
   req: Request<{ id: string }>,
   res: Response,
   next: NextFunction
@@ -39,7 +39,7 @@ export const getUntappdBeerDetailsById = async (
     if (isNaN(beerId)) {
       throw new Error("Invalid beer ID");
     }
-    const beer = await beerService.getUntappdBeerDetailsById(beerId);
+    const beer = await beerService.getBeerDetailsById(beerId);
     res.json(beer);
   } catch (error) {
     next(error);
@@ -69,14 +69,17 @@ export const getBeerById = async (
  * GET /api/supabase/beer/:untappdBeerId/my-rating
  */
 export const getMyBeerRating = async (
-  req: Request<{ untappdBeerId: string }>,
+  req: Request<{ untappdBeerId?: string; id?: string }>,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     if (!req.user) throw new UnauthorizedError("User not authenticated");
 
-    const beerId = Number(req.params.untappdBeerId);
+    const beerId = Number(req.params.untappdBeerId ?? req.params.id);
+    if (Number.isNaN(beerId)) {
+      throw new Error("Invalid beer ID");
+    }
     const userId = req.user.id;
 
     const rating = await beerService.getMyBeerRating(beerId, userId);

@@ -1,4 +1,4 @@
-import type { Beer } from "@/api/beer/api";
+import type { UntappdBeer } from "@/api/types";
 import { SearchInput } from "./SearchInput";
 import { InfoBlock } from "@/shared/ui";
 import { BeerListItem } from "@/shared/ui/BeerListItem";
@@ -9,9 +9,9 @@ interface BeerSearchResultsProps {
   handleSearch: (search: string) => void;
   showLoadingState: boolean;
   showResultsList: boolean;
-  selectedBeer: Beer | null;
-  searchResults: Beer[];
-  handleBeerSelect: (beer: Beer) => void;
+  selectedBeer: UntappdBeer | null;
+  searchResults: UntappdBeer[];
+  handleBeerSelect: (beer: UntappdBeer) => void;
   searchError?: string;
   linkTo?: string;
 }
@@ -55,12 +55,12 @@ const BeerSearchResults = ({
             {searchResults.map(beer => (
               <li
                 className="list-none"
-                key={beer.id}
+                key={beer.untappdId}
                 onClick={() => handleBeerSelect(beer)}
               >
                 <Link
                   to={linkTo || ""}
-                  params={{ beerId: beer.id.toString() }}
+                  params={{ beerId: beer.untappdId.toString() }}
                 >
                   <BeerListItem beer={beer} />
                 </Link>

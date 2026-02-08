@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { OriginalBeer } from "../types";
+import { UntappdBeer, UntappdBeerDetails } from "../types";
 import {
   sanitizeSearchQuery,
   sanitizeBeerId,
@@ -33,7 +33,7 @@ function extractBeerData(
   $: cheerio.CheerioAPI,
   el: cheerio.Cheerio<any> | string,
   options?: { link?: string; beerId?: number }
-): OriginalBeer {
+): UntappdBeer {
   const $el = typeof el === "string" ? $(el) : el;
 
   const name =
@@ -57,15 +57,16 @@ function extractBeerData(
   const mainImage = $el.find(".label").find("img").attr("src") || null;
 
   const abvText = $el.find(".abv").text().trim();
-  const abv = abvText ? parseFloat(abvText) : null;
+  const abv = parseNumberOrNull(abvText);
 
   const ibuText = $el.find(".ibu").text().trim();
-  const ibu = ibuText ? parseFloat(ibuText) : null;
+  const ibu = parseNumberOrNull(ibuText);
 
-  const beerId = parseInt(link.split("/").pop() || "0");
+  const beerId =
+    options?.beerId ?? (parseInt(link.split("/").pop() || "0", 10) || 0);
 
   return {
-    id: beerId,
+    untappdId: beerId,
     name,
     brewery,
     style,
@@ -77,6 +78,22 @@ function extractBeerData(
   };
 }
 
+const parseNumberOrNull = (text: string): number | null => {
+  if (!text) return null;
+  const numeric = text.replace(/[^\d.]+/g, "");
+  if (!numeric) return null;
+  const value = Number.parseFloat(numeric);
+  return Number.isNaN(value) ? null : value;
+};
+
+const parseIntOrNull = (text: string): number | null => {
+  if (!text) return null;
+  const numeric = text.replace(/[^\d]+/g, "");
+  if (!numeric) return null;
+  const value = Number.parseInt(numeric, 10);
+  return Number.isNaN(value) ? null : value;
+};
+
 /**
  * Fetch beers from Untappd
  * @param query - The search query
@@ -86,7 +103,7 @@ function extractBeerData(
 export async function fetchUntappdBeers(
   query: string,
   page: number = 1
-): Promise<OriginalBeer[]> {
+): Promise<UntappdBeer[]> {
   // Sanitize inputs
   const sanitizedQuery = sanitizeSearchQuery(query);
   const sanitizedPage = sanitizePageNumber(page);
@@ -101,10 +118,11 @@ export async function fetchUntappdBeers(
   try {
     const response = await axiosInstance.get(url);
     const $ = cheerio.load(response.data);
-    const beers: OriginalBeer[] = [];
+    const beers: UntappdBeer[] = [];
 
     $("div.beer-item").each((i, el) => {
       const beerData = extractBeerData($, $(el));
+      if (!beerData.name || !beerData.untappdId) return;
       beers.push(beerData);
     });
 
@@ -125,7 +143,7 @@ export async function fetchUntappdBeers(
  */
 export async function fetchUntappdBeerDetailsById(
   beerId: number
-): Promise<OriginalBeer> {
+): Promise<UntappdBeerDetails> {
   // Sanitize beer ID
   const sanitizedId = sanitizeBeerId(beerId);
 
@@ -140,9 +158,8 @@ export async function fetchUntappdBeerDetailsById(
     const beer = extractBeerData($, "body", { link: url, beerId: sanitizedId });
 
     const description = $(".beer-descrption-read-less").text().trim() || null;
-    const ratersText = $(".raters").text().trim() || "0";
-    const untappdNumberOfRatings =
-      parseInt(ratersText.replace(/[^\d]/g, "")) || 0;
+    const ratersText = $(".raters").text().trim();
+    const untappdNumberOfRatings = parseIntOrNull(ratersText);
     return Promise.resolve({
       ...beer,
       untappdNumberOfRatings,

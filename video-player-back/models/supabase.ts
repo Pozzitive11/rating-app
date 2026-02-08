@@ -3,18 +3,24 @@ import { assertSupabaseConfig, config } from "../config";
 import {
   BeerReview,
   BeerReviewInsert,
-  BeerReviewRatingSummary,
+  BeerReviewFlavorProfileInsert,
   FlavorProfile,
   PresentationStyle,
+  Database,
 } from "../types";
 import { DatabaseError } from "../middleware/errorHandler";
 
-let supabase: SupabaseClient | null = null;
+type TypedSupabaseClient = SupabaseClient<Database>;
 
-export const getSupabaseClient = (): SupabaseClient => {
+let supabase: TypedSupabaseClient | null = null;
+
+export const getSupabaseClient = (): TypedSupabaseClient => {
   assertSupabaseConfig();
   if (!supabase) {
-    supabase = createClient(config.SUPABASE_URL!, config.SUPABASE_KEY!);
+    supabase = createClient<Database>(
+      config.SUPABASE_URL!,
+      config.SUPABASE_KEY!
+    );
   }
   return supabase;
 };
@@ -23,25 +29,29 @@ export const getSupabaseClient = (): SupabaseClient => {
 // This creates a client that uses the access token for RLS policies
 export const createAuthenticatedClient = (
   accessToken: string
-): SupabaseClient => {
+): TypedSupabaseClient => {
   assertSupabaseConfig();
-  const client = createClient(config.SUPABASE_URL!, config.SUPABASE_KEY!, {
-    global: {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+  const client = createClient<Database>(
+    config.SUPABASE_URL!,
+    config.SUPABASE_KEY!,
+    {
+      global: {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    },
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
-    },
-  });
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    }
+  );
   return client;
 };
 
 // Helper function to get the appropriate client (DRY principle)
-const getClient = (accessToken?: string): SupabaseClient => {
+const getClient = (accessToken?: string): TypedSupabaseClient => {
   return accessToken ? createAuthenticatedClient(accessToken) : getSupabaseClient();
 };
 
@@ -50,10 +60,10 @@ const supabaseHelpers = {
   getMyBeerRating: async (
     untappdBeerId: number,
     userId: string
-  ): Promise<BeerReviewRatingSummary | null> => {
+  ): Promise<Pick<BeerReview, "user_rating" | "created_at"> | null> => {
     const { data, error } = await getSupabaseClient()
       .from("beer_reviews")
-      .select("untappd_rating, community_rating, community_number_of_ratings, created_at")
+      .select("user_rating, created_at")
       .eq("untappd_id", untappdBeerId)
       .eq("user_id", userId)
       .maybeSingle();
@@ -69,6 +79,7 @@ const supabaseHelpers = {
     if (error) throw new DatabaseError(error.message);
     return data || [];
   },
+
   getCommunityRating: async (
     untappdBeerId: number
   ): Promise<{
@@ -85,7 +96,7 @@ const supabaseHelpers = {
       return { communityRating: null, communityNumberOfRatings: 0 };
     }
 
-    const total = data.reduce((sum, row) => sum + row.untappd_rating, 0);
+    const total = data.reduce((sum, row) => sum + (row?.untappd_rating || 0), 0);
     return {
       communityRating: total / data.length,
       communityNumberOfRatings: data.length,
@@ -145,7 +156,7 @@ const supabaseHelpers = {
     const uniqueIds = [...new Set(flavorProfileIds)];
     if (uniqueIds.length === 0) return;
 
-    const entries = uniqueIds.map((fpId) => ({
+    const entries: BeerReviewFlavorProfileInsert[] = uniqueIds.map((fpId) => ({
       beer_review_id: beerReviewId,
       flavor_profile_id: fpId,
     }));

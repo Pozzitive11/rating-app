@@ -51,30 +51,32 @@ export const BeerDetailsPage = () => {
     );
   }
 
+  const { untappd, community } = beer;
+
   return (
     <>
       <BackNavigation text="Деталі Пива" />
       <div className="mb-4">
-        <BeerDetailCard beer={beer} />
+        <BeerDetailCard beer={untappd} />
       </div>
       <div className="mb-4">
         <RatingSection
-          beerId={beer.id}
+          beerId={untappd.untappdId}
           userRating={myBeerRating?.rating}
-          communityRating={beer.communityRating}
-          communityNumberOfRatings={beer.communityNumberOfRatings}
-          untappdRating={beer.untappdRating}
-          untappdNumberOfRatings={beer.untappdNumberOfRatings}
-          rateDate={myBeerRating?.created_at}
+          communityRating={community.communityRating}
+          numberOfRatings={community.communityNumberOfRatings}
+          untappdRating={untappd.untappdRating}
+          untappdNumberOfRatings={untappd.untappdNumberOfRatings}
+          rateDate={myBeerRating?.createdAt}
           isLoading={isMyBeerRatingLoading}
           error={myBeerRatingError}
         />
       </div>
       <div className="mb-4">
-        <AboutSection description={beer.description} />
+        <AboutSection description={untappd.description} />
       </div>
       <div className="mb-4">
-        <ImagesSection images={beer.images} />
+        <ImagesSection images={[]} />
       </div>
     </>
   );

@@ -1,12 +1,20 @@
 import { supabaseHelpers } from "../models/supabase";
 import { NotFoundError } from "../middleware/errorHandler";
-import { BeerReviewInsert, OriginalBeer, BeerReview } from "../types";
+import {
+  BeerReview,
+  BeerReviewInsert,
+  BeerDetailsResponse,
+  BeerReviewListItem,
+  UserRatingResponse,
+  UntappdBeer,
+  FlavorProfile,
+  PresentationStyle,
+} from "../types";
 import { CreateBeerReviewInput } from "../schemas/beer.schema";
 import {
   fetchUntappdBeerDetailsById,
   fetchUntappdBeers,
 } from "../middleware/untappd";
-import { FlavorProfile, PresentationStyle } from "../types";
 
 export class BeerService {
   async getBeerById(id: number): Promise<BeerReview> {
@@ -42,12 +50,12 @@ export class BeerService {
   ): Promise<BeerReview> {
     // Transform API format (camelCase) to DB format (snake_case)
     const dbReviewData: BeerReviewInsert = {
-      untappd_id: reviewData.untappdId || null,
+      untappd_id: reviewData.untappdId,
       name: reviewData.name,
       user_id: userId,
-      brewery: reviewData.brewery || "",
+      brewery: reviewData.brewery || null,
       style: reviewData.style || null,
-      untappd_rating: reviewData.untappdRating,
+      untappd_rating: reviewData.untappdRating || null,
       user_rating: reviewData.userRating,
       abv: reviewData.abv || null,
       ibu: reviewData.ibu || null,
@@ -57,8 +65,7 @@ export class BeerService {
       comment: reviewData.comment || null,
       location: reviewData.location || null,
       photos: reviewData.photos || null,
-      presentation_style: reviewData.presentationStyle || null,
-      created_at: new Date().toISOString(),
+      presentation_style: reviewData.presentationStyle,
     };
 
     // Create the beer review (with authenticated client for RLS)
@@ -94,16 +101,16 @@ export class BeerService {
   async getMyBeerRating(
     untappdBeerId: number,
     userId: string
-  ): Promise<{ rating: number; created_at: string } | null> {
+  ): Promise<UserRatingResponse | null> {
     const rating = await supabaseHelpers.getMyBeerRating(untappdBeerId, userId);
     if (!rating) return null;
     return {
-      rating: rating.untappd_rating,
-      created_at: rating.created_at,
+      rating: rating.user_rating,
+      createdAt: rating.created_at,
     };
   }
 
-  async searchUntappdBeers(query: string): Promise<OriginalBeer[]> {
+  async searchUntappdBeers(query: string): Promise<UntappdBeer[]> {
     const beers = await fetchUntappdBeers(query);
 
     if (beers.length === 0) {
@@ -113,59 +120,42 @@ export class BeerService {
     return beers;
   }
 
-  async getUntappdBeerDetailsById(id: number): Promise<OriginalBeer> {
+  async getBeerDetailsById(id: number): Promise<BeerDetailsResponse> {
     const beer = await fetchUntappdBeerDetailsById(id);
 
     if (!beer) {
       throw new NotFoundError(`Beer with id "${id}" not found`);
     }
 
-    const community = await supabaseHelpers.getCommunityRating(id);
+    const community = await supabaseHelpers.getCommunityRating(beer.untappdId);
+
     return {
-      ...beer,
-      communityRating: community.communityRating,
-      communityNumberOfRatings: community.communityNumberOfRatings,
+      untappd: beer,
+      community,
     };
   }
 
-  async getMyAllRatings(
-    userId: string
-  ): Promise<BeerReviewResponse[]> {
+  async getMyAllRatings(userId: string): Promise<BeerReviewListItem[]> {
     const ratings = await supabaseHelpers.getMyAllRatings(userId);
-    return ratings.map(mapBeerReviewToResponse);
+    return ratings.map(toBeerReviewListItem);
   }
 }
 
-type BeerReviewResponse = {
-  id: number;
-  untappdId?: number;
-  name: string;
-  brewery: string;
-  style: string;
-  abv: number;
-  ibu: number;
-  user_rating: number;
-  mainImage: string;
-  images: string[];
-  description: string;
-  glassType: string;
-  photos?: string[] | null;
-};
-
-const mapBeerReviewToResponse = (
-  review: BeerReview
-): BeerReviewResponse => ({
-  id: review.untappd_id ?? review.id,
-  untappdId: review.untappd_id ?? undefined,
-  name: review.name,
-  brewery: review.brewery ?? "",
-  style: review.style ?? "",
-  abv: review.abv ?? 0,
-  ibu: review.ibu ?? 0,
-  user_rating: review.untappd_rating,
-  mainImage: review.main_image ?? "",
-  images: review.photos ?? [],
-  description: review.description ?? "",
-  glassType: "",
-  photos: review.photos ?? null,
-});
+function toBeerReviewListItem(review: BeerReview): BeerReviewListItem {
+  return {
+    id: review.untappd_id ?? review.id,
+    untappdId: review.untappd_id ?? undefined,
+    name: review.name,
+    brewery: review.brewery ?? "",
+    style: review.style ?? "",
+    abv: review.abv ?? 0,
+    ibu: review.ibu ?? 0,
+    userRating: review.user_rating ?? 0,
+    mainImage: review.main_image ?? "",
+    images: review.photos ?? [],
+    description: review.description ?? "",
+    presentationStyle: review.presentation_style,
+    photos: review.photos ?? null,
+    untappdRating: review.untappd_rating ?? null,
+  };
+}

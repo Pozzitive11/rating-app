@@ -37,7 +37,7 @@ export const StarRating = ({
     []
   );
 
-  const formattedRating = rating.toFixed(2);
+  const formattedRating = rating?.toFixed(2) ?? "N/A";
 
   // Create accessible label
   const ariaLabel = `Оцінка: ${formattedRating} з 5 зірок, на основі ${numberOfRatings} відгук${numberOfRatings !== 1 ? "ів" : "у"

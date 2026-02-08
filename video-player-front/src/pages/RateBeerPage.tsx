@@ -1,10 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BeerListItem } from "@/shared/ui/BeerListItem";
-import {
-  type Beer,
-  getUntappdBeerDetailsById,
-  uploadBeer,
-} from "@/api/beer/api";
+import { getUntappdBeerDetailsById, uploadBeer } from "@/api/beer/api";
 import {
   RateForm,
   type RateFormValues,
@@ -65,15 +61,26 @@ export const RateBeerPage = () => {
   const onSubmit = async (value: RateFormValues) => {
     if (!selectedBeer) return;
     try {
-      const { photos, ...reviewData } = value;
-
-      const beer: Beer = {
-        untappdId: selectedBeer.id,
-        ...selectedBeer,
-        ...reviewData,
+      const { untappd } = selectedBeer;
+      const payload = {
+        untappdId: untappd.untappdId,
+        name: untappd.name,
+        brewery: untappd.brewery,
+        style: untappd.style,
+        abv: untappd.abv,
+        ibu: untappd.ibu,
+        untappdRating: untappd.untappdRating,
+        userRating: value.rating,
+        link: untappd.link,
+        mainImage: untappd.mainImage,
+        description: untappd.description,
+        comment: value.comment || null,
+        location: value.location || null,
         photos: null, // TODO: Implement photo upload to Supabase Storage
+        flavorProfiles: value.flavorProfiles,
+        presentationStyle: value.presentationStyle!,
       };
-      await uploadBeerAsync(beer);
+      await uploadBeerAsync(payload);
     } catch (error) {
       console.error("Failed to upload beer review:", error);
     }
@@ -101,7 +108,11 @@ export const RateBeerPage = () => {
       {selectedBeer ? (
         <>
           <div className="mb-4">
-            <BeerListItem beer={selectedBeer} />
+            <BeerListItem
+              beer={{
+                ...selectedBeer.untappd,
+              }}
+            />
           </div>
           <RateForm
             isUploading={isUploading}

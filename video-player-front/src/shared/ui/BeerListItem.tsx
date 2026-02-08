@@ -1,4 +1,4 @@
-import { type Beer } from "@/api/beer/api";
+import type { MyRatingListItem, UntappdBeer } from "@/api/types";
 import {
   Card,
   CardContent,
@@ -13,7 +13,7 @@ import { StarRating } from "@/shared/ui";
 import { cn } from "@/shared/utils";
 
 interface BeerListItemProps {
-  beer: Beer;
+  beer: UntappdBeer | MyRatingListItem;
   className?: string;
 }
 
@@ -47,7 +47,7 @@ export const BeerListItem = ({
                 {beer.name}
               </h3>
               <p className="text-muted-foreground mt-1 text-sm">
-                {beer.brewery}
+                {beer.brewery ?? "N/A"}
               </p>
             </div>
 
@@ -56,24 +56,30 @@ export const BeerListItem = ({
                 variant="secondary"
                 className="font-medium max-w-[150px] text-xs inline-block overflow-hidden text-ellipsis whitespace-nowrap"
               >
-                {beer.style}
+                {beer.style ?? "N/A"}
               </Badge>
 
               <Badge
                 variant="outline"
                 className="font-medium text-xs"
               >
-                {beer.abv}% ABV
+                {beer.abv ?? "N/A"}% ABV
               </Badge>
               <Badge
                 variant="outline"
                 className="font-medium text-xs"
               >
-                {beer.ibu} IBU
+                {beer.ibu ?? "N/A"} IBU
               </Badge>
             </div>
 
-            <StarRating rating={beer.communityRating ?? 0} />
+            <StarRating
+              // TODO: rework showing rating for my ratings
+              rating={(beer as UntappdBeer).untappdRating ?? 0}
+              shortFormat
+              showRatingValue
+              isShowStatistics={false}
+            />
           </div>
         </div>
       </CardContent>

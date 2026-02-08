@@ -12,44 +12,47 @@ export const searchQuerySchema = z.object({
  * This validates incoming request data before mapping to DB format
  */
 export type CreateBeerReviewInput = {
-  untappdId?: number | null | undefined;
+  untappdId: number;
   name: string;
-  brewery?: string | undefined;
-  style?: string | null | undefined;
-  abv?: number | null | undefined;
-  ibu?: number | null | undefined;
+  brewery: string | null;
+  style: string | null;
+  abv: number | null;
+  ibu: number | null;
   untappdRating: number | null;
-  userRating: number | null;
-  link?: string | null | undefined;
-  mainImage?: string | null | undefined;
-  description?: string | null | undefined;
-  comment?: string | null | undefined;
-  location?: string | null | undefined;
-  photos?: string[] | null | undefined;
-  flavorProfiles?: number[] | undefined;
-  presentationStyle?: number | null | undefined;
+  userRating: number;
+  link: string | null;
+  mainImage: string | null;
+  description: string | null;
+  comment: string | null;
+  location: string | null;
+  photos: string[] | null;
+  flavorProfiles: number[];
+  presentationStyle: number;
 };
 
 export const createBeerReviewSchema: z.ZodType<CreateBeerReviewInput> =
   z.object({
-    untappdId: z.number().nullable().optional(),
+    untappdId: z.number(),
     name: z.string().min(1, "Beer name is required").trim(),
-    brewery: z.string().optional(),
-    style: z.string().nullable().optional(),
-    abv: z.number().nullable().optional(),
-    ibu: z.number().nullable().optional(),
+    brewery: z.string().nullable(),
+    style: z.string().nullable(),
+    abv: z.number().nullable(),
+    ibu: z.number().nullable(),
     untappdRating: z
       .number()
       .min(0.25, "Rating must be at least 0.25")
-      .max(5, "Rating must be at most 5"),
-    userRating: z.number().nullable(),
-    link: z.string().url().nullable().optional(),
-    mainImage: z.string().url().nullable().optional(),
-    description: z.string().nullable().optional(),
-    comment: z.string().nullable().optional(),
-    location: z.string().nullable().optional(),
-    photos: z.array(z.string().url()).nullable().optional(),
-    flavorProfiles: z.array(z.number()).optional(),
-    presentationStyle: z.number().nullable().optional(),
+      .max(5, "Rating must be at most 5")
+      .nullable(),
+    userRating: z.number(),
+    link: z.string().url().nullable(),
+    mainImage: z.string().url().nullable(),
+    description: z.string().nullable(),
+    comment: z.string().nullable(),
+    location: z.string().nullable(),
+    photos: z.array(z.string().url()).nullable(),
+    flavorProfiles: z.array(z.number()),
+    presentationStyle: z.number(),
   });
+
+
 export type SearchQuery = z.infer<typeof searchQuerySchema>;
