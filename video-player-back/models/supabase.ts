@@ -88,7 +88,7 @@ const supabaseHelpers = {
   }> => {
     const { data, error } = await getSupabaseClient()
       .from("beer_reviews")
-      .select("untappd_rating")
+      .select("user_rating")
       .eq("untappd_id", untappdBeerId);
 
     if (error) throw new DatabaseError(error.message);
@@ -96,7 +96,7 @@ const supabaseHelpers = {
       return { communityRating: null, communityNumberOfRatings: 0 };
     }
 
-    const total = data.reduce((sum, row) => sum + (row?.untappd_rating || 0), 0);
+    const total = data.reduce((sum, row) => sum + (row?.user_rating || 0), 0);
     return {
       communityRating: total / data.length,
       communityNumberOfRatings: data.length,

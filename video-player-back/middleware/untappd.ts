@@ -157,7 +157,8 @@ export async function fetchUntappdBeerDetailsById(
     const $ = cheerio.load(response.data);
     const beer = extractBeerData($, "body", { link: url, beerId: sanitizedId });
 
-    const description = $(".beer-descrption-read-less").text().trim() || null;
+    const rawDescription = $(".beer-descrption-read-less").text().trim() || null;
+    const description = rawDescription ? rawDescription.replace(/Show Less/gi, "").trim() : null;
     const ratersText = $(".raters").text().trim();
     const untappdNumberOfRatings = parseIntOrNull(ratersText);
     return Promise.resolve({
