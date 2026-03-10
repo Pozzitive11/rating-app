@@ -6,7 +6,7 @@ import { Tabs } from "@/shared/ui/Tabs";
 import useSearchBeer from "@/features/beer-search/hooks/useSearchBeer";
 import BeerSearchResults from "@/features/beer-search/components/BeerSearchResults";
 import { getMyAllRatings } from "@/api/beer/api";
-import type { UntappdBeer, MyRatingListItem } from "@/api/types";
+import type { UntappdBeer } from "@/api/types";
 import { useQuery } from "@tanstack/react-query";
 import { SearchInput } from "@/features/beer-search/components/SearchInput";
 import { BeerListItem } from "@/shared/ui/BeerListItem";

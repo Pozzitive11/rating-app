@@ -1,6 +1,6 @@
 import { BeerListItem } from "@/shared/ui/BeerListItem";
 import { useState, useEffect } from "react";
-import { type Beer } from "@/api/beer/api";
+import type { UntappdBeer } from "@/api/types";
 import { isEmpty } from "@/shared/utils";
 import useSearchBeer from "@/features/beer-search/hooks/useSearchBeer";
 import BeerSearchResults from "@/features/beer-search/components/BeerSearchResults";
@@ -20,7 +20,7 @@ export const SearchBeerPage = () => {
   }) as SearchParams;
 
   const [selectedBeer, setSelectedBeer] =
-    useState<Beer | null>(null);
+    useState<UntappdBeer | null>(null);
 
   const {
     searchTerm,
@@ -55,7 +55,7 @@ export const SearchBeerPage = () => {
     setSelectedBeer(null);
   };
 
-  const handleBeerSelect = (beer: Beer) => {
+  const handleBeerSelect = (beer: UntappdBeer) => {
     setSelectedBeer(beer);
   };
 
