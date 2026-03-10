@@ -19,7 +19,7 @@ const envSchema = z.object({
     .number()
     .int()
     .positive()
-    .default(30000), // 30 seconds default
+    .default(15000), // 15 seconds default
 });
 
 // Parse and validate environment variables

@@ -1,5 +1,5 @@
 import { searchUntappdBeers } from "@/api/beer/api";
-import { useDebounce } from "@/shared/useDebounce";
+import { useDebounce } from "@/shared/hooks";
 import { isEmpty } from "@/shared/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
