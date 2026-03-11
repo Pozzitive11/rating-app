@@ -44,7 +44,10 @@ export const SearchBeerPage = () => {
     if (isEmpty(searchTerm)) {
       setSelectedBeer(null);
     }
-  }, [searchTerm]);
+    if (searchTerm.trim().toLowerCase() === "вікуся") {
+      window.location.href = "/vikusia";
+    }
+  }, [searchTerm, navigate]);
 
   // Save to history only when the debounce has settled and matches the typed input
   useEffect(() => {

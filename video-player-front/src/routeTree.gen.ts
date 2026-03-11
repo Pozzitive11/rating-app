@@ -14,6 +14,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BeerDetailsBeerIdRouteImport } from './routes/beer-details/$beerId'
 
+const VikusiaLazyRouteImport = createFileRoute('/vikusia')()
 const SearchIndexLazyRouteImport = createFileRoute('/search/')()
 const RegisterIndexLazyRouteImport = createFileRoute('/register/')()
 const MyRatingsIndexLazyRouteImport = createFileRoute('/my-ratings/')()
@@ -21,6 +22,11 @@ const LoginIndexLazyRouteImport = createFileRoute('/login/')()
 const RateBeerBeerIdLazyRouteImport = createFileRoute('/rate-beer/$beerId')()
 const AuthCallbackLazyRouteImport = createFileRoute('/auth/callback')()
 
+const VikusiaLazyRoute = VikusiaLazyRouteImport.update({
+  id: '/vikusia',
+  path: '/vikusia',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/vikusia.lazy').then((d) => d.Route))
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -70,6 +76,7 @@ const BeerDetailsBeerIdRoute = BeerDetailsBeerIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/vikusia': typeof VikusiaLazyRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/auth/callback': typeof AuthCallbackLazyRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/vikusia': typeof VikusiaLazyRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/auth/callback': typeof AuthCallbackLazyRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
@@ -91,6 +99,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/vikusia': typeof VikusiaLazyRoute
   '/beer-details/$beerId': typeof BeerDetailsBeerIdRoute
   '/auth/callback': typeof AuthCallbackLazyRoute
   '/rate-beer/$beerId': typeof RateBeerBeerIdLazyRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/vikusia'
     | '/beer-details/$beerId'
     | '/auth/callback'
     | '/rate-beer/$beerId'
@@ -113,6 +123,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/vikusia'
     | '/beer-details/$beerId'
     | '/auth/callback'
     | '/rate-beer/$beerId'
@@ -123,6 +134,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/vikusia'
     | '/beer-details/$beerId'
     | '/auth/callback'
     | '/rate-beer/$beerId'
@@ -134,6 +146,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  VikusiaLazyRoute: typeof VikusiaLazyRoute
   BeerDetailsBeerIdRoute: typeof BeerDetailsBeerIdRoute
   AuthCallbackLazyRoute: typeof AuthCallbackLazyRoute
   RateBeerBeerIdLazyRoute: typeof RateBeerBeerIdLazyRoute
@@ -145,6 +158,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vikusia': {
+      id: '/vikusia'
+      path: '/vikusia'
+      fullPath: '/vikusia'
+      preLoaderRoute: typeof VikusiaLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -206,6 +226,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  VikusiaLazyRoute: VikusiaLazyRoute,
   BeerDetailsBeerIdRoute: BeerDetailsBeerIdRoute,
   AuthCallbackLazyRoute: AuthCallbackLazyRoute,
   RateBeerBeerIdLazyRoute: RateBeerBeerIdLazyRoute,
