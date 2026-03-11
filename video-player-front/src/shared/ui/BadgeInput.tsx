@@ -22,9 +22,8 @@ export const BadgeInput = ({
   return (
     <label
       key={label}
-      className={`px-2.5 py-0.5 rounded-full text-xs 
-        font-medium cursor-pointer transition-all duration-200 border ${
-          toggleStyle
+      className={`px-2.5 py-0.5 rounded-md text-xs 
+        font-medium cursor-pointer transition-all duration-200 border ${toggleStyle
         }`}
     >
       <input

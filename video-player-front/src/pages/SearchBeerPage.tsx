@@ -31,6 +31,7 @@ export const SearchBeerPage = () => {
     showLoadingState,
     searchError,
     showResultsList,
+    noResults,
   } = useSearchBeer();
 
   const {
@@ -99,6 +100,7 @@ export const SearchBeerPage = () => {
         searchHistory={history}
         onHistorySelect={handleHistorySelect}
         onHistoryRemove={removeFromHistory}
+        noResults={noResults}
       />
 
       {selectedBeer && (

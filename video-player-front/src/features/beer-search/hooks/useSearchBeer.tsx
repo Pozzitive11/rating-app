@@ -33,6 +33,11 @@ const useSearchBeer = () => {
     hasSearchResults &&
     hasDebouncedSearchTerm &&
     isSearchComplete;
+  const noResults =
+    isSearchComplete &&
+    hasDebouncedSearchTerm &&
+    !hasSearchResults &&
+    !searchError;
 
   return {
     searchTerm,
@@ -42,6 +47,7 @@ const useSearchBeer = () => {
     searchError,
     showLoadingState,
     showResultsList,
+    noResults,
   };
 };
 

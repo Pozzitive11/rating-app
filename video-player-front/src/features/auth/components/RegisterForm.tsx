@@ -61,7 +61,7 @@ export const RegisterForm = ({
         <form.Field
           name="email"
           validators={{
-            onChange: ({ value }) => validateEmail(value),
+            onBlur: ({ value }) => validateEmail(value),
           }}
           children={field => (
             <FieldWrapper

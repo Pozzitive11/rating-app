@@ -111,13 +111,7 @@ export class BeerService {
   }
 
   async searchUntappdBeers(query: string): Promise<UntappdBeer[]> {
-    const beers = await fetchUntappdBeers(query);
-
-    if (beers.length === 0) {
-      throw new NotFoundError(`No beers found for "${query}"`);
-    }
-
-    return beers;
+    return await fetchUntappdBeers(query);
   }
 
   async getBeerDetailsById(id: number): Promise<BeerDetailsResponse> {

@@ -3,7 +3,6 @@ import { Button, FieldWrapper, Input } from "@/shared/ui";
 import { Link } from "@tanstack/react-router";
 import {
   validateEmail,
-  validatePassword,
 } from "../utils/validators";
 import { isEmpty } from "@/shared/utils";
 
@@ -25,8 +24,10 @@ export const LoginForm = ({
 }: LoginFormProps) => {
   const form = useForm({
     defaultValues: {
-      email: "palahinvlad@gmail.com",
-      password: "testtest",
+      email: "",
+      password: "",
+      // email: "palahinvlad@gmail.com",
+      // password: "testtest",
     },
     onSubmit: async ({ value }) => {
       await onSubmit(value);
@@ -45,7 +46,7 @@ export const LoginForm = ({
         <form.Field
           name="email"
           validators={{
-            onChange: ({ value }) => validateEmail(value),
+            onBlur: ({ value }) => validateEmail(value),
           }}
           children={field => (
             <FieldWrapper
@@ -70,10 +71,6 @@ export const LoginForm = ({
 
         <form.Field
           name="password"
-          validators={{
-            onChange: ({ value }) =>
-              validatePassword(value),
-          }}
           children={field => (
             <FieldWrapper
               label="Пароль"

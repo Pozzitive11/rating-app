@@ -18,6 +18,7 @@ interface BeerSearchResultsProps {
   searchHistory?: string[];
   onHistorySelect?: (term: string) => void;
   onHistoryRemove?: (term: string) => void;
+  noResults?: boolean;
 }
 
 const BeerSearchResults = ({
@@ -33,6 +34,7 @@ const BeerSearchResults = ({
   searchHistory = [],
   onHistorySelect,
   onHistoryRemove,
+  noResults,
 }: BeerSearchResultsProps) => {
   const showHistory =
     !searchTerm &&
@@ -67,6 +69,10 @@ const BeerSearchResults = ({
 
       {!showLoadingState && searchError && (
         <InfoBlock title={searchError} variant="error" />
+      )}
+
+      {!showLoadingState && noResults && (
+        <InfoBlock title="Нічого не знайдено" variant="info" />
       )}
 
       {showResultsList && !selectedBeer && (
