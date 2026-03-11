@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 
 export const Route = createLazyFileRoute("/vikusia")({
   component: VikusiaPage,
@@ -48,43 +48,137 @@ const sweetWords = [
   "Зайчик мій 🐰",
 ];
 
-// Seeded pseudo-random to keep positions stable across renders
 function seededRandom(seed: number) {
   const x = Math.sin(seed * 9301 + 49297) * 49297;
   return x - Math.floor(x);
 }
 
-interface CardPosition {
-  top: number;
-  left: number;
+interface CardPos {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
   rotate: number;
-  scale: number;
   floatType: number;
   delay: number;
 }
 
-function generatePositions(): CardPosition[] {
-  return sweetWords.map((_, i) => ({
-    top: 5 + seededRandom(i * 7 + 1) * 80,      // 5% - 85%
-    left: 2 + seededRandom(i * 13 + 3) * 85,     // 2% - 87%
-    rotate: seededRandom(i * 17 + 5) * 30 - 15,   // -15 to +15 deg
-    scale: 0.85 + seededRandom(i * 23 + 7) * 0.35, // 0.85 - 1.2
-    floatType: i % 4,
-    delay: seededRandom(i * 3 + 11) * 1.5,
-  }));
+function estimateCardSize(text: string) {
+  const charW = 9;
+  const emojiW = 18;
+  const padding = 28;
+  let w = padding;
+  for (const ch of text) {
+    w += ch.charCodeAt(0) > 255 || ch.codePointAt(0)! > 0xffff ? emojiW : charW;
+  }
+  w = Math.min(Math.max(w, 100), 220);
+  const h = 48;
+  return { w, h };
+}
+
+function layoutCards(screenW: number, screenH: number): CardPos[] {
+  const placed: CardPos[] = [];
+  const titleW = 320;
+  const titleH = 80;
+  const titleX = (screenW - titleW) / 2;
+  const titleY = (screenH - titleH) / 2;
+  const margin = 6;
+
+  const isOverlapping = (x: number, y: number, w: number, h: number) => {
+    // Check title overlap
+    if (
+      x < titleX + titleW + margin &&
+      x + w > titleX - margin &&
+      y < titleY + titleH + margin &&
+      y + h > titleY - margin
+    ) {
+      return true;
+    }
+    // Check other cards
+    for (const p of placed) {
+      if (
+        x < p.x + p.w + margin &&
+        x + w > p.x - margin &&
+        y < p.y + p.h + margin &&
+        y + h > p.y - margin
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  for (let i = 0; i < sweetWords.length; i++) {
+    const { w, h } = estimateCardSize(sweetWords[i]);
+    let bestX = 0;
+    let bestY = 0;
+    let found = false;
+
+    // Try many random positions using seeded random
+    for (let attempt = 0; attempt < 300; attempt++) {
+      const rx = seededRandom(i * 1000 + attempt * 7 + 1) * (screenW - w - 16) + 8;
+      const ry = seededRandom(i * 1000 + attempt * 13 + 3) * (screenH - h - 16) + 8;
+      if (!isOverlapping(rx, ry, w, h)) {
+        bestX = rx;
+        bestY = ry;
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      // Fallback: place it somewhere with seeded random even if overlapping
+      bestX = seededRandom(i * 7 + 1) * (screenW - w - 16) + 8;
+      bestY = seededRandom(i * 13 + 3) * (screenH - h - 16) + 8;
+    }
+
+    placed.push({
+      x: bestX,
+      y: bestY,
+      w,
+      h,
+      rotate: seededRandom(i * 17 + 5) * 24 - 12,
+      floatType: i % 4,
+      delay: seededRandom(i * 3 + 11) * 1.5,
+    });
+  }
+
+  return placed;
 }
 
 function VikusiaPage() {
   const [visibleCards, setVisibleCards] = useState<number[]>([]);
-  const positions = useMemo(() => generatePositions(), []);
+  const [screenSize, setScreenSize] = useState({
+    w: window.innerWidth,
+    h: window.innerHeight,
+  });
+
+  const handleResize = useCallback(() => {
+    setScreenSize({ w: window.innerWidth, h: window.innerHeight });
+  }, []);
 
   useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [handleResize]);
+
+  const positions = useMemo(
+    () => layoutCards(screenSize.w, screenSize.h),
+    [screenSize.w, screenSize.h]
+  );
+
+  useEffect(() => {
+    setVisibleCards([]);
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
     sweetWords.forEach((_, i) => {
-      setTimeout(() => {
-        setVisibleCards((prev) => [...prev, i]);
-      }, i * 180);
+      timeouts.push(
+        setTimeout(() => {
+          setVisibleCards((prev) => [...prev, i]);
+        }, i * 120)
+      );
     });
-  }, []);
+    return () => timeouts.forEach(clearTimeout);
+  }, [screenSize]);
 
   return (
     <div
@@ -138,32 +232,33 @@ function VikusiaPage() {
       {sweetWords.map((word, i) => {
         const pos = positions[i];
         const isVisible = visibleCards.includes(i);
-        const hue = (i * 18) % 360;
+        const hue = (i * 9) % 360;
 
         return (
           <div
             key={i}
             style={{
               position: "absolute",
-              top: `${pos.top}%`,
-              left: `${pos.left}%`,
+              left: pos.x,
+              top: pos.y,
+              width: pos.w,
               zIndex: i + 1,
-              background: `linear-gradient(135deg, hsla(${hue}, 80%, 65%, 0.88), hsla(${hue + 40}, 90%, 55%, 0.88))`,
+              background: `linear-gradient(135deg, hsla(${hue}, 80%, 65%, 0.9), hsla(${hue + 40}, 90%, 55%, 0.9))`,
               backdropFilter: "blur(10px)",
-              borderRadius: "1rem",
-              padding: "0.9rem 1.2rem",
+              borderRadius: "0.85rem",
+              padding: "0.7rem 0.9rem",
               textAlign: "center",
               color: "#fff",
               fontWeight: 700,
-              fontSize: `${0.9 * pos.scale}rem`,
+              fontSize: "0.88rem",
               textShadow: "0 1px 4px rgba(0,0,0,0.3)",
-              boxShadow: `0 4px 24px hsla(${hue}, 70%, 40%, 0.45), inset 0 1px 0 rgba(255,255,255,0.25)`,
+              boxShadow: `0 4px 20px hsla(${hue}, 70%, 40%, 0.45), inset 0 1px 0 rgba(255,255,255,0.25)`,
               border: "1px solid rgba(255,255,255,0.2)",
               transform: isVisible
-                ? `rotate(${pos.rotate}deg) scale(${pos.scale})`
+                ? `rotate(${pos.rotate}deg) scale(1)`
                 : `rotate(${pos.rotate}deg) scale(0)`,
               opacity: isVisible ? 1 : 0,
-              transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
+              transition: "all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
               cursor: "default",
               animation: isVisible
                 ? `float-${pos.floatType} ${3 + pos.delay}s ease-in-out ${pos.delay}s infinite`
@@ -171,14 +266,14 @@ function VikusiaPage() {
               userSelect: "none",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = `rotate(0deg) scale(${pos.scale * 1.25})`;
+              e.currentTarget.style.transform = `rotate(0deg) scale(1.2)`;
               e.currentTarget.style.zIndex = "50";
-              e.currentTarget.style.boxShadow = `0 8px 40px hsla(${hue}, 70%, 40%, 0.7), inset 0 1px 0 rgba(255,255,255,0.35)`;
+              e.currentTarget.style.boxShadow = `0 8px 36px hsla(${hue}, 70%, 40%, 0.7), inset 0 1px 0 rgba(255,255,255,0.35)`;
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = `rotate(${pos.rotate}deg) scale(${pos.scale})`;
+              e.currentTarget.style.transform = `rotate(${pos.rotate}deg) scale(1)`;
               e.currentTarget.style.zIndex = String(i + 1);
-              e.currentTarget.style.boxShadow = `0 4px 24px hsla(${hue}, 70%, 40%, 0.45), inset 0 1px 0 rgba(255,255,255,0.25)`;
+              e.currentTarget.style.boxShadow = `0 4px 20px hsla(${hue}, 70%, 40%, 0.45), inset 0 1px 0 rgba(255,255,255,0.25)`;
             }}
           >
             {word}
