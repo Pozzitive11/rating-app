@@ -3,10 +3,12 @@ import {
   useContext,
   useState,
   useEffect,
+  useCallback,
   type ReactNode,
 } from "react";
 import { tokenUtils } from "../utils/token.utils";
 import { authApi, type User } from "@/api/auth/auth.api";
+import { authEvents } from "@/api/auth-interceptor";
 import { jwtDecode } from "jwt-decode";
 import {
   useMutation,
@@ -49,6 +51,31 @@ export const AuthProvider = ({
     setUserId(getUserIdFromToken());
     setIsLoading(false);
   }, []);
+
+  // Force-logout handler when API returns 401 (expired token)
+  const handleUnauthorized = useCallback(() => {
+    tokenUtils.clearTokens();
+    setIsAuthenticated(false);
+    setUserId(null);
+    queryClient.removeQueries({
+      queryKey: ["currentUser"],
+    });
+    window.location.href = "/login";
+  }, [queryClient]);
+
+  // Subscribe to 401 events from the API client
+  useEffect(() => {
+    authEvents.addEventListener(
+      "unauthorized",
+      handleUnauthorized
+    );
+    return () => {
+      authEvents.removeEventListener(
+        "unauthorized",
+        handleUnauthorized
+      );
+    };
+  }, [handleUnauthorized]);
 
   // Query for current user (only runs when authenticated)
   const {

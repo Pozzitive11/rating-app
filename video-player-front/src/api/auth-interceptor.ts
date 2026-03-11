@@ -3,6 +3,12 @@ import { tokenUtils } from "@/features/auth/utils/token.utils";
 
 const API_BASE_URL = env.API_BASE_URL;
 
+/**
+ * Event emitter for auth-related events (e.g. token expiry).
+ * The AuthProvider subscribes to this to properly clear React state and redirect.
+ */
+export const authEvents = new EventTarget();
+
 export interface ApiClientOptions extends RequestInit {
   skipAuth?: boolean; // Option to skip adding auth token
 }
@@ -45,12 +51,10 @@ export const apiClient = async (
     }
   );
 
-  // Handle 401 Unauthorized - token might be expired
+  // Handle 401 Unauthorized - token is expired or invalid
   if (response.status === 401 && !skipAuth) {
-    // Optionally: handle token refresh or redirect to login
     tokenUtils.clearTokens();
-    // You might want to redirect to login page here
-    // window.location.href = '/login';
+    authEvents.dispatchEvent(new Event("unauthorized"));
   }
 
   return response;
