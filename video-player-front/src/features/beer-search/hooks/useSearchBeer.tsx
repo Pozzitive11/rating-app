@@ -20,8 +20,6 @@ const useSearchBeer = () => {
     retry: 1,
   });
 
-  console.log('searchResults in hook', searchResults);
-
   const hasSearchTerm = !isEmpty(debouncedSearchTerm);
   const hasDebouncedSearchTerm = !isEmpty(
     debouncedSearchTerm
@@ -38,6 +36,7 @@ const useSearchBeer = () => {
 
   return {
     searchTerm,
+    debouncedSearchTerm,
     setSearchTerm,
     searchResults,
     searchError,

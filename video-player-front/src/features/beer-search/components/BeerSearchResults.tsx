@@ -1,5 +1,6 @@
 import type { UntappdBeer } from "@/api/types";
 import { SearchInput } from "./SearchInput";
+import SearchHistory from "./SearchHistory";
 import { InfoBlock } from "@/shared/ui";
 import { BeerListItem } from "@/shared/ui/BeerListItem";
 import { Link } from "@tanstack/react-router";
@@ -14,6 +15,9 @@ interface BeerSearchResultsProps {
   handleBeerSelect: (beer: UntappdBeer) => void;
   searchError?: string;
   linkTo?: string;
+  searchHistory?: string[];
+  onHistorySelect?: (term: string) => void;
+  onHistoryRemove?: (term: string) => void;
 }
 
 const BeerSearchResults = ({
@@ -26,7 +30,18 @@ const BeerSearchResults = ({
   handleBeerSelect,
   searchError,
   linkTo,
+  searchHistory = [],
+  onHistorySelect,
+  onHistoryRemove,
 }: BeerSearchResultsProps) => {
+  const showHistory =
+    !searchTerm &&
+    !showLoadingState &&
+    !showResultsList &&
+    searchHistory.length > 0 &&
+    onHistorySelect &&
+    onHistoryRemove;
+
   return (
     <div>
       <div className="mb-4">
@@ -35,6 +50,16 @@ const BeerSearchResults = ({
           setSearchTerm={handleSearch}
         />
       </div>
+
+      {showHistory && (
+        <div className="mb-4">
+          <SearchHistory
+            history={searchHistory}
+            onSelect={onHistorySelect}
+            onRemove={onHistoryRemove}
+          />
+        </div>
+      )}
 
       {showLoadingState && (
         <InfoBlock title="Пошук..." variant="loading" />
