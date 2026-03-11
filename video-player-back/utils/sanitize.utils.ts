@@ -18,8 +18,8 @@ export function sanitizeSearchQuery(query: string): string {
   }
 
   // Remove potentially dangerous characters but allow normal search terms
-  // Allow letters, numbers, spaces, hyphens, and apostrophes
-  const cleaned = sanitized.replace(/[^a-zA-Z0-9\s\-']/g, "");
+  // Allow letters (any language/script), numbers, spaces, hyphens, and apostrophes
+  const cleaned = sanitized.replace(/[^\p{L}0-9\s\-']/gu, "");
 
   if (cleaned.length === 0) {
     throw new Error("Search query contains no valid characters");
