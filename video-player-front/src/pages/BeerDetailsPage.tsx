@@ -62,12 +62,9 @@ export const BeerDetailsPage = () => {
       <div className="mb-4">
         <RatingSection
           beerId={untappd.untappdId}
-          userRating={myBeerRating?.rating}
-          communityRating={community.communityRating}
-          numberOfRatings={community.communityNumberOfRatings}
-          untappdRating={untappd.untappdRating}
-          untappdNumberOfRatings={untappd.untappdNumberOfRatings}
-          rateDate={myBeerRating?.createdAt}
+          userRating={myBeerRating} // Since myBeerRating has rating and createdAt
+          community={community}
+          untappd={untappd}
           isLoading={isMyBeerRatingLoading}
           error={myBeerRatingError}
         />
