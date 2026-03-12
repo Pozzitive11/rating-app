@@ -28,7 +28,7 @@ const Header = () => {
           {/* Logo/Brand */}
           <div className="flex items-center gap-2 cursor-pointer">
             <Link to="/" className="text-lg font-semibold">
-              Beer Rating
+              Beer Rater
             </Link>
           </div>
 
