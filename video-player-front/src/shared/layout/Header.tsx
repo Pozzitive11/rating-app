@@ -25,7 +25,6 @@ const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto max-w-md lg:max-w-lg xl:max-w-xl">
         <div className="flex h-14 items-center justify-between px-4">
-          {/* Logo/Brand */}
           <div className="flex items-center gap-2 cursor-pointer">
             <Link to="/" className="text-lg font-semibold">
               Beer Rater
