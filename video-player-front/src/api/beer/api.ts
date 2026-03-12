@@ -31,6 +31,11 @@ export const searchUntappdBeers = async (
   );
 };
 
+// Get random beers for the home page
+export const getRandomBeers = async (): Promise<UntappdBeer[]> => {
+  return await apiGet<UntappdBeer[]>(`/untappd/random`);
+};
+
 // Beer details (Untappd + community)
 export const getUntappdBeerDetailsById = async (
   id: number

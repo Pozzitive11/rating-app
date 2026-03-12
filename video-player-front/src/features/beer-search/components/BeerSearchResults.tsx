@@ -19,6 +19,8 @@ interface BeerSearchResultsProps {
   onHistorySelect?: (term: string) => void;
   onHistoryRemove?: (term: string) => void;
   noResults?: boolean;
+  randomBeers?: UntappdBeer[];
+  isRandomLoading?: boolean;
 }
 
 const BeerSearchResults = ({
@@ -35,6 +37,8 @@ const BeerSearchResults = ({
   onHistorySelect,
   onHistoryRemove,
   noResults,
+  randomBeers,
+  isRandomLoading,
 }: BeerSearchResultsProps) => {
   const showHistory =
     !searchTerm &&
@@ -43,6 +47,13 @@ const BeerSearchResults = ({
     searchHistory.length > 0 &&
     onHistorySelect &&
     onHistoryRemove;
+
+  const showRandomBeers = 
+    !searchTerm &&
+    !showLoadingState &&
+    !showResultsList &&
+    randomBeers &&
+    randomBeers.length > 0;
 
   return (
     <div>
@@ -73,6 +84,36 @@ const BeerSearchResults = ({
 
       {!showLoadingState && noResults && (
         <InfoBlock title="Нічого не знайдено" variant="info" />
+      )}
+
+      {showRandomBeers && !selectedBeer && (
+        <div className="mb-4">
+          <div className="mb-3">
+            <h3 className="text-lg font-semibold text-muted-foreground">
+              Рекомендації для вас:
+            </h3>
+          </div>
+          <ul className="space-y-2 max-h-[700px] overflow-y-auto list-none">
+            {randomBeers.map(beer => (
+              <li
+                className="list-none"
+                key={beer.untappdId}
+                onClick={() => handleBeerSelect(beer)}
+              >
+                <Link
+                  to={linkTo || ""}
+                  params={{ beerId: beer.untappdId.toString() }}
+                >
+                  <BeerListItem beer={beer} />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {isRandomLoading && !searchTerm && !showLoadingState && !showResultsList && (
+        <InfoBlock title="Завантаження рекомендацій..." variant="loading" />
       )}
 
       {showResultsList && !selectedBeer && (

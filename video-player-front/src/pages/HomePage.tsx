@@ -12,6 +12,7 @@ import { SearchInput } from "@/features/beer-search/components/SearchInput";
 import { BeerListItem } from "@/shared/ui/BeerListItem";
 import { InfoBlock } from "@/shared/ui";
 import { isEmpty } from "@/shared/utils";
+import useRandomBeers from "@/features/beer-search/hooks/useRandomBeers";
 
 export const HomePage = () => {
   const [selectedBeer, setSelectedBeer] =
@@ -29,6 +30,8 @@ export const HomePage = () => {
     showResultsList,
     searchError,
   } = useSearchBeer();
+
+  const { data: randomBeers, isLoading: isRandomLoading } = useRandomBeers();
 
   const {
     data: myRatings = [],
@@ -123,6 +126,8 @@ export const HomePage = () => {
           handleBeerSelect={handleBeerSelect}
           searchError={searchError?.message}
           linkTo="/beer-details/$beerId"
+          randomBeers={randomBeers}
+          isRandomLoading={isRandomLoading}
         />
       )}
 

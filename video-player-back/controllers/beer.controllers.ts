@@ -28,6 +28,34 @@ export const searchUntappdBeers = async (
   }
 };
 
+/**
+ * Controller: Get random beers for the home page
+ * GET /api/untappd/random
+ */
+export const getRandomBeers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const randomKeywords = ["IPA", "Stout", "Lager", "Ale", "Pilsner", "Wheat Beer", "Porter", "Sour"];
+    const randomIndex = Math.floor(Math.random() * randomKeywords.length);
+    const randomQuery = randomKeywords[randomIndex] || "IPA";
+    
+    const beers = await beerService.searchUntappdBeers(randomQuery);
+    
+    // Shuffle the array
+    const shuffled = beers.sort(() => 0.5 - Math.random());
+    
+    // Get sub-array of first 5 elements
+    const selected = shuffled.slice(0, 5);
+    
+    res.json(selected);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getBeerDetailsById = async (
   req: Request<{ id: string }>,
   res: Response,
