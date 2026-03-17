@@ -7,6 +7,7 @@ import {
 } from "../ui/primitives/popover";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { InstallPrompt } from "../ui/InstallPrompt";
 
 const Header = () => {
   const { logout, isLoading } = useAuth();
@@ -22,45 +23,48 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto max-w-md lg:max-w-lg xl:max-w-xl">
-        <div className="flex h-14 items-center justify-between px-4">
-          <div className="flex items-center gap-2 cursor-pointer">
-            <Link to="/" className="text-lg font-semibold">
-              Beer Rater
-            </Link>
-          </div>
+    <>
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto max-w-md lg:max-w-lg xl:max-w-xl">
+          <div className="flex h-14 items-center justify-between px-4">
+            <div className="flex items-center gap-2 cursor-pointer">
+              <Link to="/" className="text-lg font-semibold">
+                Beer Rater
+              </Link>
+            </div>
 
-          {/* Login/Register Button */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Login or Register"
-                className="cursor-pointer"
+            {/* Login/Register Button */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Login or Register"
+                  className="cursor-pointer"
+                >
+                  <User className="size-5" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="end"
+                className="w-40 p-1"
               >
-                <User className="size-5" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="end"
-              className="w-40 p-1"
-            >
-              <Button
-                variant="ghost"
-                className="w-full justify-start gap-2 cursor-pointer"
-                onClick={handleLogoutClick}
-                disabled={isLoading}
-              >
-                <LogOut className="size-4" />
-                {isLoading ? "Logging out..." : "Logout"}
-              </Button>
-            </PopoverContent>
-          </Popover>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-2 cursor-pointer"
+                  onClick={handleLogoutClick}
+                  disabled={isLoading}
+                >
+                  <LogOut className="size-4" />
+                  {isLoading ? "Logging out..." : "Logout"}
+                </Button>
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+      <InstallPrompt />
+    </>
   );
 };
 export default Header;

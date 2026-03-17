@@ -10,3 +10,4 @@ export { default as InfoBlock } from "./InfoBlock";
 export { BeerDetailCard } from "./BeerDetailCard";
 export { BeerListItem } from "./BeerListItem";
 export { default as Modal } from "./Modal";
+export { InstallPrompt } from "./InstallPrompt";
