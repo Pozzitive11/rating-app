@@ -15,14 +15,18 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'favicon.png', 'vite.svg'],
+      devOptions: {
+        enabled: true
+      },
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
       manifest: {
         name: 'Beer Rater',
         short_name: 'Beer Rater',
-        description: 'Rate and discover new beers',
+        description: 'Оцінюйте та знаходьте нове пиво',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
+        orientation: 'portrait',
         icons: [
           {
             src: '/pwa-192x192.png',
